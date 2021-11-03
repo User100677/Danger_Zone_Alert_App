@@ -24,19 +24,27 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: GoogleMap(
-        initialCameraPosition: _initialViewPosition,
-        onMapCreated: (controller) => _googleMapController = controller,
-      ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Theme.of(context).primaryColor,
-        foregroundColor: Colors.black,
-        onPressed: () => _googleMapController.animateCamera(
-          CameraUpdate.newCameraPosition(_initialViewPosition),
+    return Stack(
+      children: <Widget>[
+        GoogleMap(
+          initialCameraPosition: _initialViewPosition,
+          onMapCreated:(controller) => _googleMapController = controller,
+          minMaxZoomPreference: const MinMaxZoomPreference(1, 15),
+          zoomControlsEnabled: false,
         ),
-        child: const Icon(Icons.location_on),
-      ),
+        Container(
+          alignment: Alignment.bottomRight,
+          padding: EdgeInsets.fromLTRB(0, 0, 15, 15),
+          child: FloatingActionButton(
+            backgroundColor: Theme.of(context).primaryColor,
+            foregroundColor: Colors.black,
+            onPressed: () => _googleMapController.animateCamera(
+              CameraUpdate.newCameraPosition(_initialViewPosition),
+            ),
+            child: Icon(Icons.location_on),
+          ),
+        ),
+      ],
     );
   }
 }
