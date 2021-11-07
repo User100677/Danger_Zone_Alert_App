@@ -1,39 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
 
-import './google_map.dart';
+class Radius {
+  List<Circle> _circles = [];
+  // Keep track of the circle index
+  int circleIndex = 0;
 
+  void addCircle(LatLng tappedPoint) {
+    _circles.add(
+      Circle(
+        circleId: CircleId(tappedPoint.toString()),
+        center: tappedPoint,
+        radius: 300,
+        strokeWidth: 2,
+        fillColor: const Color.fromRGBO(102, 51, 153, .5),
+        consumeTapEvents: true,
+      ),
+    );
 
-class Radius{
-   List<Circle> _circles = [];
+    // Print the length of the list and the id of the created circle
+    print("Length of circle: ${_circles.length}");
+    print("ID of created circle: ${getCircleId()}");
+    circleIndex++;
+  }
 
-    handleTap(LatLng tappedPoint) {
-       _circles.add(
-         Circle(
-           circleId: CircleId(tappedPoint.toString()),
-           center: tappedPoint,
-           radius: 500,
-           strokeWidth: 2,
-           fillColor: Color.fromRGBO(102, 51, 153, .5),
+  List<Circle> get getCircles {
+    return _circles;
+  }
 
-         ),
-       );
+  set setCircles(List<Circle> circles) {
+    _circles = circles;
+  }
 
-   }
-
-   List<Circle> get getCircles {
-     return _circles;
-   }
-
-   set setCircles(List<Circle> circles) {
-     _circles = circles;
-   }
-
-
- }
-
-
-
-
-
-
+  CircleId getCircleId() {
+    return _circles[circleIndex].circleId;
+  }
+}
