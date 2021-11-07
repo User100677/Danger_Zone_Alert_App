@@ -1,28 +1,39 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class Radius {
-  List<Circle> _circles = [];
+import './google_map.dart';
 
 
-  void listCircle() {
-    _circles.add(
-      Circle(
-        circleId: CircleId("0"),
-        center: LatLng(3.1390, 101.6869),
-        radius: 500,
-        strokeWidth: 2,
-        fillColor: Colors.red,
-      ),
-    );
-  }
+class Radius{
+   List<Circle> _circles = [];
 
-  List<Circle> get getCircles {
-    return _circles;
-  }
+    handleTap(LatLng tappedPoint) {
+       _circles.add(
+         Circle(
+           circleId: CircleId(tappedPoint.toString()),
+           center: tappedPoint,
+           radius: 500,
+           strokeWidth: 2,
+           fillColor: Color.fromRGBO(102, 51, 153, .5),
 
-  void set setCircles(List<Circle> circles) {
-    this._circles = circles;
-  }
+         ),
+       );
 
-}
+   }
+
+   List<Circle> get getCircles {
+     return _circles;
+   }
+
+   set setCircles(List<Circle> circles) {
+     _circles = circles;
+   }
+
+
+ }
+
+
+
+
+
+

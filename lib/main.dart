@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.lightBlue,
       ),
-      home: const GoogleMapScreen(),
+      home:  GoogleMapScreen(),
     );
   }
 }

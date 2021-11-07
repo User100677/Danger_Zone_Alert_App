@@ -3,7 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import './radius.dart';
 
 class GoogleMapScreen extends StatefulWidget {
-  const GoogleMapScreen({Key? key}) : super(key: key);
+
 
   @override
   _GoogleMapScreenState createState() => _GoogleMapScreenState();
@@ -11,7 +11,9 @@ class GoogleMapScreen extends StatefulWidget {
 
 class _GoogleMapScreenState extends State<GoogleMapScreen> {
 
-  Radius radius = Radius();
+  Radius radius = new Radius();
+
+
   late GoogleMapController _googleMapController;
 
   static const _initialViewPosition = CameraPosition(
@@ -20,18 +22,14 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   );
 
 
+
+
   @override
   void dispose() {
     _googleMapController.dispose();
     super.dispose();
   }
 
-  @override
-  void initState(){
-    super.initState();
-    radius.listCircle();
-
-  }
 
 
 
@@ -44,7 +42,8 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
           onMapCreated:(controller) =>_googleMapController = controller,
           minMaxZoomPreference: const MinMaxZoomPreference(1, 15),
           zoomControlsEnabled: false,
-          circles: radius.getCircles.toSet(),
+          circles:   Set.from(radius.getCircles),
+          onTap:  radius.handleTap,
         ),
         Container(
           alignment: Alignment.bottomRight,
