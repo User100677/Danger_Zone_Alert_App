@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
 
 class Radius {
   List<Circle> _circles = [];
@@ -12,10 +11,11 @@ class Radius {
       Circle(
         circleId: CircleId(tappedPoint.toString()),
         center: tappedPoint,
-        radius: 300,
+        radius: 100,
         strokeWidth: 2,
         fillColor: const Color.fromRGBO(102, 51, 153, .5),
         consumeTapEvents: true,
+        onTap: () {},
       ),
     );
 
@@ -35,5 +35,10 @@ class Radius {
 
   CircleId getCircleId() {
     return _circles[circleIndex].circleId;
+  }
+
+  void printInfo() {
+    print("Length of circle: ${_circles.length}");
+    print("ID of created circle: ${getCircleId()}");
   }
 }
