@@ -1,21 +1,21 @@
 import 'package:flutter/cupertino.dart';
 import 'package:geocoding/geocoding.dart';
 
-class GeneratePlacemarks {
-  Future<String> getPlacemarks({@required latLng}) async {
-    List<Placemark> placemarks = await placemarkFromCoordinates(
+class GenerateAddress {
+  Future<String> getMarkers({@required latLng}) async {
+    List<Placemark> placeMark = await placemarkFromCoordinates(
         latLng.latitude, latLng.longitude,
         localeIdentifier: 'ms_MY');
-    // print("Placemarks Length: ${placemarks.length}");
-    // print(placemarks[0]);
+    // print("Placed Makers Length: ${placeMark.length}");
+    // print(placeMark[0]);
     // print("LatLng: $latLng");
 
-    // print(_parsePlacemarks(placemarks[0]));
-    return _parsePlacemarks(placemarks[0]);
+    // print(_parseAddress(placeMark[0]));
+    return _parseAddress(placeMark[0]);
   }
 
   // This method is to format the address into String
-  String _parsePlacemarks(Placemark placemarks) {
+  String _parseAddress(Placemark placemarks) {
     String street = '${placemarks.street}';
     String subLocality = '${placemarks.subLocality}';
     String postalCode = '${placemarks.postalCode}';

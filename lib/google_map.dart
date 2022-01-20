@@ -1,12 +1,14 @@
-import 'package:danger_zone_alert/placemark_dialog_box.dart';
+import 'package:danger_zone_alert/circle_area/area_dialog.dart';
 import 'package:flutter/material.dart';
-
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'placemark_dialog_box.dart';
-import 'radius.dart';
-import 'generate_placemarks.dart';
+
+import 'circle_area/area_dialog.dart';
+import 'circle_area/danger_area.dart';
+import 'circle_area/generate_address.dart';
 
 class GoogleMapScreen extends StatefulWidget {
+  static String id = "google_map_screen";
+
   const GoogleMapScreen({Key? key}) : super(key: key);
 
   @override
@@ -18,10 +20,10 @@ class GoogleMapScreen extends StatefulWidget {
 }
 
 class _GoogleMapScreenState extends State<GoogleMapScreen> {
-  GeneratePlacemarks generatePlacemarks = GeneratePlacemarks();
+  GenerateAddress generatePlacemarks = GenerateAddress();
   late dynamic placemark;
 
-  Radius radius = Radius();
+  DangerArea radius = DangerArea();
 
   late GoogleMapController _googleMapController;
   final bool _myLocationEnabled = false;
@@ -68,8 +70,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
             circles: Set.from(radius.getCircles),
             onTap: (latLng) async {
               // Get the description of the tapped position
-              placemark =
-                  await generatePlacemarks.getPlacemarks(latLng: latLng);
+              placemark = await generatePlacemarks.getMarkers(latLng: latLng);
               // print(placemark);
               // print(latLng);
 
@@ -80,7 +81,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
                   context: context,
                   builder: (context) => Column(
                     children: [
-                      DisplayDialog(
+                      AreaDialog(
                         radius: radius,
                         placemarkDescription: placemark,
                         placemarkLatLng: latLng,
@@ -141,9 +142,9 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
 }
 
 /*
-* TODO 1: Try to display the value of latlng even when the user tapped on the circle
-* TODO 2: Create a method to check if the latlng is within the circle radius : https://stackoverflow.com/questions/22063842/check-if-a-latitude-and-longitude-is-within-a-circle
-* TODO 3: If so display the marker within the circle with the simple dialog box displaying the address of the latlng
-* As long as the user click within the circle, the simple dialog box will display with different address corresponding to the latlng but comment and rating data is consider as one within the same circle
-* TODO: Create an algorithm to reposition the new circle so it wouldn't overlap with the existing one
+* TODO 1: Try to display the value of latlng even when the user tapped on the circle_area
+* TODO 2: Create a method to check if the latlng is within the circle_area radius : https://stackoverflow.com/questions/22063842/check-if-a-latitude-and-longitude-is-within-a-circle
+* TODO 3: If so display the marker within the circle_area with the simple dialog box displaying the address of the latlng
+* As long as the user click within the circle_area, the simple dialog box will display with different address corresponding to the latlng but comment and rating data is consider as one within the same circle_area
+* TODO: Create an algorithm to reposition the new circle_area so it wouldn't overlap with the existing one
 * */

@@ -1,14 +1,30 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+
 import './google_map.dart';
+import 'login_signup/screens/login_screen.dart';
+import 'login_signup/screens/signup_screen.dart';
+import 'login_signup/screens/welcome_screen.dart';
+
+/*
+Login using the following credentials for google account as firebase account is
+linked with google account.
+
+Firebase Account Credentials:
+Email: DangerZoneAlertGroup5a@gmail.com
+Password: group5asegp
+*/
 
 void main() {
-  runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
 
-  // This widget is the root of your application.
+  MyApp({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -16,7 +32,24 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.lightBlue,
       ),
-      home: GoogleMapScreen(),
+      home: FutureBuilder(
+        future: _initialization,
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            print("Error");
+          }
+          if (snapshot.connectionState == ConnectionState.done) {
+            return const WelcomeScreen();
+          }
+          return const CircularProgressIndicator();
+        },
+      ),
+      routes: {
+        GoogleMapScreen.id: (context) => const GoogleMapScreen(),
+        WelcomeScreen.id: (context) => const WelcomeScreen(),
+        LoginScreen.id: (context) => const LoginScreen(),
+        SignupScreen.id: (context) => const SignupScreen(),
+      },
     );
   }
 }

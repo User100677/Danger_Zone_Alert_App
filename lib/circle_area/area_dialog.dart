@@ -1,24 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'radius.dart';
 
-class DisplayDialog extends StatefulWidget {
-  DisplayDialog(
+import 'danger_area.dart';
+
+class AreaDialog extends StatefulWidget {
+  final DangerArea radius;
+  final String placemarkDescription;
+  final LatLng placemarkLatLng;
+  final Function state;
+
+  AreaDialog(
       {required this.radius,
       required this.placemarkDescription,
       required this.placemarkLatLng,
       required this.state});
 
-  final Radius radius;
-  final String placemarkDescription;
-  final LatLng placemarkLatLng;
-  final Function state;
-
   @override
-  _DisplayDialogState createState() => _DisplayDialogState();
+  _AreaDialogState createState() => _AreaDialogState();
 }
 
-class _DisplayDialogState extends State<DisplayDialog> {
+class _AreaDialogState extends State<AreaDialog> {
   @override
   Widget build(BuildContext context) {
     return SimpleDialog(

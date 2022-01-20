@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "617252950483",
+    "project_id": "dangerzonealert-9ad6f",
+    "storage_bucket": "dangerzonealert-9ad6f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:617252950483:android:413bc8fa6359f600735f26",
+        "android_client_info": {
+          "package_name": "com.example.danger_zone_alert"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "617252950483-ej0e7kfebifs8h7glo0nk51qs0iobdd7.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC1yHR08UxDzzdyKVivMpS7OL1UbpmWxC0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "617252950483-ej0e7kfebifs8h7glo0nk51qs0iobdd7.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
