@@ -4,12 +4,14 @@ class EmailTextField extends StatefulWidget {
   final TextEditingController emailController;
   bool isEmailEmpty;
   bool isEmailIncorrect;
+  String emailIncorrectText;
 
   EmailTextField(
       {Key? key,
       required this.emailController,
       required this.isEmailEmpty,
-      required this.isEmailIncorrect})
+      required this.isEmailIncorrect,
+      this.emailIncorrectText = "Incorrect email or password"})
       : super(key: key);
 
   @override
@@ -31,11 +33,10 @@ class _EmailTextFieldState extends State<EmailTextField> {
             size: 20.0,
           ),
           hintText: 'Email',
-          contentPadding: const EdgeInsets.all(10.0),
           errorText: widget.isEmailEmpty
               ? "Field can't be empty!"
               : widget.isEmailIncorrect
-                  ? "Incorrect email or password"
+                  ? widget.emailIncorrectText
                   : null,
         ),
       ),

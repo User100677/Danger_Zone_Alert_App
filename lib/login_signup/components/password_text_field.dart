@@ -49,7 +49,6 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
             },
           ),
           hintText: widget.passwordHintText,
-          contentPadding: const EdgeInsets.all(10.0),
           errorText: widget.isPasswordEmpty
               ? "Field can't be empty!"
               : widget.isPasswordIncorrect

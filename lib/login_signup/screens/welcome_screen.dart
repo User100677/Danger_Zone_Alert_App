@@ -17,7 +17,7 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blueAccent,
+      backgroundColor: Colors.lightBlueAccent,
       body: Container(
         margin: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24.0),
         child: Column(
@@ -45,15 +45,15 @@ class _WelcomeScreenState extends State<WelcomeScreen> {
                   buttonText: 'Log in',
                   buttonColor: Colors.white,
                   buttonOutlineColor: Colors.white,
-                  pressedColor: Colors.blueAccent,
-                  textColor: Colors.blueAccent,
+                  pressedColor: Colors.lightBlueAccent,
+                  textColor: Colors.lightBlueAccent,
                   onPressed: () {
                     Navigator.pushNamed(context, LoginScreen.id);
                   },
                 ),
                 RoundedRectangleButton(
                   buttonText: 'Sign up',
-                  buttonColor: Colors.blueAccent,
+                  buttonColor: Colors.lightBlueAccent,
                   buttonOutlineColor: Colors.white,
                   pressedColor: Colors.white,
                   textColor: Colors.white,

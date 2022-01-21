@@ -1,3 +1,4 @@
+import 'package:danger_zone_alert/login_signup/screens/forgot_password.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
@@ -48,6 +49,7 @@ class MyApp extends StatelessWidget {
         GoogleMapScreen.id: (context) => const GoogleMapScreen(),
         WelcomeScreen.id: (context) => const WelcomeScreen(),
         LoginScreen.id: (context) => const LoginScreen(),
+        ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
         SignupScreen.id: (context) => const SignupScreen(),
       },
     );

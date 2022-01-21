@@ -52,11 +52,12 @@ class _SignupScreenState extends State<SignupScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.lightBlueAccent,
       resizeToAvoidBottomInset: false,
+      // AppBar with arrow back button
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Colors.lightBlueAccent,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
           icon: const Icon(
@@ -66,142 +67,150 @@ class _SignupScreenState extends State<SignupScreen> {
           ),
         ),
       ),
+      // Loading Indicator
       body: ModalProgressHUD(
         inAsyncCall: _isLoading,
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height,
-          width: double.infinity,
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Expanded(
-                child: Container(
-                  width: double.infinity,
-                  color: Colors.blueAccent,
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const <Widget>[
-                      TitleText(
-                        text: 'Create\nAccount',
-                        textSize: 32.0,
-                        textColor: Colors.white,
-                        textWeight: FontWeight.bold,
-                        textAlign: TextAlign.left,
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              Container(
-                padding: const EdgeInsets.only(
-                  top: 16.0,
-                  left: 24.0,
-                  right: 24.0,
-                  bottom: 16.0,
-                ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            // Title Text
+            Expanded(
+              child: Container(
+                width: double.infinity,
+                color: Colors.lightBlueAccent,
+                padding: const EdgeInsets.symmetric(horizontal: 24.0),
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: <Widget>[
-                    Column(
-                      children: <Widget>[
-                        EmailTextField(
-                          emailController: _emailController,
-                          isEmailEmpty: _isEmailEmpty,
-                          isEmailIncorrect: _isEmailIncorrect,
-                        ),
-                      ],
-                    ),
-                    PasswordTextField(
-                      passwordController: _createPasswordController,
-                      passwordVisible: _passwordVisible,
-                      isPasswordEmpty: _isPasswordEmpty,
-                      isPasswordIncorrect: _isPasswordIncorrect,
-                      passwordIncorrectText: "Password doesn't match",
-                    ),
-                    PasswordTextField(
-                      passwordController: _reenterPasswordController,
-                      passwordVisible: _passwordVisible,
-                      isPasswordEmpty: _isPasswordEmpty,
-                      isPasswordIncorrect: _isPasswordIncorrect,
-                      passwordHintText: "Re-enter password",
-                    ),
-                    RoundedRectangleButton(
-                      buttonText: 'Sign up',
-                      buttonColor: Colors.blueAccent,
-                      buttonOutlineColor: Colors.blueAccent,
-                      pressedColor: Colors.white,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const <Widget>[
+                    TitleText(
+                      text: 'Create\nAccount',
+                      textSize: 32.0,
                       textColor: Colors.white,
-                      onPressed: () async {
-                        if (_emailController.text.isEmpty ||
-                            _createPasswordController.text.isEmpty ||
-                            _reenterPasswordController.text.isEmpty) {
-                          setState(() {
-                            _isEmailEmpty = _emailController.text.isEmpty;
-                            _isPasswordEmpty = true;
-                          });
-                        } else if (_createPasswordController.text !=
-                            _reenterPasswordController.text) {
-                          setState(() {
-                            _isEmailEmpty = false;
-                            _isPasswordEmpty = false;
-                            _isPasswordIncorrect = true;
-                            _createPasswordController.clear();
-                            _reenterPasswordController.clear();
-                          });
-                        } else {
-                          setState(() {
-                            _isEmailEmpty = false;
-                            _isPasswordEmpty = false;
-                            _isEmailIncorrect = false;
-                            _isPasswordIncorrect = false;
-                            _isLoading = true;
-                          });
-                          try {
-                            final newUser =
-                                await _auth.createUserWithEmailAndPassword(
-                                    email: _emailController.text.trim(),
-                                    password:
-                                        _reenterPasswordController.text.trim());
-
-                            if (newUser != null) {
-                              Navigator.popAndPushNamed(
-                                  context, GoogleMapScreen.id);
-                            }
-
-                            setState(() {
-                              _isLoading = false;
-                            });
-                          } on FirebaseAuthException catch (e) {
-                            setState(() {
-                              _isLoading = false;
-                              _isEmailIncorrect = true;
-                              _isPasswordIncorrect = false;
-                              _createPasswordController.clear();
-                              _reenterPasswordController.clear();
-                            });
-                          }
-                        }
-                      },
-                    ),
-                    const ButtonDivider(),
-                    RoundedRectangleButton(
-                      buttonText: 'Log in',
-                      buttonColor: Colors.white,
-                      buttonOutlineColor: Colors.grey,
-                      pressedColor: Colors.blueAccent,
-                      textColor: Colors.grey,
-                      onPressed: () {
-                        Navigator.popAndPushNamed(context, LoginScreen.id);
-                      },
+                      textWeight: FontWeight.bold,
+                      textAlign: TextAlign.left,
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
+            ),
+            // A container containing the Divider, Email & Password text field as well as SignIn & SignUp buttons
+            Container(
+              padding: const EdgeInsets.only(
+                top: 16.0,
+                left: 24.0,
+                right: 24.0,
+                bottom: 16.0,
+              ),
+              decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20.0),
+                  topRight: Radius.circular(20.0),
+                ),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: <Widget>[
+                  Column(
+                    children: <Widget>[
+                      EmailTextField(
+                        emailController: _emailController,
+                        isEmailEmpty: _isEmailEmpty,
+                        isEmailIncorrect: _isEmailIncorrect,
+                      ),
+                    ],
+                  ),
+                  PasswordTextField(
+                    passwordController: _createPasswordController,
+                    passwordVisible: _passwordVisible,
+                    isPasswordEmpty: _isPasswordEmpty,
+                    isPasswordIncorrect: _isPasswordIncorrect,
+                    passwordIncorrectText: "Password doesn't match",
+                  ),
+                  PasswordTextField(
+                    passwordController: _reenterPasswordController,
+                    passwordVisible: _passwordVisible,
+                    isPasswordEmpty: _isPasswordEmpty,
+                    isPasswordIncorrect: _isPasswordIncorrect,
+                    passwordHintText: "Re-enter password",
+                  ),
+                  // Signup button
+                  RoundedRectangleButton(
+                    buttonText: 'Sign up',
+                    buttonColor: Colors.lightBlueAccent,
+                    buttonOutlineColor: Colors.lightBlueAccent,
+                    pressedColor: Colors.white,
+                    textColor: Colors.white,
+                    onPressed: () async {
+                      if (_emailController.text.isEmpty ||
+                          _createPasswordController.text.isEmpty ||
+                          _reenterPasswordController.text.isEmpty) {
+                        setState(() {
+                          _isEmailEmpty = _emailController.text.isEmpty;
+                          _isPasswordEmpty = true;
+                        });
+                      } else if (_createPasswordController.text !=
+                          _reenterPasswordController.text) {
+                        setState(() {
+                          _isEmailEmpty = false;
+                          _isPasswordEmpty = false;
+                          _isPasswordIncorrect = true;
+                          _createPasswordController.clear();
+                          _reenterPasswordController.clear();
+                        });
+                      } else {
+                        setState(() {
+                          _isEmailEmpty = false;
+                          _isPasswordEmpty = false;
+                          _isEmailIncorrect = false;
+                          _isPasswordIncorrect = false;
+                          _isLoading = true;
+                        });
+                        try {
+                          final newUser =
+                              await _auth.createUserWithEmailAndPassword(
+                                  email: _emailController.text.trim(),
+                                  password:
+                                      _reenterPasswordController.text.trim());
+
+                          if (newUser != null) {
+                            Navigator.popAndPushNamed(
+                                context, GoogleMapScreen.id);
+                          }
+
+                          setState(() {
+                            _isLoading = false;
+                          });
+                        } on FirebaseAuthException catch (e) {
+                          setState(() {
+                            _isLoading = false;
+                            _isEmailIncorrect = true;
+                            _isPasswordIncorrect = false;
+                            _createPasswordController.clear();
+                            _reenterPasswordController.clear();
+                          });
+                        }
+                      }
+                    },
+                  ),
+                  const ButtonDivider(),
+                  // Login button
+                  RoundedRectangleButton(
+                    buttonText: 'Log in',
+                    buttonColor: Colors.white,
+                    buttonOutlineColor: Colors.grey,
+                    pressedColor: Colors.lightBlueAccent,
+                    textColor: Colors.grey,
+                    onPressed: () {
+                      Navigator.popAndPushNamed(context, LoginScreen.id);
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ],
         ),
       ),
     );
