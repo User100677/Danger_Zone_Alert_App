@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class Radius {
+class DangerArea {
   List<Circle> _circles = [];
-  // Keep track of the circle index
+  // Keep track of the circle_area index
   int circleIndex = 0;
 
   void addCircle(LatLng tappedPoint) {
@@ -19,9 +19,9 @@ class Radius {
       ),
     );
 
-    // Print the length of the list and the id of the created circle
-    print("Length of circle: ${_circles.length}");
-    print("ID of created circle: ${getCircleId()}");
+    // Print the length of the list and the id of the created circle_area
+    print("Length of circle_area: ${_circles.length}");
+    print("ID of created circle_area: ${getCircleId()}");
     circleIndex++;
   }
 
@@ -38,7 +38,7 @@ class Radius {
   }
 
   void printInfo() {
-    print("Length of circle: ${_circles.length}");
-    print("ID of created circle: ${getCircleId()}");
+    print("Length of circle_area: ${_circles.length}");
+    print("ID of created circle_area: ${getCircleId()}");
   }
 }
