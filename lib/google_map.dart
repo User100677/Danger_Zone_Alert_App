@@ -1,8 +1,7 @@
-import 'package:danger_zone_alert/circle_area/area_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import 'circle_area/area_dialog.dart';
+import 'circle_area/area_rating_box.dart';
 import 'circle_area/danger_area.dart';
 import 'circle_area/generate_address.dart';
 
@@ -46,7 +45,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
     _googleMapController.dispose();
   }
 
-  void state() {
+  void boxCallback() {
     setState(() {
       disposeMarker();
     });
@@ -59,7 +58,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
         children: <Widget>[
           GoogleMap(
             onMapCreated: (controller) => _googleMapController = controller,
-            minMaxZoomPreference: const MinMaxZoomPreference(1, 21),
+            minMaxZoomPreference: const MinMaxZoomPreference(7, 19),
             cameraTargetBounds: CameraTargetBounds(malaysiaBounds),
             initialCameraPosition: _kInitialViewPosition,
             myLocationEnabled: _myLocationEnabled,
@@ -81,11 +80,17 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
                   context: context,
                   builder: (context) => Column(
                     children: [
-                      AreaDialog(
+                      // AreaDescriptionBox(
+                      //   radius: radius,
+                      //   areaDescription: placemark,
+                      //   areaLatLng: latLng,
+                      //   boxCallback: boxCallback,
+                      // ),
+                      AreaRatingBox(
                         radius: radius,
-                        placemarkDescription: placemark,
-                        placemarkLatLng: latLng,
-                        state: state,
+                        areaDescription: placemark,
+                        areaLatLng: latLng,
+                        boxCallback: boxCallback,
                       ),
                     ],
                   ),

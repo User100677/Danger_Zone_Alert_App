@@ -40,6 +40,7 @@ class MyApp extends StatelessWidget {
             print("Error");
           }
           if (snapshot.connectionState == ConnectionState.done) {
+            // The following line return the first screen of the app
             return const WelcomeScreen();
           }
           return const CircularProgressIndicator();

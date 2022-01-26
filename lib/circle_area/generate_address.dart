@@ -25,12 +25,11 @@ class GenerateAddress {
 
     String formattedAddress;
 
-    // Ternary Operator
     subLocality.isEmpty
         ? formattedAddress =
             '$street, $postalCode $locality, $administrativeArea, $locality $country'
         : formattedAddress =
-            '$street, $subLocality, $postalCode $locality, $administrativeArea, $locality $country';
+            '$street, $subLocality, $postalCode $locality, $administrativeArea, $country';
 
     return formattedAddress;
   }

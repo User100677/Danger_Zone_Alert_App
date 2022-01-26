@@ -94,12 +94,8 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             // A container containing the Divider, Email & Password text field as well as SignUp & SignIn buttons
             Container(
-              padding: const EdgeInsets.only(
-                top: 16.0,
-                left: 24.0,
-                right: 24.0,
-                bottom: 16.0,
-              ),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
               decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
