@@ -1,7 +1,10 @@
+import 'package:danger_zone_alert/circle_area/create_marker.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+import 'circle_area/area_description_box.dart';
 import 'circle_area/area_rating_box.dart';
+import 'circle_area/calculate_distance.dart';
 import 'circle_area/danger_area.dart';
 import 'circle_area/generate_address.dart';
 
@@ -19,16 +22,15 @@ class GoogleMapScreen extends StatefulWidget {
 }
 
 class _GoogleMapScreenState extends State<GoogleMapScreen> {
-  GenerateAddress generatePlacemarks = GenerateAddress();
-  late dynamic placemark;
+  // Instantiate helper class
+  GenerateAddress generateAddress = GenerateAddress();
+  DangerArea dangerArea = DangerArea();
+  MarkerCreator markerCreator = MarkerCreator();
 
-  DangerArea radius = DangerArea();
-
+  late dynamic placeMark;
   late GoogleMapController _googleMapController;
-  final bool _myLocationEnabled = false;
-  final bool _myCompassEnabled = false;
-  final bool _mapToolbarEnabled = false;
-  final bool _myTrafficEnabled = false;
+
+  // LatLng Bounds so user wouldn't hover so much from outside of Malaysia
   final LatLngBounds malaysiaBounds = LatLngBounds(
     southwest: const LatLng(0.773131415201, 100.085756871),
     northeast: const LatLng(6.92805288332, 119.181903925),
@@ -45,9 +47,10 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
     _googleMapController.dispose();
   }
 
+  // Callback method to clear markers
   void boxCallback() {
     setState(() {
-      disposeMarker();
+      markerCreator.markers.clear();
     });
   }
 
@@ -61,95 +64,77 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
             minMaxZoomPreference: const MinMaxZoomPreference(7, 19),
             cameraTargetBounds: CameraTargetBounds(malaysiaBounds),
             initialCameraPosition: _kInitialViewPosition,
-            myLocationEnabled: _myLocationEnabled,
-            compassEnabled: _myCompassEnabled,
-            mapToolbarEnabled: _mapToolbarEnabled,
-            trafficEnabled: _myTrafficEnabled,
-            markers: Set.from(markers),
-            circles: Set.from(radius.getCircles),
-            onTap: (latLng) async {
+            myLocationEnabled: false,
+            compassEnabled: false,
+            mapToolbarEnabled: false,
+            trafficEnabled: false,
+            markers: Set.from(markerCreator.markers),
+            circles: Set.from(dangerArea.circles),
+            onTap: (tapLatLng) async {
               // Get the description of the tapped position
-              placemark = await generatePlacemarks.getMarkers(latLng: latLng);
-              // print(placemark);
-              // print(latLng);
+              placeMark = await generateAddress.getMarkers(latLng: tapLatLng);
+              print(tapLatLng);
 
+              // malaysiaPolygonParser();
+
+              // TODO: Move the logic into another dart file
               setState(() {
-                _createMarker(latLng: latLng, placemark: placemark);
+                bool isWithinAnyCircle = false;
 
-                showDialog(
-                  context: context,
-                  builder: (context) => Column(
-                    children: [
-                      // AreaDescriptionBox(
-                      //   radius: radius,
-                      //   areaDescription: placemark,
-                      //   areaLatLng: latLng,
-                      //   boxCallback: boxCallback,
-                      // ),
-                      AreaRatingBox(
-                        radius: radius,
-                        areaDescription: placemark,
-                        areaLatLng: latLng,
-                        boxCallback: boxCallback,
-                      ),
-                    ],
-                  ),
-                );
+                markerCreator.createMarker(
+                    latLng: tapLatLng,
+                    placemark: placeMark,
+                    googleMapController: _googleMapController);
+
+                // Check if tapLatLng is within any circles
+                if (dangerArea.circles.isNotEmpty) {
+                  for (Circle circle in dangerArea.circles) {
+                    double distance =
+                        calculateDistance(circle.center, tapLatLng);
+
+                    if (dangerArea.isWithinCircle(distance)) {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AreaRatingBox(
+                          radius: dangerArea,
+                          areaDescription: placeMark,
+                          areaLatLng: tapLatLng,
+                          boxCallback: boxCallback,
+                        ),
+                      );
+                      isWithinAnyCircle = true;
+                      break;
+                    }
+                    // (dangerArea.isWithinCircle(distance))
+                    //     ? print("Tap is within the radius of " +
+                    //         circle.circleId.toString())
+                    //     : print("Tap is not within the radius of " +
+                    //         circle.circleId.toString());
+                  }
+                }
+
+                if (!isWithinAnyCircle) {
+                  showDialog(
+                    context: context,
+                    builder: (context) => AreaDescriptionBox(
+                      radius: dangerArea,
+                      areaDescription: placeMark,
+                      areaLatLng: tapLatLng,
+                      boxCallback: boxCallback,
+                    ),
+                  );
+                  isWithinAnyCircle = false;
+                }
               });
             },
           ),
-          Container(
-            alignment: Alignment.bottomRight,
-            padding: const EdgeInsets.fromLTRB(0, 0, 15, 15),
-            child: FloatingActionButton(
-              backgroundColor: Theme.of(context).primaryColor,
-              foregroundColor: Colors.black,
-              onPressed: () => _googleMapController.animateCamera(
-                CameraUpdate.newCameraPosition(_kInitialViewPosition),
-              ),
-              child: const Icon(
-                Icons.location_on,
-              ),
-            ),
-          ),
-          // displayDialog(),
         ],
       ),
     );
   }
-
-  // Markers code section start here
-  List<Marker> markers = [];
-
-  _createMarker({@required latLng, @required placemark}) {
-    // Clear the list for markers
-    disposeMarker();
-
-    markers.add(Marker(
-      markerId: MarkerId(latLng.toString()),
-      position: latLng,
-      infoWindow: InfoWindow(
-        title: '$placemark',
-        anchor: const Offset(0.5, 0),
-      ),
-      icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueMagenta),
-    ));
-
-    // Re-center the screen corresponding to the latLng of the marker
-    _googleMapController.animateCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(target: latLng, zoom: 18)));
-  }
-
-  // Clear list for markers
-  void disposeMarker() {
-    markers.clear();
-  }
 }
 
 /*
-* TODO 1: Try to display the value of latlng even when the user tapped on the circle_area
-* TODO 2: Create a method to check if the latlng is within the circle_area radius : https://stackoverflow.com/questions/22063842/check-if-a-latitude-and-longitude-is-within-a-circle
-* TODO 3: If so display the marker within the circle_area with the simple dialog box displaying the address of the latlng
 * As long as the user click within the circle_area, the simple dialog box will display with different address corresponding to the latlng but comment and rating data is consider as one within the same circle_area
 * TODO: Create an algorithm to reposition the new circle_area so it wouldn't overlap with the existing one
 * */
