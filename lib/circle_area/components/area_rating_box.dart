@@ -1,20 +1,28 @@
+import 'dart:ui';
+
 import 'package:danger_zone_alert/login_signup/components/rounded_rectangle_button.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import 'danger_area.dart';
+import '../danger_area.dart';
 
-class AreaDescriptionBox extends StatelessWidget {
+class AreaRatingBox extends StatelessWidget {
   final DangerArea radius;
   final String areaDescription;
   final LatLng areaLatLng;
   final Function boxCallback;
 
-  AreaDescriptionBox(
+  final int numberRating;
+  final double dangerRating;
+
+  AreaRatingBox(
       {required this.radius,
       required this.areaDescription,
       required this.areaLatLng,
-      required this.boxCallback});
+      required this.boxCallback,
+      this.numberRating = 10,
+      this.dangerRating = 4.5});
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +38,52 @@ class AreaDescriptionBox extends StatelessWidget {
           ),
           child: Column(
             children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.only(top: 24.0),
+                child: Text(
+                  '$dangerRating',
+                  style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                      fontSize: 50.0,
+                      // TODO: Text Color base on rating Danger Level: Red, Orange, Yellow, Green, Grey
+                      color: Colors.redAccent,
+                      fontWeight: FontWeight.w800,
+                      fontFamily: 'RobotoMono'),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+              Text(
+                'Danger Level',
+                style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                    fontSize: 18.0,
+                    color: const Color(0xffFF6666),
+                    fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 6.0),
+                child: RatingBarIndicator(
+                  rating: dangerRating,
+                  itemBuilder: (BuildContext context, int index) =>
+                      const Icon(Icons.star_border, color: Color(0xffFEBC48)),
+                  itemCount: 5,
+                  itemSize: 18.0,
+                  direction: Axis.horizontal,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 6.0),
+                child: Text(
+                  '$numberRating People Rated',
+                  style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                        fontSize: 10.0,
+                        color: const Color(0xff6E7CA8),
+                      ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
               Container(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 12.0, vertical: 24),
+                    const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
@@ -40,16 +91,16 @@ class AreaDescriptionBox extends StatelessWidget {
                       padding: EdgeInsets.only(right: 6.0),
                       child: Icon(
                         Icons.location_on_outlined,
-                        size: 28.0,
-                        color: Colors.lightBlueAccent,
+                        size: 24.0,
+                        color: Color(0xffAAB1C9),
                       ),
                     ),
                     Flexible(
                       child: Text(
                         areaDescription,
                         style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                              fontSize: 16.0,
-                              color: Colors.black,
+                              fontSize: 14.0,
+                              color: const Color(0xff6E7CA8),
                             ),
                         textAlign: TextAlign.left,
                         maxLines: 3,
@@ -78,7 +129,6 @@ class AreaDescriptionBox extends StatelessWidget {
                         pressedColor: Colors.blue,
                         textColor: Colors.white,
                         onPressed: () {
-                          radius.addCircle(areaLatLng);
                           Navigator.pop(context);
                           boxCallback();
                         },
@@ -95,7 +145,6 @@ class AreaDescriptionBox extends StatelessWidget {
                         pressedColor: Colors.blue,
                         textColor: Colors.white,
                         onPressed: () {
-                          radius.addCircle(areaLatLng);
                           Navigator.pop(context);
                           boxCallback();
                         },
@@ -111,3 +160,6 @@ class AreaDescriptionBox extends StatelessWidget {
     );
   }
 }
+// Icon color: 808CB3
+// Shaded color: F2F4F5
+// Button color: 367CFF

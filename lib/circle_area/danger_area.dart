@@ -20,10 +20,6 @@ class DangerArea {
         // },
       ),
     );
-
-    // Print the length of the list and the id of the created circle_area
-    // print("Length of circle_area: ${_circles.length}");
-    // print("ID of created circle_area: ${getCircleId(_circles.length - 1)}");
   }
 
   // Circle Radius 100.0 = 0.1km

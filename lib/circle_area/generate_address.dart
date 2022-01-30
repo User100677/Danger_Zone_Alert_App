@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 
 class GenerateAddress {
@@ -6,15 +7,11 @@ class GenerateAddress {
     List<Placemark> placeMark = await placemarkFromCoordinates(
         latLng.latitude, latLng.longitude,
         localeIdentifier: 'ms_MY');
-    // print("Placed Makers Length: ${placeMark.length}");
-    // print(placeMark[0]);
-    // print("LatLng: $latLng");
 
-    // print(_parseAddress(placeMark[0]));
     return _parseAddress(placeMark[0]);
   }
 
-  // This method is to format the address into String
+  // This method format the address into String
   String _parseAddress(Placemark placemarks) {
     String street = '${placemarks.street}';
     String subLocality = '${placemarks.subLocality}';
@@ -25,11 +22,15 @@ class GenerateAddress {
 
     String formattedAddress;
 
-    subLocality.isEmpty
-        ? formattedAddress =
-            '$street, $postalCode $locality, $administrativeArea, $locality $country'
-        : formattedAddress =
-            '$street, $subLocality, $postalCode $locality, $administrativeArea, $country';
+    if (street != 'Malaysia' && country == 'Malaysia') {
+      subLocality.isEmpty
+          ? formattedAddress =
+              '$street, $postalCode $locality, $administrativeArea, $locality $country'
+          : formattedAddress =
+              '$street, $subLocality, $postalCode $locality, $administrativeArea, $country';
+    } else {
+      formattedAddress = 'Invalid';
+    }
 
     return formattedAddress;
   }

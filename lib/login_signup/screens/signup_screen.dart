@@ -3,7 +3,6 @@ import 'package:danger_zone_alert/login_signup/components/button_divider.dart';
 import 'package:danger_zone_alert/login_signup/components/email_text_field.dart';
 import 'package:danger_zone_alert/login_signup/components/password_text_field.dart';
 import 'package:danger_zone_alert/login_signup/components/rounded_rectangle_button.dart';
-import 'package:danger_zone_alert/login_signup/components/title_text.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
@@ -83,11 +82,14 @@ class _SignupScreenState extends State<SignupScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const <Widget>[
-                    TitleText(
-                      text: 'Create\nAccount',
-                      textSize: 32.0,
-                      textColor: Colors.white,
-                      textWeight: FontWeight.bold,
+                    Text(
+                      'Create\nAccount',
+                      style: TextStyle(
+                        fontFamily: 'Agne',
+                        fontSize: 32.0,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                       textAlign: TextAlign.left,
                     ),
                   ],

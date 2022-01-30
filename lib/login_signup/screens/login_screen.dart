@@ -3,7 +3,6 @@ import 'package:danger_zone_alert/login_signup/components/button_divider.dart';
 import 'package:danger_zone_alert/login_signup/components/email_text_field.dart';
 import 'package:danger_zone_alert/login_signup/components/password_text_field.dart';
 import 'package:danger_zone_alert/login_signup/components/rounded_rectangle_button.dart';
-import 'package:danger_zone_alert/login_signup/components/title_text.dart';
 import 'package:danger_zone_alert/login_signup/screens/forgot_password.dart';
 import 'package:danger_zone_alert/login_signup/screens/signup_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -81,11 +80,14 @@ class _LoginScreenState extends State<LoginScreen> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const <Widget>[
-                    TitleText(
-                      text: 'Welcome\nBack',
-                      textSize: 32.0,
-                      textColor: Colors.white,
-                      textWeight: FontWeight.bold,
+                    Text(
+                      'Welcome\nBack',
+                      style: TextStyle(
+                        fontFamily: 'Agne',
+                        fontSize: 32.0,
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
                       textAlign: TextAlign.left,
                     ),
                   ],

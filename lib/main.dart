@@ -42,6 +42,7 @@ class MyApp extends StatelessWidget {
           if (snapshot.connectionState == ConnectionState.done) {
             // The following line return the first screen of the app
             return const WelcomeScreen();
+            // return const GoogleMapScreen();
           }
           return const CircularProgressIndicator();
         },
