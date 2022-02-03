@@ -10,6 +10,15 @@ class AreaDescriptionBox extends StatelessWidget {
   final LatLng areaLatLng;
   final Function boxCallback;
 
+  final primaryColor = Colors.white;
+  final locationTextColor = Colors.black;
+  final iconColor = Colors.lightBlueAccent;
+  final containerButtonColor = const Color(0xffF2F4F5);
+  final buttonColor = const Color(0xff367CFF);
+  final buttonOutlineColor = const Color(0xff367CFF);
+  final pressedColor = Colors.blue;
+  final textColor = Colors.white;
+
   AreaDescriptionBox(
       {required this.radius,
       required this.areaDescription,
@@ -22,9 +31,9 @@ class AreaDescriptionBox extends StatelessWidget {
       children: <Widget>[
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 24.0),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.all(
+          decoration: BoxDecoration(
+            color: primaryColor,
+            borderRadius: const BorderRadius.all(
               Radius.circular(10.0),
             ),
           ),
@@ -36,12 +45,12 @@ class AreaDescriptionBox extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    const Padding(
-                      padding: EdgeInsets.only(right: 6.0),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 6.0),
                       child: Icon(
                         Icons.location_on_outlined,
                         size: 28.0,
-                        color: Colors.lightBlueAccent,
+                        color: iconColor,
                       ),
                     ),
                     Flexible(
@@ -49,7 +58,7 @@ class AreaDescriptionBox extends StatelessWidget {
                         areaDescription,
                         style: Theme.of(context).textTheme.bodyText2?.copyWith(
                               fontSize: 16.0,
-                              color: Colors.black,
+                              color: locationTextColor,
                             ),
                         textAlign: TextAlign.left,
                         maxLines: 3,
@@ -59,12 +68,13 @@ class AreaDescriptionBox extends StatelessWidget {
                   ],
                 ),
               ),
+              // Container for 'Rate' and 'Comment' button
               Container(
                 padding: const EdgeInsets.symmetric(
                     horizontal: 12.0, vertical: 12.0),
-                decoration: const BoxDecoration(
-                  color: Color(0xffF2F4F5),
-                  borderRadius: BorderRadius.only(
+                decoration: BoxDecoration(
+                  color: containerButtonColor,
+                  borderRadius: const BorderRadius.only(
                       bottomLeft: Radius.circular(10.0),
                       bottomRight: Radius.circular(10.0)),
                 ),
@@ -73,10 +83,10 @@ class AreaDescriptionBox extends StatelessWidget {
                     Expanded(
                       child: RoundedRectangleButton(
                         buttonText: 'Rate',
-                        buttonColor: const Color(0xff367CFF),
-                        buttonOutlineColor: const Color(0xff367CFF),
-                        pressedColor: Colors.blue,
-                        textColor: Colors.white,
+                        buttonColor: buttonColor,
+                        buttonOutlineColor: buttonOutlineColor,
+                        pressedColor: pressedColor,
+                        textColor: textColor,
                         onPressed: () {
                           radius.addCircle(areaLatLng);
                           Navigator.pop(context);
@@ -90,10 +100,10 @@ class AreaDescriptionBox extends StatelessWidget {
                     Expanded(
                       child: RoundedRectangleButton(
                         buttonText: 'Comment',
-                        buttonColor: const Color(0xff367CFF),
-                        buttonOutlineColor: const Color(0xff367CFF),
-                        pressedColor: Colors.blue,
-                        textColor: Colors.white,
+                        buttonColor: buttonColor,
+                        buttonOutlineColor: buttonOutlineColor,
+                        pressedColor: pressedColor,
+                        textColor: textColor,
                         onPressed: () {
                           radius.addCircle(areaLatLng);
                           Navigator.pop(context);

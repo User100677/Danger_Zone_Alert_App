@@ -19,12 +19,10 @@ dependencies:
   modal_progress_hud_nsn: ^0.1.0-nullsafety-1
   flutter_rating_bar: ^4.0.0
 
-#  # JSON Services Dependencies
-#  http: ^0.13.4
-
   # Google Map Dependencies
   google_maps_flutter: ^2.1.0
   geocoding: ^2.0.1
+  geolocator: ^8.0.5  # for location service
 
   # Firebase Dependencies
   firebase_core: ^1.11.0

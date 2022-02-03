@@ -1,5 +1,9 @@
+import 'dart:async';
+
+import 'package:danger_zone_alert/circle_area/components/bottom_tab_bar.dart';
 import 'package:danger_zone_alert/circle_area/components/create_marker.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'circle_area/calculate_distance.dart';
@@ -22,29 +26,84 @@ class GoogleMapScreen extends StatefulWidget {
 }
 
 class _GoogleMapScreenState extends State<GoogleMapScreen> {
+  final Completer<GoogleMapController> _googleMapController = Completer();
+
   // Instantiate helper class
   GenerateAddress generateAddress = GenerateAddress();
   DangerArea dangerArea = DangerArea();
   MarkerCreator markerCreator = MarkerCreator();
 
-  late GoogleMapController _googleMapController;
-
-  // LatLng Bounds so user wouldn't hover so much from outside of Malaysia
-  final LatLngBounds malaysiaBounds = LatLngBounds(
+  // Constant value
+  final LatLngBounds _kMalaysiaBounds = LatLngBounds(
     southwest: const LatLng(0.773131415201, 100.085756871),
     northeast: const LatLng(6.92805288332, 119.181903925),
   );
 
-  static const _kInitialViewPosition = CameraPosition(
-    target: LatLng(5.3571666, 100.2886158),
-    zoom: 18,
-  );
-
-  @override
-  void dispose() {
-    super.dispose();
-    _googleMapController.dispose();
+  void _onMapCreated(GoogleMapController controller) {
+    setState(() {
+      _googleMapController.complete(controller);
+    });
+    locatePosition();
   }
+
+  CameraPosition _currentPosition = const CameraPosition(
+      target: LatLng(4.445446291086245, 102.04430367797612), zoom: 18);
+
+  final _initialPosition = const CameraPosition(
+      target: LatLng(4.445446291086245, 102.04430367797612), zoom: 7);
+
+  /* ---------------------------------------------------------------- */
+  // Determine current user location and location permission handling
+  Future<Position> _determinePosition() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+
+    if (!serviceEnabled) {
+      errorSnackBar(context, 'Location services are disabled.');
+      return Future.error('Location services are disabled.');
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        errorSnackBar(context, 'Location permissions are denied');
+        return Future.error('Location permissions are denied');
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      await Geolocator.openLocationSettings();
+      errorSnackBar(context,
+          'Location permissions are permanently denied, we cannot request permissions.');
+      return Future.error(
+          'Location permissions are permanently denied, we cannot request permissions.');
+    }
+
+    return await Geolocator.getCurrentPosition();
+  }
+
+  // Error snackBar when permission is denied
+  void errorSnackBar(context, String text) {
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      backgroundColor: Colors.red,
+      content: Text(text),
+      duration: const Duration(milliseconds: 3500),
+    ));
+  }
+
+  Future<void> locatePosition() async {
+    Position position = await _determinePosition();
+
+    LatLng latLng = LatLng(position.latitude, position.longitude);
+    _currentPosition = CameraPosition(target: latLng, zoom: 18);
+
+    final GoogleMapController controller = await _googleMapController.future;
+    controller.animateCamera(CameraUpdate.newCameraPosition(_currentPosition));
+  }
+  /* ---------------------------------------------------------------- */
 
   // Callback method to clear markers
   void boxCallback() {
@@ -56,15 +115,17 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBody: true,
       body: SafeArea(
         child: Stack(
           children: <Widget>[
             GoogleMap(
-              onMapCreated: (controller) => _googleMapController = controller,
+              onMapCreated: _onMapCreated,
               minMaxZoomPreference: const MinMaxZoomPreference(7, 19),
-              cameraTargetBounds: CameraTargetBounds(malaysiaBounds),
-              initialCameraPosition: _kInitialViewPosition,
-              myLocationEnabled: false,
+              initialCameraPosition: _initialPosition,
+              cameraTargetBounds: CameraTargetBounds(_kMalaysiaBounds),
+              mapType: MapType.hybrid,
+              myLocationEnabled: true,
               compassEnabled: false,
               mapToolbarEnabled: false,
               trafficEnabled: false,
@@ -76,6 +137,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
                 var address =
                     await generateAddress.getMarkers(latLng: tapLatLng);
                 print(tapLatLng);
+                print(_currentPosition);
 
                 // TODO: Move the logic into another dart file
                 if (address != 'Invalid') {
@@ -127,113 +189,32 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
                 }
               },
             ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        elevation: 10,
-        backgroundColor: Colors.blueAccent,
-        child: const Icon(
-          Icons.my_location_rounded,
-          color: Colors.white,
-        ),
-        onPressed: () => _googleMapController.animateCamera(
-          CameraUpdate.newCameraPosition(_kInitialViewPosition),
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      bottomNavigationBar: const BottomTabBar(),
-    );
-  }
-}
-
-class BottomTabBar extends StatelessWidget {
-  const BottomTabBar({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return BottomAppBar(
-      shape: const CircularNotchedRectangle(),
-      notchMargin: 10.0,
-      child: SizedBox(
-        height: 60.0,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            // Right Tab Icon Bar
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                IconBar(
-                  text: '',
-                  icon: Icons.web_rounded,
-                  padding: const EdgeInsets.only(left: 24.0),
-                  onPressed: () {},
-                ),
-              ],
-            ),
-            // Left Tab Icon Bar
-            Row(
-              children: <Widget>[
-                IconBar(
-                  text: '',
-                  icon: Icons.logout_rounded,
-                  padding: const EdgeInsets.only(right: 24.0),
-                  onPressed: () {},
-                ),
-              ],
+            BottomTabBar(
+              onPressed: () async {
+                final GoogleMapController controller =
+                    await _googleMapController.future;
+                controller.animateCamera(
+                    CameraUpdate.newCameraPosition(_currentPosition));
+              },
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class IconBar extends StatelessWidget {
-  final String text;
-  final IconData icon;
-  final EdgeInsetsGeometry padding;
-  final Function() onPressed;
-
-  const IconBar(
-      {Key? key,
-      required this.text,
-      required this.icon,
-      required this.padding,
-      required this.onPressed})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: padding,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          IconButton(
-            icon: Icon(
-              icon,
-              size: 25.0,
-              color: Colors.blueAccent,
-            ),
-            onPressed: onPressed,
-          ),
-          Text(
-            text,
-            style: const TextStyle(
-              fontSize: 12.0,
-              height: .1,
-              color: Colors.blueAccent,
-            ),
-          ),
-        ],
       ),
     );
   }
 }
 
 /*
+GPS:
+- TODO: Add user location icon
+- TODO: Stream update user location
+- TODO: Notification when user enter a circle
+
+Exception:
+- TODO: What if the user's location is not in Malaysia?
+
+
+Circle:
 * As long as the user click within the circle_area, the simple dialog box will display with different address corresponding to the latlng but comment and rating data is consider as one within the same circle_area
 * TODO: Create an algorithm to reposition the new circle_area so it wouldn't overlap with the existing one
 * */

@@ -1,11 +1,14 @@
-import 'package:flutter/material.dart';
+import 'dart:ui';
+
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class MarkerCreator {
   final List<Marker> _markers = [];
 
   createMarker(
-      {required latLng, required placemark, required googleMapController}) {
+      {required latLng,
+      required placemark,
+      required googleMapController}) async {
     _markers.clear();
 
     _markers.add(
@@ -21,7 +24,8 @@ class MarkerCreator {
     );
 
     // Re-center the screen corresponding to the latLng of the marker
-    googleMapController.animateCamera(CameraUpdate.newCameraPosition(
+    final GoogleMapController controller = await googleMapController.future;
+    controller.animateCamera(CameraUpdate.newCameraPosition(
         CameraPosition(target: latLng, zoom: 18)));
   }
 
