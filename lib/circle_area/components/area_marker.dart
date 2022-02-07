@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class MarkerCreator {
+class AreaMarker {
   final List<Marker> _markers = [];
 
   createMarker(

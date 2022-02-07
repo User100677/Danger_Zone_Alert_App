@@ -41,14 +41,14 @@ class MyApp extends StatelessWidget {
           }
           if (snapshot.connectionState == ConnectionState.done) {
             // The following line return the first screen of the app
-            // return const WelcomeScreen();
-            return const GoogleMapScreen();
+            return const WelcomeScreen();
+            // return GoogleMapScreen();
           }
           return const CircularProgressIndicator();
         },
       ),
       routes: {
-        GoogleMapScreen.id: (context) => const GoogleMapScreen(),
+        GoogleMapScreen.id: (context) => GoogleMapScreen(),
         WelcomeScreen.id: (context) => const WelcomeScreen(),
         LoginScreen.id: (context) => const LoginScreen(),
         ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),

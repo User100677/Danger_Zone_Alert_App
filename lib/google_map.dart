@@ -1,9 +1,9 @@
 import 'dart:async';
 
+import 'package:danger_zone_alert/circle_area/components/area_marker.dart';
 import 'package:danger_zone_alert/circle_area/components/bottom_tab_bar.dart';
-import 'package:danger_zone_alert/circle_area/components/create_marker.dart';
+import 'package:danger_zone_alert/circle_area/geolocator_service.dart';
 import 'package:flutter/material.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import 'circle_area/calculate_distance.dart';
@@ -31,79 +31,21 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   // Instantiate helper class
   GenerateAddress generateAddress = GenerateAddress();
   DangerArea dangerArea = DangerArea();
-  MarkerCreator markerCreator = MarkerCreator();
+  AreaMarker markerCreator = AreaMarker();
+  GeolocatorService geolocatorService = GeolocatorService();
 
-  // Constant value
-  final LatLngBounds _kMalaysiaBounds = LatLngBounds(
-    southwest: const LatLng(0.773131415201, 100.085756871),
-    northeast: const LatLng(6.92805288332, 119.181903925),
-  );
+  @override
+  void initState() {
+    super.initState();
+  }
 
   void _onMapCreated(GoogleMapController controller) {
     setState(() {
       _googleMapController.complete(controller);
+      geolocatorService.getInitialPosition(
+          context: context, googleMapController: _googleMapController);
     });
-    locatePosition();
   }
-
-  CameraPosition _currentPosition = const CameraPosition(
-      target: LatLng(4.445446291086245, 102.04430367797612), zoom: 18);
-
-  final _initialPosition = const CameraPosition(
-      target: LatLng(4.445446291086245, 102.04430367797612), zoom: 7);
-
-  /* ---------------------------------------------------------------- */
-  // Determine current user location and location permission handling
-  Future<Position> _determinePosition() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-
-    if (!serviceEnabled) {
-      errorSnackBar(context, 'Location services are disabled.');
-      return Future.error('Location services are disabled.');
-    }
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        errorSnackBar(context, 'Location permissions are denied');
-        return Future.error('Location permissions are denied');
-      }
-    }
-
-    if (permission == LocationPermission.deniedForever) {
-      await Geolocator.openLocationSettings();
-      errorSnackBar(context,
-          'Location permissions are permanently denied, we cannot request permissions.');
-      return Future.error(
-          'Location permissions are permanently denied, we cannot request permissions.');
-    }
-
-    return await Geolocator.getCurrentPosition();
-  }
-
-  // Error snackBar when permission is denied
-  void errorSnackBar(context, String text) {
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      backgroundColor: Colors.red,
-      content: Text(text),
-      duration: const Duration(milliseconds: 3500),
-    ));
-  }
-
-  Future<void> locatePosition() async {
-    Position position = await _determinePosition();
-
-    LatLng latLng = LatLng(position.latitude, position.longitude);
-    _currentPosition = CameraPosition(target: latLng, zoom: 18);
-
-    final GoogleMapController controller = await _googleMapController.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(_currentPosition));
-  }
-  /* ---------------------------------------------------------------- */
 
   // Callback method to clear markers
   void boxCallback() {
@@ -122,10 +64,11 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
             GoogleMap(
               onMapCreated: _onMapCreated,
               minMaxZoomPreference: const MinMaxZoomPreference(7, 19),
-              initialCameraPosition: _initialPosition,
-              cameraTargetBounds: CameraTargetBounds(_kMalaysiaBounds),
+              initialCameraPosition: geolocatorService.initialPosition,
+              cameraTargetBounds: CameraTargetBounds(kMalaysiaBounds),
               mapType: MapType.hybrid,
               myLocationEnabled: true,
+              myLocationButtonEnabled: false,
               compassEnabled: false,
               mapToolbarEnabled: false,
               trafficEnabled: false,
@@ -135,9 +78,10 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
               onTap: (tapLatLng) async {
                 // Get the description of the tapped position
                 var address =
-                    await generateAddress.getMarkers(latLng: tapLatLng);
-                print(tapLatLng);
-                print(_currentPosition);
+                    await generateAddress.getAddress(latLng: tapLatLng);
+                print('Tap latLng: ' + tapLatLng.toString());
+                // print('Current user Location: ' +
+                //     geolocatorService.currentPosition.toString());
 
                 // TODO: Move the logic into another dart file
                 if (address != 'Invalid') {
@@ -193,8 +137,10 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
               onPressed: () async {
                 final GoogleMapController controller =
                     await _googleMapController.future;
-                controller.animateCamera(
-                    CameraUpdate.newCameraPosition(_currentPosition));
+                setState(() {
+                  controller.animateCamera(CameraUpdate.newCameraPosition(
+                      geolocatorService.currentPosition));
+                });
               },
             ),
           ],
@@ -207,11 +153,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
 /*
 GPS:
 - TODO: Add user location icon
-- TODO: Stream update user location
-- TODO: Notification when user enter a circle
-
-Exception:
-- TODO: What if the user's location is not in Malaysia?
+- TODO: Notification when user enter a red circle?
 
 
 Circle:

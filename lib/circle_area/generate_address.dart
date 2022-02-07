@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 
 class GenerateAddress {
-  Future<String> getMarkers({@required latLng}) async {
+  Future<String> getAddress({@required latLng}) async {
     List<Placemark> placeMark = await placemarkFromCoordinates(
         latLng.latitude, latLng.longitude,
         localeIdentifier: 'ms_MY');

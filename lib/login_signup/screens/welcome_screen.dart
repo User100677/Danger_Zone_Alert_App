@@ -1,3 +1,4 @@
+import 'package:danger_zone_alert/circle_area/geolocator_service.dart';
 import 'package:danger_zone_alert/login_signup/components/rounded_rectangle_button.dart';
 import 'package:danger_zone_alert/login_signup/components/title_text.dart';
 import 'package:danger_zone_alert/login_signup/screens/signup_screen.dart';
@@ -14,8 +15,11 @@ class WelcomeScreen extends StatefulWidget {
 }
 
 class _WelcomeScreenState extends State<WelcomeScreen> {
+  final geolocatorService = GeolocatorService();
+
   @override
   Widget build(BuildContext context) {
+    geolocatorService.determinePosition(context);
     return Scaffold(
       backgroundColor: Colors.lightBlueAccent,
       body: Container(
