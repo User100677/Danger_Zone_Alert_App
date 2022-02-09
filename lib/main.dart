@@ -12,9 +12,6 @@ import 'authentication/screens/welcome.dart';
 import 'models/user.dart';
 
 /*
-Login using the following credentials for google account as firebase account is
-linked with google account.
-
 Firebase Account Credentials:
 Email: DangerZoneAlertGroup5a@gmail.com
 Password: group5asegp
@@ -45,8 +42,6 @@ class MyApp extends StatelessWidget {
           }
           if (snapshot.connectionState == ConnectionState.done) {
             // The following line return the first screen of the app
-            // return const WelcomeScreen();
-            // return GoogleMapScreen();
             return StreamProvider<UserModel?>.value(
               value: AuthService().user,
               initialData: null,

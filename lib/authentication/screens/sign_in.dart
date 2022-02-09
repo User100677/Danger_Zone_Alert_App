@@ -24,8 +24,6 @@ class _LoginScreenState extends State<LoginScreen> {
   late bool _isLoading;
   late bool _isEmailIncorrect;
 
-  bool error = false;
-
   @override
   void initState() {
     super.initState();

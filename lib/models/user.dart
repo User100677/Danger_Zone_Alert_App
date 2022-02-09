@@ -1,4 +1,4 @@
-// Abstract user model for for login and signup
+// Abstract user model
 class UserModel {
   final String uid;
 

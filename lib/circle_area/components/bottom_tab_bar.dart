@@ -4,13 +4,13 @@ import 'package:flutter/material.dart';
 class BottomTabBar extends StatelessWidget {
   Function() onPressed;
 
+  BottomTabBar({Key? key, required this.onPressed}) : super(key: key);
+
   final AuthService _authService = AuthService();
   double height = 60;
   final primaryColor = Colors.blueAccent;
   final secondaryColor = const Color(0xff818181);
   final backgroundColor = Colors.white;
-
-  BottomTabBar({Key? key, required this.onPressed}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -38,21 +38,41 @@ class BottomTabBar extends StatelessWidget {
                   onPressed: onPressed,
                 ),
               ),
-              // NewsApi and logout icon button
               SizedBox(
                 height: height,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
+                    // NewsAPI button
                     IconBar(
                       icon: Icons.web_rounded,
                       onPressed: () {},
                     ),
                     const SizedBox(width: 56),
+                    // Log out button
                     IconBar(
                       icon: Icons.logout_rounded,
-                      onPressed: () async {
-                        await _authService.signOut();
+                      onPressed: () {
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('Do you wish to log out?'),
+                            actions: <Widget>[
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('No')),
+                              TextButton(
+                                  onPressed: () async {
+                                    await _authService.signOut();
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('Yes')),
+                            ],
+                          ),
+                        );
+                        // await _authService.signOut();
                       },
                     ),
                   ],
@@ -105,7 +125,7 @@ class BottomTabBarPainter extends CustomPainter {
   }
 }
 
-// NewsAPI and LogOut Icon widget
+// NewsAPI and Log out Icon widget
 class IconBar extends StatelessWidget {
   final IconData icon;
   final Function() onPressed;

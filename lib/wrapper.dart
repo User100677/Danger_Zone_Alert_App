@@ -18,6 +18,6 @@ class Wrapper extends StatelessWidget {
     final user = Provider.of<UserModel?>(context);
 
     // return either Home or Authenticate widget
-    return user == null ? const WelcomeScreen() : const GoogleMapScreen();
+    return user == null ? const WelcomeScreen() : GoogleMapScreen();
   }
 }

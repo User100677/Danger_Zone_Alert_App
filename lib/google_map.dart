@@ -152,7 +152,6 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
 
 /*
 GPS:
-- TODO: Add user location icon
 - TODO: Notification when user enter a red circle?
 
 
