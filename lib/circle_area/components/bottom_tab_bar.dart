@@ -1,8 +1,10 @@
+import 'package:danger_zone_alert/services/auth.dart';
 import 'package:flutter/material.dart';
 
 class BottomTabBar extends StatelessWidget {
   Function() onPressed;
 
+  final AuthService _authService = AuthService();
   double height = 60;
   final primaryColor = Colors.blueAccent;
   final secondaryColor = const Color(0xff818181);
@@ -49,7 +51,9 @@ class BottomTabBar extends StatelessWidget {
                     const SizedBox(width: 56),
                     IconBar(
                       icon: Icons.logout_rounded,
-                      onPressed: () {},
+                      onPressed: () async {
+                        await _authService.signOut();
+                      },
                     ),
                   ],
                 ),

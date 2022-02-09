@@ -1,11 +1,15 @@
-import 'package:danger_zone_alert/login_signup/screens/forgot_password.dart';
+import 'package:danger_zone_alert/authentication/screens/forgot_password.dart';
+import 'package:danger_zone_alert/services/auth.dart';
+import 'package:danger_zone_alert/wrapper.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import './google_map.dart';
-import 'login_signup/screens/login_screen.dart';
-import 'login_signup/screens/signup_screen.dart';
-import 'login_signup/screens/welcome_screen.dart';
+import 'authentication/screens/register.dart';
+import 'authentication/screens/sign_in.dart';
+import 'authentication/screens/welcome.dart';
+import 'models/user.dart';
 
 /*
 Login using the following credentials for google account as firebase account is
@@ -41,18 +45,24 @@ class MyApp extends StatelessWidget {
           }
           if (snapshot.connectionState == ConnectionState.done) {
             // The following line return the first screen of the app
-            return const WelcomeScreen();
+            // return const WelcomeScreen();
             // return GoogleMapScreen();
+            return StreamProvider<UserModel?>.value(
+              value: AuthService().user,
+              initialData: null,
+              catchError: null,
+              child: const Wrapper(),
+            );
           }
           return const CircularProgressIndicator();
         },
       ),
       routes: {
-        GoogleMapScreen.id: (context) => GoogleMapScreen(),
+        GoogleMapScreen.id: (context) => const GoogleMapScreen(),
         WelcomeScreen.id: (context) => const WelcomeScreen(),
         LoginScreen.id: (context) => const LoginScreen(),
         ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
-        SignupScreen.id: (context) => const SignupScreen(),
+        Register.id: (context) => const Register(),
       },
     );
   }

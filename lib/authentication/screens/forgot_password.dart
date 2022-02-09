@@ -1,6 +1,6 @@
-import 'package:danger_zone_alert/login_signup/components/email_text_field.dart';
-import 'package:danger_zone_alert/login_signup/components/rounded_rectangle_button.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:danger_zone_alert/authentication/components/email_text_field.dart';
+import 'package:danger_zone_alert/services/auth.dart';
+import 'package:danger_zone_alert/shared_components/rounded_rectangle_button.dart';
 import 'package:flutter/material.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
@@ -12,15 +12,14 @@ class ForgotPasswordScreen extends StatefulWidget {
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
-  final _auth = FirebaseAuth.instance;
+  final AuthService _authService = AuthService();
+  final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
-  late bool _isEmailEmpty;
   late bool _isEmailIncorrect;
 
   @override
   void initState() {
     super.initState();
-    _isEmailEmpty = false;
     _isEmailIncorrect = false;
   }
 
@@ -60,11 +59,13 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               height: 16.0,
             ),
             // Email Text Field
-            EmailTextField(
-              emailController: _emailController,
-              isEmailEmpty: _isEmailEmpty,
-              isEmailIncorrect: _isEmailIncorrect,
-              emailIncorrectText: "Email doesn't exist!",
+            Form(
+              key: _formKey,
+              child: EmailTextField(
+                emailController: _emailController,
+                isEmailIncorrect: _isEmailIncorrect,
+                emailIncorrectText: "Email doesn't exist",
+              ),
             ),
             // Reset password button
             RoundedRectangleButton(
@@ -74,27 +75,24 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 pressedColor: Colors.white,
                 textColor: Colors.white,
                 onPressed: () async {
-                  if (_emailController.text.isEmpty) {
-                    setState(() {
-                      _isEmailEmpty = _emailController.text.isEmpty;
-                    });
-                  } else {
-                    setState(() {
-                      _isEmailEmpty = false;
-                      _isEmailIncorrect = false;
-                    });
-                    try {
-                      await _auth.sendPasswordResetEmail(
-                          email: _emailController.text.trim());
+                  String email = _emailController.text.trim();
 
-                      setState(() {
-                        Navigator.pop(context);
-                      });
-                    } on FirebaseAuthException catch (e) {
+                  setState(() => _isEmailIncorrect = false);
+
+                  if (_formKey.currentState!.validate()) {
+                    // setState(() => _isLoading = true);
+
+                    dynamic result =
+                        await _authService.sendPasswordResetEmail(email);
+
+                    if (result == null) {
                       setState(() {
                         _isEmailIncorrect = true;
                       });
+                    } else {
+                      Navigator.pop(context);
                     }
+                    // setState(() => _isLoading = false);
                   }
                 }),
           ],

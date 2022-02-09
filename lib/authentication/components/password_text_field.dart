@@ -2,18 +2,16 @@ import 'package:flutter/material.dart';
 
 class PasswordTextField extends StatefulWidget {
   final TextEditingController passwordController;
-  bool passwordVisible;
-  bool isPasswordEmpty;
   bool isPasswordIncorrect;
   String passwordIncorrectText;
   String passwordHintText;
 
+  bool passwordVisible = false;
+
   PasswordTextField({
     Key? key,
     required this.passwordController,
-    required this.passwordVisible,
-    required this.isPasswordEmpty,
-    required this.isPasswordIncorrect,
+    this.isPasswordIncorrect = false,
     this.passwordIncorrectText = "",
     this.passwordHintText = "Password",
   }) : super(key: key);
@@ -49,12 +47,12 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
             },
           ),
           hintText: widget.passwordHintText,
-          errorText: widget.isPasswordEmpty
-              ? "Field can't be empty!"
-              : widget.isPasswordIncorrect
-                  ? widget.passwordIncorrectText
-                  : null,
+          errorText:
+              widget.isPasswordIncorrect ? widget.passwordIncorrectText : null,
         ),
+        validator: (String? value) => value!.length < 6
+            ? 'Field must contain at least 6 characters'
+            : null,
       ),
     );
   }

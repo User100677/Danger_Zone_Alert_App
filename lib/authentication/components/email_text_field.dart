@@ -2,16 +2,14 @@ import 'package:flutter/material.dart';
 
 class EmailTextField extends StatefulWidget {
   final TextEditingController emailController;
-  bool isEmailEmpty;
   bool isEmailIncorrect;
   String emailIncorrectText;
 
   EmailTextField(
       {Key? key,
       required this.emailController,
-      required this.isEmailEmpty,
       required this.isEmailIncorrect,
-      this.emailIncorrectText = "Incorrect email or password"})
+      required this.emailIncorrectText})
       : super(key: key);
 
   @override
@@ -33,12 +31,10 @@ class _EmailTextFieldState extends State<EmailTextField> {
             size: 20.0,
           ),
           hintText: 'Email',
-          errorText: widget.isEmailEmpty
-              ? "Field can't be empty!"
-              : widget.isEmailIncorrect
-                  ? widget.emailIncorrectText
-                  : null,
+          errorText: widget.isEmailIncorrect ? widget.emailIncorrectText : null,
         ),
+        validator: (String? value) =>
+            value!.isEmpty ? "Field can't be empty" : null,
       ),
     );
   }

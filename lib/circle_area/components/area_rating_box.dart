@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:danger_zone_alert/login_signup/components/rounded_rectangle_button.dart';
+import 'package:danger_zone_alert/shared_components/rounded_rectangle_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
