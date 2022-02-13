@@ -54,7 +54,7 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         GoogleMapScreen.id: (context) => const GoogleMapScreen(),
-        WelcomeScreen.id: (context) => const WelcomeScreen(),
+        WelcomeScreen.id: (context) => WelcomeScreen(),
         LoginScreen.id: (context) => const LoginScreen(),
         ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
         Register.id: (context) => const Register(),

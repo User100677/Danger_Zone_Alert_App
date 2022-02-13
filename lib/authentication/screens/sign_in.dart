@@ -4,7 +4,7 @@ import 'package:danger_zone_alert/authentication/components/password_text_field.
 import 'package:danger_zone_alert/authentication/screens/forgot_password.dart';
 import 'package:danger_zone_alert/authentication/screens/register.dart';
 import 'package:danger_zone_alert/services/auth.dart';
-import 'package:danger_zone_alert/shared_components/rounded_rectangle_button.dart';
+import 'package:danger_zone_alert/shared/rounded_rectangle_button.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 

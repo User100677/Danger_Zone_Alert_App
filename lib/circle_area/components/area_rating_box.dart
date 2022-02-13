@@ -1,14 +1,14 @@
 import 'dart:ui';
 
-import 'package:danger_zone_alert/shared_components/rounded_rectangle_button.dart';
+import 'package:danger_zone_alert/shared/rounded_rectangle_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../danger_area.dart';
+import '../area.dart';
 
 class AreaRatingBox extends StatelessWidget {
-  final DangerArea radius;
+  final Area area;
   final String areaDescription;
   final LatLng areaLatLng;
   final Function boxCallback;
@@ -28,7 +28,7 @@ class AreaRatingBox extends StatelessWidget {
   final textColor = Colors.white;
 
   AreaRatingBox(
-      {required this.radius,
+      {required this.area,
       required this.areaDescription,
       required this.areaLatLng,
       required this.boxCallback,

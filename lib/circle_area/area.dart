@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-class DangerArea {
+class Area {
   final List<Circle> _circles = [];
   final double _circleRadius = 100.0;
 

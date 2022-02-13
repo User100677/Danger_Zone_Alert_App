@@ -13,3 +13,8 @@ import GoogleMaps
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
 }
+
+/*
+Add IOS Setup
+https://pub.dev/packages/flutter_local_notifications#general-setup
+*/

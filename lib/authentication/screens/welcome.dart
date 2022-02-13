@@ -1,25 +1,20 @@
 import 'package:danger_zone_alert/authentication/components/title_text.dart';
 import 'package:danger_zone_alert/authentication/screens/register.dart';
-import 'package:danger_zone_alert/circle_area/geolocator_service.dart';
-import 'package:danger_zone_alert/shared_components/rounded_rectangle_button.dart';
+import 'package:danger_zone_alert/services/geolocator_service.dart';
+import 'package:danger_zone_alert/shared/rounded_rectangle_button.dart';
 import 'package:flutter/material.dart';
 
 import 'sign_in.dart';
 
-class WelcomeScreen extends StatefulWidget {
+class WelcomeScreen extends StatelessWidget {
   static String id = "welcome_screen";
-  const WelcomeScreen({Key? key}) : super(key: key);
+  WelcomeScreen({Key? key}) : super(key: key);
 
-  @override
-  _WelcomeScreenState createState() => _WelcomeScreenState();
-}
-
-class _WelcomeScreenState extends State<WelcomeScreen> {
-  final geolocatorService = GeolocatorService();
+  final GeolocatorService _geolocatorService = GeolocatorService();
 
   @override
   Widget build(BuildContext context) {
-    geolocatorService.determinePosition(context);
+    _geolocatorService.determinePosition(context);
     return Scaffold(
       backgroundColor: Colors.lightBlueAccent,
       body: Container(
