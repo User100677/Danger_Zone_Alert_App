@@ -1,4 +1,6 @@
 import 'package:danger_zone_alert/authentication/screens/forgot_password.dart';
+import 'package:danger_zone_alert/comment/comment.dart';
+import 'package:danger_zone_alert/rating/new_rating.dart';
 import 'package:danger_zone_alert/services/auth.dart';
 import 'package:danger_zone_alert/wrapper.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -58,6 +60,8 @@ class MyApp extends StatelessWidget {
         LoginScreen.id: (context) => const LoginScreen(),
         ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
         Register.id: (context) => const Register(),
+        Comment.id: (context) => Comment(),
+        RatingQuestionsList.id: (context) => const RatingQuestionsList(),
       },
     );
   }

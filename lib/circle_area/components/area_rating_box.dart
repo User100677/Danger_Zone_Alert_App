@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:danger_zone_alert/comment/comment.dart';
+import 'package:danger_zone_alert/rating/new_rating.dart';
 import 'package:danger_zone_alert/shared/rounded_rectangle_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -144,7 +146,9 @@ class AreaRatingBox extends StatelessWidget {
                         pressedColor: pressedColor,
                         textColor: textColor,
                         onPressed: () {
-                          Navigator.pop(context);
+                          Navigator.popAndPushNamed(
+                              context, RatingQuestionsList.id);
+                          // Navigator.pop(context);
                           boxCallback();
                         },
                       ),
@@ -160,7 +164,8 @@ class AreaRatingBox extends StatelessWidget {
                         pressedColor: pressedColor,
                         textColor: textColor,
                         onPressed: () {
-                          Navigator.pop(context);
+                          Navigator.popAndPushNamed(context, Comment.id);
+                          // Navigator.pop(context);
                           boxCallback();
                         },
                       ),

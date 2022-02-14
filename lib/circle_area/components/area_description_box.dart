@@ -1,3 +1,5 @@
+import 'package:danger_zone_alert/comment/comment.dart';
+import 'package:danger_zone_alert/rating/new_rating.dart';
 import 'package:danger_zone_alert/shared/rounded_rectangle_button.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -89,7 +91,9 @@ class AreaDescriptionBox extends StatelessWidget {
                         textColor: textColor,
                         onPressed: () {
                           area.addCircle(areaLatLng);
-                          Navigator.pop(context);
+                          Navigator.popAndPushNamed(
+                              context, RatingQuestionsList.id);
+                          // Navigator.pop(context);
                           boxCallback();
                         },
                       ),
@@ -106,7 +110,8 @@ class AreaDescriptionBox extends StatelessWidget {
                         textColor: textColor,
                         onPressed: () {
                           area.addCircle(areaLatLng);
-                          Navigator.pop(context);
+                          Navigator.popAndPushNamed(context, Comment.id);
+                          // Navigator.pop(context);
                           boxCallback();
                         },
                       ),
