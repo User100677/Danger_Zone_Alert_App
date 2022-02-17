@@ -148,6 +148,7 @@ class _RatingQuestionsListState extends State<RatingQuestionsList> {
                               rate1 = 0;
                             } else {
                               valueOption[0] = false;
+                              rate1 = 0;
                             }
                           });
                         },
@@ -169,6 +170,7 @@ class _RatingQuestionsListState extends State<RatingQuestionsList> {
                               rate1 = 1;
                             } else {
                               valueOption[1] = false;
+                              rate1 = 0;
                             }
                           });
                         },
@@ -190,6 +192,7 @@ class _RatingQuestionsListState extends State<RatingQuestionsList> {
                               rate1 = 2;
                             } else {
                               valueOption[2] = false;
+                              rate1 = 0;
                             }
                           });
                         },
@@ -211,6 +214,7 @@ class _RatingQuestionsListState extends State<RatingQuestionsList> {
                               rate1 = 3;
                             } else {
                               valueOption[3] = false;
+                              rate1 = 0;
                             }
                           });
                         },
@@ -232,6 +236,7 @@ class _RatingQuestionsListState extends State<RatingQuestionsList> {
                               rate1 = 4;
                             } else {
                               valueOption[4] = false;
+                              rate1 = 0;
                             }
                           });
                         },
@@ -253,6 +258,7 @@ class _RatingQuestionsListState extends State<RatingQuestionsList> {
                               rate1 = 5;
                             } else {
                               valueOption[5] = false;
+                              rate1 = 0;
                             }
                           });
                         },
@@ -284,6 +290,7 @@ class _RatingQuestionsListState extends State<RatingQuestionsList> {
                               rate2 = 0;
                             } else {
                               valueOption[6] = false;
+                              rate2 = 0;
                             }
                           });
                         },
@@ -305,6 +312,7 @@ class _RatingQuestionsListState extends State<RatingQuestionsList> {
                               rate2 = 1;
                             } else {
                               valueOption[7] = false;
+                              rate2 = 0;
                             }
                           });
                         },
@@ -326,6 +334,7 @@ class _RatingQuestionsListState extends State<RatingQuestionsList> {
                               rate2 = 2;
                             } else {
                               valueOption[8] = false;
+                              rate2 = 0;
                             }
                           });
                         },
@@ -347,6 +356,7 @@ class _RatingQuestionsListState extends State<RatingQuestionsList> {
                               rate2 = 3;
                             } else {
                               valueOption[9] = false;
+                              rate2 = 0;
                             }
                           });
                         },
@@ -368,6 +378,7 @@ class _RatingQuestionsListState extends State<RatingQuestionsList> {
                               rate2 = 4;
                             } else {
                               valueOption[10] = false;
+                              rate2 = 0;
                             }
                           });
                         },
@@ -389,6 +400,7 @@ class _RatingQuestionsListState extends State<RatingQuestionsList> {
                               rate2 = 5;
                             } else {
                               valueOption[11] = false;
+                              rate2 = 0;
                             }
                           });
                         },
@@ -420,6 +432,7 @@ class _RatingQuestionsListState extends State<RatingQuestionsList> {
                               rate3 = 5;
                             } else {
                               valueOption[12] = false;
+                              rate3 = 0;
                             }
                           });
                         },
@@ -441,6 +454,7 @@ class _RatingQuestionsListState extends State<RatingQuestionsList> {
                               rate3 = 4;
                             } else {
                               valueOption[13] = false;
+                              rate3 = 0;
                             }
                           });
                         },
@@ -462,6 +476,7 @@ class _RatingQuestionsListState extends State<RatingQuestionsList> {
                               rate3 = 3;
                             } else {
                               valueOption[14] = false;
+                              rate3 = 0;
                             }
                           });
                         },
@@ -483,6 +498,7 @@ class _RatingQuestionsListState extends State<RatingQuestionsList> {
                               rate3 = 2;
                             } else {
                               valueOption[15] = false;
+                              rate3 = 0;
                             }
                           });
                         },
@@ -504,6 +520,7 @@ class _RatingQuestionsListState extends State<RatingQuestionsList> {
                               rate3 = 1;
                             } else {
                               valueOption[16] = false;
+                              rate3 = 0;
                             }
                           });
                         },
@@ -525,6 +542,7 @@ class _RatingQuestionsListState extends State<RatingQuestionsList> {
                               rate3 = 0;
                             } else {
                               valueOption[17] = false;
+                              rate3 = 0;
                             }
                           });
                         },
@@ -556,6 +574,7 @@ class _RatingQuestionsListState extends State<RatingQuestionsList> {
                               rate4 = 5;
                             } else {
                               valueOption[18] = false;
+                              rate4 = 0;
                             }
                           });
                         },
@@ -577,6 +596,7 @@ class _RatingQuestionsListState extends State<RatingQuestionsList> {
                               rate4 = 4;
                             } else {
                               valueOption[19] = false;
+                              rate4 = 0;
                             }
                           });
                         },
@@ -598,6 +618,7 @@ class _RatingQuestionsListState extends State<RatingQuestionsList> {
                               rate4 = 3;
                             } else {
                               valueOption[20] = false;
+                              rate4 = 0;
                             }
                           });
                         },
@@ -619,6 +640,7 @@ class _RatingQuestionsListState extends State<RatingQuestionsList> {
                               rate4 = 2;
                             } else {
                               valueOption[21] = false;
+                              rate4 = 0;
                             }
                           });
                         },
@@ -640,6 +662,7 @@ class _RatingQuestionsListState extends State<RatingQuestionsList> {
                               rate4 = 1;
                             } else {
                               valueOption[22] = false;
+                              rate4 = 0;
                             }
                           });
                         },
@@ -661,6 +684,7 @@ class _RatingQuestionsListState extends State<RatingQuestionsList> {
                               rate4 = 0;
                             } else {
                               valueOption[23] = false;
+                              rate4 = 0;
                             }
                           });
                         },
@@ -692,6 +716,7 @@ class _RatingQuestionsListState extends State<RatingQuestionsList> {
                               rate5 = 5;
                             } else {
                               valueOption[24] = false;
+                              rate5 = 0;
                             }
                           });
                         },
@@ -713,6 +738,7 @@ class _RatingQuestionsListState extends State<RatingQuestionsList> {
                               rate5 = 4;
                             } else {
                               valueOption[25] = false;
+                              rate5 = 0;
                             }
                           });
                         },
@@ -734,6 +760,7 @@ class _RatingQuestionsListState extends State<RatingQuestionsList> {
                               rate5 = 3;
                             } else {
                               valueOption[26] = false;
+                              rate5 = 0;
                             }
                           });
                         },
@@ -755,6 +782,7 @@ class _RatingQuestionsListState extends State<RatingQuestionsList> {
                               rate5 = 2;
                             } else {
                               valueOption[27] = false;
+                              rate5 = 0;
                             }
                           });
                         },
@@ -776,6 +804,7 @@ class _RatingQuestionsListState extends State<RatingQuestionsList> {
                               rate5 = 1;
                             } else {
                               valueOption[28] = false;
+                              rate5 = 0;
                             }
                           });
                         },
@@ -797,6 +826,7 @@ class _RatingQuestionsListState extends State<RatingQuestionsList> {
                               rate5 = 0;
                             } else {
                               valueOption[29] = false;
+                              rate5 = 0;
                             }
                           });
                         },
@@ -805,15 +835,30 @@ class _RatingQuestionsListState extends State<RatingQuestionsList> {
                   ),
                 )),
             Container(
-              color: Colors.blue,
+              color: Colors.lightBlue,
               child: Row(
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   ElevatedButton(
                     onPressed: () {
-                      // replace this print statement with sending data to database
-                      print((rate1 + rate2 + rate3 + rate4 + rate5) / 5);
+                      if (valueOption.contains(true)) {
+                        // replace this print statement with sending data to database
+                        //print((rate1 + rate2 + rate3 + rate4 + rate5) / 5);
+                        double rate = (rate1 + rate2 + rate3+ rate4+ rate5)/5;
+                        showDialog(
+                            context: context,
+                            builder: (context) {
+                              return Dialog(
+                                  shape: const BeveledRectangleBorder(side: BorderSide(color: Colors.black)),
+                                  child: Text('The rating given to this specific area is $rate', style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold), textAlign: TextAlign.center,)
+                              );
+                            }
+                          );
+                      }
+                      else {
+                        null;
+                      }
                     },
                     child: const Text('Finish',
                         style: TextStyle(
