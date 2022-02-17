@@ -1,17 +1,17 @@
 import 'dart:async';
 
-import 'package:danger_zone_alert/circle_area/components/area_marker.dart';
-import 'package:danger_zone_alert/circle_area/components/bottom_tab_bar.dart';
-import 'package:danger_zone_alert/circle_area/components/error_snackbar.dart';
-import 'package:danger_zone_alert/circle_area/location/user_location.dart';
+import 'package:danger_zone_alert/google_map/components/area_marker.dart';
+import 'package:danger_zone_alert/google_map/components/bottom_tab_bar.dart';
+import 'package:danger_zone_alert/google_map/components/error_snackbar.dart';
+import 'package:danger_zone_alert/google_map/location/user_location.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import 'circle_area/area.dart';
-import 'circle_area/calculate_distance.dart';
-import 'circle_area/components/area_description_box.dart';
-import 'circle_area/components/area_rating_box.dart';
-import 'circle_area/generate_address.dart';
+import 'area.dart';
+import 'calculate_distance.dart';
+import 'components/area_description_box.dart';
+import 'components/area_rating_box.dart';
+import 'generate_address.dart';
 
 final LatLngBounds kMalaysiaBounds = LatLngBounds(
     southwest: const LatLng(0.773131415201, 100.085756871),
@@ -169,6 +169,6 @@ GPS:
 
 
 Circle:
-* As long as the user click within the circle_area, the simple dialog box will display with different address corresponding to the latlng but comment and rating data is consider as one within the same circle_area
-* TODO: Create an algorithm to reposition the new circle_area so it wouldn't overlap with the existing one
+* As long as the user click within the google_map, the simple dialog box will display with different address corresponding to the latlng but comment and rating data is consider as one within the same google_map
+* TODO: Create an algorithm to reposition the new google_map so it wouldn't overlap with the existing one
 * */

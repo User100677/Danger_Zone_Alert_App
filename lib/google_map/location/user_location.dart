@@ -4,8 +4,8 @@ import 'package:danger_zone_alert/services/geolocator_service.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../../google_map.dart';
 import '../components/error_snackbar.dart';
+import '../google_map.dart';
 
 class UserLocation {
   final GeolocatorService _geolocatorService = GeolocatorService();

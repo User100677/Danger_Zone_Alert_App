@@ -64,11 +64,11 @@ class _RatingQuestionsListState extends State<RatingQuestionsList> {
   ];
 
   final questionsTitle = [
-    '1. Is the current circle_area well lit by the street lights?',
-    '2. What is the amount of traffic in the current circle_area? (amount of human and vehicle passing through the circle_area)',
-    '3. What is the rate of occurrence of malicious activities in this circle_area? (e.g. robbery, theft, etc.)',
-    '4. What is the rate of occurrence of gang activities in this circle_area?',
-    '5. How often does traffic accidents happen in this circle_area?'
+    '1. Is the current area well lit by the street lights?',
+    '2. What is the amount of traffic in the current area? (amount of human and vehicle passing through the area)',
+    '3. What is the rate of occurrence of malicious activities in this area? (e.g. robbery, theft, etc.)',
+    '4. What is the rate of occurrence of gang activities in this area?',
+    '5. How often does traffic accidents happen in this area?'
   ];
   final answerOptions = [
     'No',
@@ -845,18 +845,23 @@ class _RatingQuestionsListState extends State<RatingQuestionsList> {
                       if (valueOption.contains(true)) {
                         // replace this print statement with sending data to database
                         //print((rate1 + rate2 + rate3 + rate4 + rate5) / 5);
-                        double rate = (rate1 + rate2 + rate3+ rate4+ rate5)/5;
+                        double rate =
+                            (rate1 + rate2 + rate3 + rate4 + rate5) / 5;
                         showDialog(
                             context: context,
                             builder: (context) {
                               return Dialog(
-                                  shape: const BeveledRectangleBorder(side: BorderSide(color: Colors.black)),
-                                  child: Text('The rating given to this specific area is $rate', style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold), textAlign: TextAlign.center,)
-                              );
-                            }
-                          );
-                      }
-                      else {
+                                  shape: const BeveledRectangleBorder(
+                                      side: BorderSide(color: Colors.black)),
+                                  child: Text(
+                                    'The rating given to this specific area is $rate',
+                                    style: const TextStyle(
+                                        fontSize: 30,
+                                        fontWeight: FontWeight.bold),
+                                    textAlign: TextAlign.center,
+                                  ));
+                            });
+                      } else {
                         null;
                       }
                     },

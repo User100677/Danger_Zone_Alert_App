@@ -1,4 +1,4 @@
-import 'package:danger_zone_alert/circle_area/components/error_snackbar.dart';
+import 'package:danger_zone_alert/google_map/components/error_snackbar.dart';
 import 'package:geolocator/geolocator.dart';
 
 class GeolocatorService {
