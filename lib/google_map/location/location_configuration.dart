@@ -7,45 +7,34 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../components/error_snackbar.dart';
 import '../google_map.dart';
 
-class UserLocation {
+class LocationConfiguration {
   final GeolocatorService _geolocatorService = GeolocatorService();
-
-  CameraPosition? _currentPosition;
   bool _isGPSWithinMY = false;
 
   // User location validation
-  Future getInitialPosition(
-      {required context, required googleMapController}) async {
+  Future<LatLng?> getInitialPosition({required context}) async {
     Position position = await _geolocatorService.determinePosition(context);
     LatLng latLng = LatLng(position.latitude, position.longitude);
 
     if (kMalaysiaBounds.contains(latLng)) {
       _isGPSWithinMY = true;
 
-      _navigateToLocation(latLng, googleMapController);
-      _updatePosition();
+      return latLng;
     } else {
       _isGPSWithinMY = false;
       errorSnackBar(context, 'Location outside Malaysia is not supported.');
     }
+    return null;
   }
 
   // Navigate to user location
-  _navigateToLocation(LatLng latLng, googleMapController) async {
-    _currentPosition = CameraPosition(target: latLng, zoom: 18);
-
+  navigateToLocation(LatLng latLng, googleMapController) async {
     final GoogleMapController controller = await googleMapController.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(_currentPosition!));
+    controller.animateCamera(CameraUpdate.newCameraPosition(
+        CameraPosition(target: latLng, zoom: 18)));
   }
 
-  _updatePosition() async {
-    _geolocatorService.getCurrentLocation().listen((Position position) {
-      _currentPosition = CameraPosition(
-          target: LatLng(position.latitude, position.longitude), zoom: 18);
-    });
-  }
-
-  get currentPosition => _currentPosition;
+  GeolocatorService get geolocatorService => _geolocatorService;
 
   get isGPSWithinMY => _isGPSWithinMY;
 }
