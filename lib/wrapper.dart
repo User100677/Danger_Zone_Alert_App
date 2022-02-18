@@ -2,7 +2,7 @@ import 'package:danger_zone_alert/authentication/screens/welcome.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'google_map.dart';
+import 'google_map/google_map.dart';
 import 'models/user.dart';
 
 /* This widget decide whether to load WelcomeScreen widget or GoogleMapScreen widget

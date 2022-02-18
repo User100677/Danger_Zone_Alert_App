@@ -1,17 +1,19 @@
 import 'dart:async';
 
-import 'package:danger_zone_alert/circle_area/components/area_marker.dart';
-import 'package:danger_zone_alert/circle_area/components/bottom_tab_bar.dart';
-import 'package:danger_zone_alert/circle_area/components/error_snackbar.dart';
-import 'package:danger_zone_alert/circle_area/location/user_location.dart';
+import 'package:danger_zone_alert/google_map/components/area_marker.dart';
+import 'package:danger_zone_alert/google_map/components/bottom_tab_bar.dart';
+import 'package:danger_zone_alert/google_map/components/error_snackbar.dart';
+import 'package:danger_zone_alert/google_map/location/location_configuration.dart';
+import 'package:danger_zone_alert/models/user.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 
-import 'circle_area/area.dart';
-import 'circle_area/calculate_distance.dart';
-import 'circle_area/components/area_description_box.dart';
-import 'circle_area/components/area_rating_box.dart';
-import 'circle_area/generate_address.dart';
+import 'area.dart';
+import 'calculate_distance.dart';
+import 'components/area_description_box.dart';
+import 'components/area_rating_box.dart';
+import 'generate_address.dart';
 
 final LatLngBounds kMalaysiaBounds = LatLngBounds(
     southwest: const LatLng(0.773131415201, 100.085756871),
@@ -34,10 +36,10 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   final Completer<GoogleMapController> _googleMapController = Completer();
 
   // Instantiate helper class
-  GenerateAddress generateAddress = GenerateAddress();
   Area area = Area();
   AreaMarker areaMarker = AreaMarker();
-  UserLocation userLocation = UserLocation();
+  GenerateAddress generateAddress = GenerateAddress();
+  LocationConfiguration locationConfiguration = LocationConfiguration();
 
   final CameraPosition kInitialCameraPosition = const CameraPosition(
       target: LatLng(4.445446291086245, 102.04430367797612), zoom: 7);
@@ -45,14 +47,6 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   @override
   void initState() {
     super.initState();
-  }
-
-  void _onMapCreated(GoogleMapController controller) {
-    setState(() {
-      _googleMapController.complete(controller);
-      userLocation.getInitialPosition(
-          context: context, googleMapController: _googleMapController);
-    });
   }
 
   // Callback method to clear markers
@@ -64,6 +58,28 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserModel?>(context);
+
+    void _onMapCreated(GoogleMapController controller) async {
+      _googleMapController.complete(controller);
+      // set initial user position
+      user?.setLatLng(
+          await locationConfiguration.getInitialPosition(context: context));
+
+      // Navigate to user location if its within Malaysia
+      if (locationConfiguration.isGPSWithinMY) {
+        setState(() {
+          locationConfiguration.navigateToLocation(
+              user?.latLng, _googleMapController);
+        });
+        locationConfiguration.geolocatorService
+            .getCurrentLocation()
+            .listen((position) {
+          user?.setLatLng(LatLng(position.latitude, position.longitude));
+        });
+      }
+    }
+
     return Scaffold(
       extendBody: true,
       body: SafeArea(
@@ -87,9 +103,8 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
                 // Get the description of the tapped position
                 var address =
                     await generateAddress.getAddress(latLng: tapLatLng);
-                print('Tap latLng: ' + tapLatLng.toString());
-                // print('Current user Location: ' +
-                //     geolocatorService.currentPosition.toString());
+                // print('Tap latLng: ' + tapLatLng.toString());
+                // print(user?.latLng);
 
                 if (address != 'Invalid') {
                   setState(
@@ -142,17 +157,14 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
             ),
             BottomTabBar(
               onPressed: () async {
-                var userPosition = userLocation.currentPosition;
-                final GoogleMapController controller =
-                    await _googleMapController.future;
+                LatLng? userPosition = user?.latLng;
 
-                // popup error notification if userPosition is null else navigate to user position
+                // Display error notification if userPosition is null else navigate to user position
                 if (userPosition == null) {
                   errorSnackBar(context, 'Navigation failed!');
                 } else {
-                  setState(() => controller.animateCamera(
-                      CameraUpdate.newCameraPosition(
-                          userLocation.currentPosition)));
+                  locationConfiguration.navigateToLocation(
+                      userPosition, _googleMapController);
                 }
               },
             ),
@@ -169,6 +181,6 @@ GPS:
 
 
 Circle:
-* As long as the user click within the circle_area, the simple dialog box will display with different address corresponding to the latlng but comment and rating data is consider as one within the same circle_area
-* TODO: Create an algorithm to reposition the new circle_area so it wouldn't overlap with the existing one
+* As long as the user click within the google_map, the simple dialog box will display with different address corresponding to the latlng but comment and rating data is consider as one within the same google_map
+* TODO: Create an algorithm to reposition the new google_map so it wouldn't overlap with the existing one
 * */
