@@ -11,7 +11,5 @@ class UserModel {
 
   get latLng => _latLng;
 
-  void setLatLng(LatLng? value) {
-    _latLng = value;
-  }
+  void setLatLng(LatLng? value) => _latLng = value;
 }

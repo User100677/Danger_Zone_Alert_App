@@ -23,7 +23,7 @@ class AreaMarker {
       ),
     );
 
-    // Re-center the screen corresponding to the latLng of the marker
+    // Re-center the screens corresponding to the latLng of the marker
     final GoogleMapController controller = await googleMapController.future;
     controller.animateCamera(CameraUpdate.newCameraPosition(
         CameraPosition(target: latLng, zoom: 18)));

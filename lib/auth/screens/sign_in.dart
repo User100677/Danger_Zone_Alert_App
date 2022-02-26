@@ -4,7 +4,7 @@ import 'package:danger_zone_alert/auth/widgets/button_divider.dart';
 import 'package:danger_zone_alert/auth/widgets/email_text_field.dart';
 import 'package:danger_zone_alert/auth/widgets/password_text_field.dart';
 import 'package:danger_zone_alert/services/auth.dart';
-import 'package:danger_zone_alert/shared/rounded_rectangle_button.dart';
+import 'package:danger_zone_alert/shared/widgets/rounded_rectangle_button.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
@@ -184,7 +184,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       pressedColor: Colors.lightBlueAccent,
                       textColor: Colors.grey,
                       onPressed: () =>
-                          Navigator.popAndPushNamed(context, Register.id),
+                          Navigator.popAndPushNamed(context, RegisterScreen.id),
                     ),
                   ],
                 ),

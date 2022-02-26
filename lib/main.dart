@@ -10,7 +10,8 @@ import 'package:provider/provider.dart';
 import 'auth/screens/register.dart';
 import 'auth/screens/sign_in.dart';
 import 'auth/screens/welcome.dart';
-import 'google_map/screen/google_map.dart';
+import 'blocs/application_bloc.dart';
+import 'google_map/screens/google_map.dart';
 import 'models/user.dart';
 
 void main() {
@@ -37,23 +38,26 @@ class MyApp extends StatelessWidget {
             print("Error");
           }
           if (snapshot.connectionState == ConnectionState.done) {
-            // The following line return the first screen of the app
+            // The following line return the first screens of the app
             return StreamProvider<UserModel?>.value(
               value: AuthService().user,
               initialData: null,
               catchError: null,
-              child: const Wrapper(),
+              child: ChangeNotifierProvider.value(
+                value: ApplicationBloc(context),
+                child: const Wrapper(),
+              ),
             );
           }
           return const CircularProgressIndicator();
         },
       ),
       routes: {
-        WelcomeScreen.id: (context) => WelcomeScreen(),
+        WelcomeScreen.id: (context) => const WelcomeScreen(),
         LoginScreen.id: (context) => const LoginScreen(),
         ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
-        Register.id: (context) => const Register(),
-        GoogleMapScreen.id: (context) => const GoogleMapScreen(),
+        RegisterScreen.id: (context) => const RegisterScreen(),
+        GoogleMapScreen.id: (context) => GoogleMapScreen(),
         RatingQuestionsList.id: (context) => const RatingQuestionsList(),
         Comment.id: (context) => Comment(),
       },

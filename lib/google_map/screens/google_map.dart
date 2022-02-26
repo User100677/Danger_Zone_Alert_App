@@ -1,28 +1,27 @@
 import 'dart:async';
 
-import 'package:danger_zone_alert/google_map/components/area_marker.dart';
-import 'package:danger_zone_alert/google_map/components/bottom_tab_bar.dart';
-import 'package:danger_zone_alert/google_map/components/error_snackbar.dart';
-import 'package:danger_zone_alert/google_map/location/location_configuration.dart';
+import 'package:danger_zone_alert/constants/app_constants.dart';
+import 'package:danger_zone_alert/google_map/utilities/location_configuration.dart';
+import 'package:danger_zone_alert/google_map/widgets/area_marker.dart';
+import 'package:danger_zone_alert/google_map/widgets/bottom_tab_bar.dart';
 import 'package:danger_zone_alert/models/user.dart';
+import 'package:danger_zone_alert/shared/widgets/error_snackbar.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
 import '../area.dart';
 import '../calculate_distance.dart';
-import '../components/area_description_box.dart';
-import '../components/area_rating_box.dart';
 import '../reverse_geocoding.dart';
-
-final LatLngBounds kMalaysiaBounds = LatLngBounds(
-    southwest: const LatLng(0.773131415201, 100.085756871),
-    northeast: const LatLng(6.92805288332, 119.181903925));
+import '../widgets/area_description_box.dart';
+import '../widgets/area_rating_box.dart';
 
 class GoogleMapScreen extends StatefulWidget {
   static String id = "google_map_screen";
+  Position? position;
 
-  const GoogleMapScreen({Key? key}) : super(key: key);
+  GoogleMapScreen({Key? key, this.position}) : super(key: key);
 
   @override
   _GoogleMapScreenState createState() => _GoogleMapScreenState();
@@ -41,9 +40,6 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   ReverseGeocoding reverseGeocoding = ReverseGeocoding();
   LocationConfiguration locationConfiguration = LocationConfiguration();
 
-  final CameraPosition kInitialCameraPosition = const CameraPosition(
-      target: LatLng(4.445446291086245, 102.04430367797612), zoom: 7);
-
   // Callback method to clear markers
   void boxCallback() {
     setState(() {
@@ -55,11 +51,14 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   Widget build(BuildContext context) {
     final user = Provider.of<UserModel?>(context);
 
+    // Validate and assign user location after initialization of Google Map
     void _onMapCreated(GoogleMapController controller) async {
       _googleMapController.complete(controller);
-      // set initial user position
-      user?.setLatLng(
-          await locationConfiguration.getInitialPosition(context: context));
+
+      // Set initial user position
+      user?.setLatLng(await locationConfiguration
+          .validateLocation(context: context, position: widget.position)
+          .catchError((e) => errorSnackBar(context, e)));
 
       // Navigate to user location if its within Malaysia
       if (locationConfiguration.isGPSWithinMY) {
@@ -173,9 +172,4 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
 /*
 GPS:
 - TODO: Notification when user enter a red circle?
-
-
-Circle:
-* As long as the user click within the google_map, the simple dialog box will display with different address corresponding to the latlng but comment and rating data is consider as one within the same google_map
-* TODO: Create an algorithm to reposition the new google_map so it wouldn't overlap with the existing one
-* */
+ */

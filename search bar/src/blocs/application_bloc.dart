@@ -26,17 +26,19 @@ class ApplicationBloc with ChangeNotifier {
   List<Place> placeResults;
   List<Marker> markers = List<Marker>();
 
-
   ApplicationBloc() {
     setCurrentLocation();
   }
 
-
   setCurrentLocation() async {
     currentLocation = await geoLocatorService.getCurrentLocation();
-    selectedLocationStatic = Place(name: null,
-      geometry: Geometry(location: Location(
-          lat: currentLocation.latitude, lng: currentLocation.longitude),),);
+    selectedLocationStatic = Place(
+      name: null,
+      geometry: Geometry(
+        location: Location(
+            lat: currentLocation.latitude, lng: currentLocation.longitude),
+      ),
+    );
     notifyListeners();
   }
 
@@ -44,7 +46,6 @@ class ApplicationBloc with ChangeNotifier {
     searchResults = await placesService.getAutocomplete(searchTerm);
     notifyListeners();
   }
-
 
   setSelectedLocation(String placeId) async {
     var sLocation = await placesService.getPlace(placeId);
@@ -72,14 +73,16 @@ class ApplicationBloc with ChangeNotifier {
     if (placeType != null) {
       var places = await placesService.getPlaces(
           selectedLocationStatic.geometry.location.lat,
-          selectedLocationStatic.geometry.location.lng, placeType);
-      markers= [];
+          selectedLocationStatic.geometry.location.lng,
+          placeType);
+      markers = [];
       if (places.length > 0) {
-        var newMarker = markerService.createMarkerFromPlace(places[0],false);
+        var newMarker = markerService.createMarkerFromPlace(places[0], false);
         markers.add(newMarker);
       }
 
-      var locationMarker = markerService.createMarkerFromPlace(selectedLocationStatic,true);
+      var locationMarker =
+          markerService.createMarkerFromPlace(selectedLocationStatic, true);
       markers.add(locationMarker);
 
       var _bounds = markerService.bounds(Set<Marker>.of(markers));
@@ -89,11 +92,10 @@ class ApplicationBloc with ChangeNotifier {
     }
   }
 
-
-
-@override
-void dispose() {
-  selectedLocation.close();
-  bounds.close();
-  super.dispose();
-}}
+  @override
+  void dispose() {
+    selectedLocation.close();
+    bounds.close();
+    super.dispose();
+  }
+}
