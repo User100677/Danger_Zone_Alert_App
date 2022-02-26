@@ -1,4 +1,4 @@
-import 'package:danger_zone_alert/authentication/screens/forgot_password.dart';
+import 'package:danger_zone_alert/auth/screens/forgot_password.dart';
 import 'package:danger_zone_alert/comment/comment.dart';
 import 'package:danger_zone_alert/rating/new_rating.dart';
 import 'package:danger_zone_alert/services/auth.dart';
@@ -7,17 +7,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'authentication/screens/register.dart';
-import 'authentication/screens/sign_in.dart';
-import 'authentication/screens/welcome.dart';
-import 'google_map/google_map.dart';
+import 'auth/screens/register.dart';
+import 'auth/screens/sign_in.dart';
+import 'auth/screens/welcome.dart';
+import 'google_map/screen/google_map.dart';
 import 'models/user.dart';
-
-/*
-Firebase Account Credentials:
-Email: DangerZoneAlertGroup5a@gmail.com
-Password: group5asegp
-*/
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -55,14 +49,20 @@ class MyApp extends StatelessWidget {
         },
       ),
       routes: {
-        GoogleMapScreen.id: (context) => const GoogleMapScreen(),
         WelcomeScreen.id: (context) => WelcomeScreen(),
         LoginScreen.id: (context) => const LoginScreen(),
         ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
         Register.id: (context) => const Register(),
-        Comment.id: (context) => Comment(),
+        GoogleMapScreen.id: (context) => const GoogleMapScreen(),
         RatingQuestionsList.id: (context) => const RatingQuestionsList(),
+        Comment.id: (context) => Comment(),
       },
     );
   }
 }
+
+/*
+Firebase Account Credentials:
+Email: DangerZoneAlertGroup5a@gmail.com
+Password: group5asegp
+*/

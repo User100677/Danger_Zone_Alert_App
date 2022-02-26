@@ -15,9 +15,6 @@ class Area {
         strokeWidth: 0,
         fillColor: const Color.fromRGBO(255, 0, 0, .5),
         consumeTapEvents: false,
-        // onTap: () {
-        //  print(tappedPoint);
-        // },
       ),
     );
   }

@@ -1,5 +1,5 @@
-import 'package:danger_zone_alert/authentication/components/title_text.dart';
-import 'package:danger_zone_alert/authentication/screens/register.dart';
+import 'package:danger_zone_alert/auth/screens/register.dart';
+import 'package:danger_zone_alert/auth/widgets/title_text.dart';
 import 'package:danger_zone_alert/services/geolocator_service.dart';
 import 'package:danger_zone_alert/shared/rounded_rectangle_button.dart';
 import 'package:flutter/material.dart';

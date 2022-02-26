@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 
-class GenerateAddress {
+class ReverseGeocoding {
   Future<String> getAddress({@required latLng}) async {
     List<Placemark> placeMark = await placemarkFromCoordinates(
         latLng.latitude, latLng.longitude,

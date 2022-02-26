@@ -9,11 +9,11 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
-import 'area.dart';
-import 'calculate_distance.dart';
-import 'components/area_description_box.dart';
-import 'components/area_rating_box.dart';
-import 'generate_address.dart';
+import '../area.dart';
+import '../calculate_distance.dart';
+import '../components/area_description_box.dart';
+import '../components/area_rating_box.dart';
+import '../reverse_geocoding.dart';
 
 final LatLngBounds kMalaysiaBounds = LatLngBounds(
     southwest: const LatLng(0.773131415201, 100.085756871),
@@ -38,16 +38,11 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   // Instantiate helper class
   Area area = Area();
   AreaMarker areaMarker = AreaMarker();
-  GenerateAddress generateAddress = GenerateAddress();
+  ReverseGeocoding reverseGeocoding = ReverseGeocoding();
   LocationConfiguration locationConfiguration = LocationConfiguration();
 
   final CameraPosition kInitialCameraPosition = const CameraPosition(
       target: LatLng(4.445446291086245, 102.04430367797612), zoom: 7);
-
-  @override
-  void initState() {
-    super.initState();
-  }
 
   // Callback method to clear markers
   void boxCallback() {
@@ -102,7 +97,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
               onTap: (tapLatLng) async {
                 // Get the description of the tapped position
                 var address =
-                    await generateAddress.getAddress(latLng: tapLatLng);
+                    await reverseGeocoding.getAddress(latLng: tapLatLng);
                 // print('Tap latLng: ' + tapLatLng.toString());
                 // print(user?.latLng);
 

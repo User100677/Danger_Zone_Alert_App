@@ -5,7 +5,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../components/error_snackbar.dart';
-import '../google_map.dart';
+import '../screen/google_map.dart';
 
 class LocationConfiguration {
   final GeolocatorService _geolocatorService = GeolocatorService();
