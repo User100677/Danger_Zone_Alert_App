@@ -1,12 +1,14 @@
 import 'dart:async';
 
 import 'package:danger_zone_alert/constants/app_constants.dart';
+import 'package:danger_zone_alert/google_map/utilities/area_notification.dart';
 import 'package:danger_zone_alert/google_map/utilities/location_configuration.dart';
 import 'package:danger_zone_alert/google_map/widgets/area_marker.dart';
 import 'package:danger_zone_alert/google_map/widgets/bottom_tab_bar.dart';
 import 'package:danger_zone_alert/models/user.dart';
 import 'package:danger_zone_alert/shared/widgets/error_snackbar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -32,6 +34,7 @@ class GoogleMapScreen extends StatefulWidget {
 }
 
 class _GoogleMapScreenState extends State<GoogleMapScreen> {
+  final notifications = FlutterLocalNotificationsPlugin();
   final Completer<GoogleMapController> _googleMapController = Completer();
 
   // Instantiate helper class
@@ -39,6 +42,18 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   AreaMarker areaMarker = AreaMarker();
   ReverseGeocoding reverseGeocoding = ReverseGeocoding();
   LocationConfiguration locationConfiguration = LocationConfiguration();
+
+  @override
+  void initState() {
+    super.initState();
+
+    const settingsAndroid = AndroidInitializationSettings('app_icon');
+    final settingsIOS = IOSInitializationSettings(
+        onDidReceiveLocalNotification: (id, title, body, payload) => null);
+
+    notifications.initialize(
+        InitializationSettings(android: settingsAndroid, iOS: settingsIOS));
+  }
 
   // Callback method to clear markers
   void boxCallback() {
@@ -50,17 +65,31 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserModel?>(context);
+    bool isUserInCircle = false;
 
-    // Validate and assign user location after initialization of Google Map
-    void _onMapCreated(GoogleMapController controller) async {
-      _googleMapController.complete(controller);
+    // Contain the logic of notification alert using user GPS
+    void _notificationLogic() {
+      if (area.circles.isNotEmpty) {
+        for (Circle circle in area.circles) {
+          double userDistance = calculateDistance(circle.center, user?.latLng);
 
-      // Set initial user position
-      user?.setLatLng(await locationConfiguration
-          .validateLocation(context: context, position: widget.position)
-          .catchError((e) => errorSnackBar(context, e)));
+          if (area.isWithinCircle(userDistance) && isUserInCircle == false) {
+            isUserInCircle = true;
+            showOngoingNotification(notifications,
+                title: 'You entered a Red Zone',
+                body: 'Stay conscious and beware of your surrounding.');
+            break;
+          }
 
-      // Navigate to user location if its within Malaysia
+          if (!area.isWithinCircle(userDistance)) {
+            isUserInCircle = false;
+          }
+        }
+      }
+    }
+
+    // Contain the logic of user GPS
+    void _locationLogic() {
       if (locationConfiguration.isGPSWithinMY) {
         setState(() {
           locationConfiguration.navigateToLocation(
@@ -70,8 +99,22 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
             .getCurrentLocation()
             .listen((position) {
           user?.setLatLng(LatLng(position.latitude, position.longitude));
+
+          _notificationLogic();
         });
       }
+    }
+
+    // Called when the google map is created
+    void _onMapCreated(GoogleMapController controller) async {
+      _googleMapController.complete(controller);
+
+      // Set initial user position
+      user?.setLatLng(await locationConfiguration
+          .validateLocation(context: context, position: widget.position)
+          .catchError((e) => errorSnackBar(context, e)));
+
+      _locationLogic();
     }
 
     return Scaffold(
@@ -97,8 +140,6 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
                 // Get the description of the tapped position
                 var address =
                     await reverseGeocoding.getAddress(latLng: tapLatLng);
-                // print('Tap latLng: ' + tapLatLng.toString());
-                // print(user?.latLng);
 
                 if (address != 'Invalid') {
                   setState(
@@ -168,8 +209,3 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
     );
   }
 }
-
-/*
-GPS:
-- TODO: Notification when user enter a red circle?
- */
