@@ -51,6 +51,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
     final settingsIOS = IOSInitializationSettings(
         onDidReceiveLocalNotification: (id, title, body, payload) => null);
 
+    // initialize local notifications
     notifications.initialize(
         InitializationSettings(android: settingsAndroid, iOS: settingsIOS));
   }
@@ -76,14 +77,11 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
           if (area.isWithinCircle(userDistance) && isUserInCircle == false) {
             isUserInCircle = true;
             showOngoingNotification(notifications,
-                title: 'You entered a Red Zone',
-                body: 'Stay conscious and beware of your surrounding.');
+                title: 'You entered a Red Zone', body: 'Stay cautious!');
             break;
           }
 
-          if (!area.isWithinCircle(userDistance)) {
-            isUserInCircle = false;
-          }
+          !area.isWithinCircle(userDistance) ? isUserInCircle = false : null;
         }
       }
     }

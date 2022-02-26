@@ -1,6 +1,5 @@
-import 'dart:ui';
-
 import 'package:danger_zone_alert/comment/comment.dart';
+import 'package:danger_zone_alert/constants/app_constants.dart';
 import 'package:danger_zone_alert/rating/new_rating.dart';
 import 'package:danger_zone_alert/shared/widgets/rounded_rectangle_button.dart';
 import 'package:flutter/material.dart';
@@ -24,9 +23,6 @@ class AreaRatingBox extends StatelessWidget {
   final locationTextColor = const Color(0xff6E7CA8);
   final iconColor = const Color(0xffAAB1C9);
   final containerButtonColor = const Color(0xffF2F4F5);
-  final buttonColor = const Color(0xff367CFF);
-  final buttonOutlineColor = const Color(0xff367CFF);
-  final pressedColor = Colors.blue;
   final textColor = Colors.white;
 
   AreaRatingBox(
@@ -141,9 +137,7 @@ class AreaRatingBox extends StatelessWidget {
                     Expanded(
                       child: RoundedRectangleButton(
                         buttonText: 'Rate',
-                        buttonColor: buttonColor,
-                        buttonOutlineColor: buttonOutlineColor,
-                        pressedColor: pressedColor,
+                        buttonStyle: kBlueButtonStyle,
                         textColor: textColor,
                         onPressed: () {
                           Navigator.popAndPushNamed(
@@ -159,9 +153,7 @@ class AreaRatingBox extends StatelessWidget {
                     Expanded(
                       child: RoundedRectangleButton(
                         buttonText: 'Comment',
-                        buttonColor: buttonColor,
-                        buttonOutlineColor: buttonOutlineColor,
-                        pressedColor: pressedColor,
+                        buttonStyle: kBlueButtonStyle,
                         textColor: textColor,
                         onPressed: () {
                           Navigator.popAndPushNamed(context, Comment.id);
@@ -180,6 +172,3 @@ class AreaRatingBox extends StatelessWidget {
     );
   }
 }
-// Icon color: 808CB3
-// Shaded color: F2F4F5
-// Button color: 367CFF

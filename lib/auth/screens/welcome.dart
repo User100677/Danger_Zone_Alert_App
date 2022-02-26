@@ -1,5 +1,6 @@
 import 'package:danger_zone_alert/auth/screens/register.dart';
 import 'package:danger_zone_alert/auth/widgets/title_text.dart';
+import 'package:danger_zone_alert/constants/app_constants.dart';
 import 'package:danger_zone_alert/shared/widgets/rounded_rectangle_button.dart';
 import 'package:flutter/material.dart';
 
@@ -38,17 +39,13 @@ class WelcomeScreen extends StatelessWidget {
               children: <Widget>[
                 RoundedRectangleButton(
                   buttonText: 'Log in',
-                  buttonColor: Colors.white,
-                  buttonOutlineColor: Colors.white,
-                  pressedColor: Colors.lightBlueAccent,
+                  buttonStyle: kWhiteButtonStyle,
                   textColor: Colors.lightBlueAccent,
                   onPressed: () => Navigator.pushNamed(context, LoginScreen.id),
                 ),
                 RoundedRectangleButton(
                   buttonText: 'Sign up',
-                  buttonColor: Colors.lightBlueAccent,
-                  buttonOutlineColor: Colors.white,
-                  pressedColor: Colors.white,
+                  buttonStyle: kLightBlueButtonStyle,
                   textColor: Colors.white,
                   onPressed: () =>
                       Navigator.pushNamed(context, RegisterScreen.id),

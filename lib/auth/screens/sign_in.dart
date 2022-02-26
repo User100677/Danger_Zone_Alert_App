@@ -3,6 +3,7 @@ import 'package:danger_zone_alert/auth/screens/register.dart';
 import 'package:danger_zone_alert/auth/widgets/button_divider.dart';
 import 'package:danger_zone_alert/auth/widgets/email_text_field.dart';
 import 'package:danger_zone_alert/auth/widgets/password_text_field.dart';
+import 'package:danger_zone_alert/constants/app_constants.dart';
 import 'package:danger_zone_alert/services/auth.dart';
 import 'package:danger_zone_alert/shared/widgets/rounded_rectangle_button.dart';
 import 'package:flutter/material.dart';
@@ -147,9 +148,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     // Login button
                     RoundedRectangleButton(
                       buttonText: 'Log in',
-                      buttonColor: Colors.lightBlueAccent,
-                      buttonOutlineColor: Colors.lightBlueAccent,
-                      pressedColor: Colors.white,
+                      buttonStyle: kLightBlueButtonStyle,
                       textColor: Colors.white,
                       onPressed: () async {
                         String email = _emailController.text.trim();
@@ -176,12 +175,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       },
                     ),
                     const ButtonDivider(),
-                    // Signup button
+                    // Sign up button
                     RoundedRectangleButton(
                       buttonText: 'Sign up',
-                      buttonColor: Colors.white,
-                      buttonOutlineColor: Colors.grey,
-                      pressedColor: Colors.lightBlueAccent,
+                      buttonStyle: kWhiteButtonStyle,
                       textColor: Colors.grey,
                       onPressed: () =>
                           Navigator.popAndPushNamed(context, RegisterScreen.id),

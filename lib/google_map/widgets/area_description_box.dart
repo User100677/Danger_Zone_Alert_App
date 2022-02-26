@@ -1,4 +1,5 @@
 import 'package:danger_zone_alert/comment/comment.dart';
+import 'package:danger_zone_alert/constants/app_constants.dart';
 import 'package:danger_zone_alert/rating/new_rating.dart';
 import 'package:danger_zone_alert/shared/widgets/rounded_rectangle_button.dart';
 import 'package:flutter/material.dart';
@@ -16,9 +17,6 @@ class AreaDescriptionBox extends StatelessWidget {
   final locationTextColor = Colors.black;
   final iconColor = Colors.lightBlueAccent;
   final containerButtonColor = const Color(0xffF2F4F5);
-  final buttonColor = const Color(0xff367CFF);
-  final buttonOutlineColor = const Color(0xff367CFF);
-  final pressedColor = Colors.blue;
   final textColor = Colors.white;
 
   AreaDescriptionBox(
@@ -85,9 +83,7 @@ class AreaDescriptionBox extends StatelessWidget {
                     Expanded(
                       child: RoundedRectangleButton(
                         buttonText: 'Rate',
-                        buttonColor: buttonColor,
-                        buttonOutlineColor: buttonOutlineColor,
-                        pressedColor: pressedColor,
+                        buttonStyle: kBlueButtonStyle,
                         textColor: textColor,
                         onPressed: () {
                           area.addCircle(areaLatLng);
@@ -104,9 +100,7 @@ class AreaDescriptionBox extends StatelessWidget {
                     Expanded(
                       child: RoundedRectangleButton(
                         buttonText: 'Comment',
-                        buttonColor: buttonColor,
-                        buttonOutlineColor: buttonOutlineColor,
-                        pressedColor: pressedColor,
+                        buttonStyle: kBlueButtonStyle,
                         textColor: textColor,
                         onPressed: () {
                           area.addCircle(areaLatLng);
