@@ -1,10 +1,9 @@
 import 'package:danger_zone_alert/auth/screens/register.dart';
+import 'package:danger_zone_alert/auth/screens/sign_in.dart';
 import 'package:danger_zone_alert/auth/widgets/title_text.dart';
 import 'package:danger_zone_alert/constants/app_constants.dart';
 import 'package:danger_zone_alert/shared/widgets/rounded_rectangle_button.dart';
 import 'package:flutter/material.dart';
-
-import 'sign_in.dart';
 
 class WelcomeScreen extends StatelessWidget {
   static String id = "welcome_screen";

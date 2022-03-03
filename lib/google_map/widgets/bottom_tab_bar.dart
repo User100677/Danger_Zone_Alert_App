@@ -1,19 +1,28 @@
+import 'dart:async';
+
+import 'package:danger_zone_alert/google_map/util/camera_navigation.dart';
+import 'package:danger_zone_alert/models/user.dart';
 import 'package:danger_zone_alert/services/auth.dart';
+import 'package:danger_zone_alert/shared/widgets/error_snackbar.dart';
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 
 class BottomTabBar extends StatelessWidget {
-  Function() onPressed;
+  final Completer<GoogleMapController> googleMapController;
 
-  BottomTabBar({Key? key, required this.onPressed}) : super(key: key);
+  BottomTabBar({Key? key, required this.googleMapController}) : super(key: key);
 
   final AuthService _authService = AuthService();
-  double height = 60;
+  final double height = 60;
   final primaryColor = Colors.blueAccent;
   final secondaryColor = const Color(0xff818181);
   final backgroundColor = Colors.white;
 
   @override
   Widget build(BuildContext context) {
+    final user = Provider.of<UserModel?>(context);
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
@@ -35,7 +44,17 @@ class BottomTabBar extends StatelessWidget {
                     Icons.my_location_rounded,
                     color: Colors.white,
                   ),
-                  onPressed: onPressed,
+                  // onPressed: onPressed,
+                  onPressed: () async {
+                    LatLng? userPosition = user?.latLng;
+
+                    // Display error notification if userPosition is null else navigate to user position
+                    if (userPosition == null) {
+                      errorSnackBar(context, 'Navigation failed!');
+                    } else {
+                      navigateToLocation(userPosition, googleMapController);
+                    }
+                  },
                 ),
               ),
               SizedBox(
@@ -59,9 +78,7 @@ class BottomTabBar extends StatelessWidget {
                             title: const Text('Do you wish to log out?'),
                             actions: <Widget>[
                               TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
+                                  onPressed: () => Navigator.pop(context),
                                   child: const Text('No')),
                               TextButton(
                                   onPressed: () async {

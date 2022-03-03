@@ -1,29 +1,31 @@
 import 'dart:async';
 
 import 'package:danger_zone_alert/constants/app_constants.dart';
-import 'package:danger_zone_alert/google_map/utilities/area_notification.dart';
-import 'package:danger_zone_alert/google_map/utilities/location_configuration.dart';
+import 'package:danger_zone_alert/google_map/area.dart';
+import 'package:danger_zone_alert/google_map/calculate_distance.dart';
+import 'package:danger_zone_alert/google_map/location_validation.dart';
+import 'package:danger_zone_alert/google_map/reverse_geocoding.dart';
+import 'package:danger_zone_alert/google_map/util/area_notification.dart';
+import 'package:danger_zone_alert/google_map/util/camera_navigation.dart';
+import 'package:danger_zone_alert/google_map/widgets/area_description_box.dart';
 import 'package:danger_zone_alert/google_map/widgets/area_marker.dart';
+import 'package:danger_zone_alert/google_map/widgets/area_rating_box.dart';
 import 'package:danger_zone_alert/google_map/widgets/bottom_tab_bar.dart';
 import 'package:danger_zone_alert/models/user.dart';
+import 'package:danger_zone_alert/services/geolocator_service.dart';
 import 'package:danger_zone_alert/shared/widgets/error_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:provider/provider.dart';
-
-import '../area.dart';
-import '../calculate_distance.dart';
-import '../reverse_geocoding.dart';
-import '../widgets/area_description_box.dart';
-import '../widgets/area_rating_box.dart';
 
 class GoogleMapScreen extends StatefulWidget {
   static String id = "google_map_screen";
-  Position? position;
+  final Position? position;
 
-  GoogleMapScreen({Key? key, this.position}) : super(key: key);
+  const GoogleMapScreen({Key? key, this.position}) : super(key: key);
 
   @override
   _GoogleMapScreenState createState() => _GoogleMapScreenState();
@@ -40,8 +42,6 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   // Instantiate helper class
   Area area = Area();
   AreaMarker areaMarker = AreaMarker();
-  ReverseGeocoding reverseGeocoding = ReverseGeocoding();
-  LocationConfiguration locationConfiguration = LocationConfiguration();
 
   @override
   void initState() {
@@ -66,6 +66,24 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<UserModel?>(context);
+
+    // Main widget
+    return Scaffold(
+      extendBody: true,
+      body: SafeArea(
+        child: Stack(
+          children: <Widget>[
+            buildGoogleMap(context, user),
+            BottomTabBar(
+              googleMapController: _googleMapController,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildGoogleMap(BuildContext context, user) {
     bool isUserInCircle = false;
 
     // Contain the logic of notification alert using user GPS
@@ -86,16 +104,20 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
       }
     }
 
-    // Contain the logic of user GPS
-    void _locationLogic() {
-      if (locationConfiguration.isGPSWithinMY) {
-        setState(() {
-          locationConfiguration.navigateToLocation(
-              user?.latLng, _googleMapController);
-        });
-        locationConfiguration.geolocatorService
-            .getCurrentLocation()
-            .listen((position) {
+    // Called when the google map is created
+    void _onMapCreated(GoogleMapController controller) async {
+      _googleMapController.complete(controller);
+
+      // Set initial user position
+      user?.setLatLng(
+          await validateLocation(context: context, position: widget.position)
+              .catchError((e) => errorSnackBar(context, e)));
+
+      // Navigate and set stream for user location
+      if (user?.latLng != null) {
+        navigateToLocation(user?.latLng, _googleMapController);
+
+        GeolocatorService.getCurrentLocation().listen((position) {
           user?.setLatLng(LatLng(position.latitude, position.longitude));
 
           _notificationLogic();
@@ -103,107 +125,122 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
       }
     }
 
-    // Called when the google map is created
-    void _onMapCreated(GoogleMapController controller) async {
-      _googleMapController.complete(controller);
+    return GoogleMap(
+      onMapCreated: _onMapCreated,
+      minMaxZoomPreference: const MinMaxZoomPreference(7, 19),
+      initialCameraPosition: kInitialCameraPosition,
+      cameraTargetBounds: CameraTargetBounds(kMalaysiaBounds),
+      mapType: MapType.hybrid,
+      myLocationEnabled: true,
+      myLocationButtonEnabled: false,
+      compassEnabled: false,
+      mapToolbarEnabled: false,
+      trafficEnabled: false,
+      zoomControlsEnabled: false,
+      markers: Set.from(areaMarker.markers),
+      circles: Set.from(area.circles),
+      onTap: (tapLatLng) async {
+        // Get the description of the tapped position
+        var address = await getAddress(latLng: tapLatLng);
 
-      // Set initial user position
-      user?.setLatLng(await locationConfiguration
-          .validateLocation(context: context, position: widget.position)
-          .catchError((e) => errorSnackBar(context, e)));
+        if (address != 'Invalid') {
+          setState(
+            () {
+              bool isWithinAnyCircle = false;
 
-      _locationLogic();
-    }
+              areaMarker.createMarker(
+                  latLng: tapLatLng,
+                  placemark: address,
+                  googleMapController: _googleMapController);
 
-    return Scaffold(
-      extendBody: true,
-      body: SafeArea(
-        child: Stack(
-          children: <Widget>[
-            GoogleMap(
-              onMapCreated: _onMapCreated,
-              minMaxZoomPreference: const MinMaxZoomPreference(7, 19),
-              initialCameraPosition: kInitialCameraPosition,
-              cameraTargetBounds: CameraTargetBounds(kMalaysiaBounds),
-              mapType: MapType.hybrid,
-              myLocationEnabled: true,
-              myLocationButtonEnabled: false,
-              compassEnabled: false,
-              mapToolbarEnabled: false,
-              trafficEnabled: false,
-              zoomControlsEnabled: false,
-              markers: Set.from(areaMarker.markers),
-              circles: Set.from(area.circles),
-              onTap: (tapLatLng) async {
-                // Get the description of the tapped position
-                var address =
-                    await reverseGeocoding.getAddress(latLng: tapLatLng);
+              // Check if tapLatLng is within any circles
+              if (area.circles.isNotEmpty) {
+                for (Circle circle in area.circles) {
+                  double distance = calculateDistance(circle.center, tapLatLng);
 
-                if (address != 'Invalid') {
-                  setState(
-                    () {
-                      bool isWithinAnyCircle = false;
-
-                      areaMarker.createMarker(
-                          latLng: tapLatLng,
-                          placemark: address,
-                          googleMapController: _googleMapController);
-
-                      // Check if tapLatLng is within any circles
-                      if (area.circles.isNotEmpty) {
-                        for (Circle circle in area.circles) {
-                          double distance =
-                              calculateDistance(circle.center, tapLatLng);
-
-                          if (area.isWithinCircle(distance)) {
-                            showDialog(
-                              context: context,
-                              builder: (context) => AreaRatingBox(
-                                area: area,
-                                areaDescription: address,
-                                areaLatLng: tapLatLng,
-                                boxCallback: boxCallback,
-                              ),
-                            );
-                            isWithinAnyCircle = true;
-                            break;
-                          }
-                        }
-                      }
-
-                      if (!isWithinAnyCircle) {
-                        showDialog(
-                          context: context,
-                          builder: (context) => AreaDescriptionBox(
-                            area: area,
-                            areaDescription: address,
-                            areaLatLng: tapLatLng,
-                            boxCallback: boxCallback,
-                          ),
-                        );
-                        isWithinAnyCircle = false;
-                      }
-                    },
-                  );
+                  if (area.isWithinCircle(distance)) {
+                    showDialog(
+                      context: context,
+                      builder: (context) => AreaRatingBox(
+                        area: area,
+                        areaDescription: address,
+                        areaLatLng: tapLatLng,
+                        boxCallback: boxCallback,
+                      ),
+                    );
+                    isWithinAnyCircle = true;
+                    break;
+                  }
                 }
-              },
-            ),
-            BottomTabBar(
-              onPressed: () async {
-                LatLng? userPosition = user?.latLng;
+              }
 
-                // Display error notification if userPosition is null else navigate to user position
-                if (userPosition == null) {
-                  errorSnackBar(context, 'Navigation failed!');
-                } else {
-                  locationConfiguration.navigateToLocation(
-                      userPosition, _googleMapController);
-                }
-              },
-            ),
-          ],
+              if (!isWithinAnyCircle) {
+                showDialog(
+                  context: context,
+                  builder: (context) => AreaDescriptionBox(
+                    area: area,
+                    areaDescription: address,
+                    areaLatLng: tapLatLng,
+                    boxCallback: boxCallback,
+                  ),
+                );
+                isWithinAnyCircle = false;
+              }
+            },
+          );
+        }
+      },
+    );
+  }
+
+  // Floating search bar
+  Widget buildFloatingSearchBar() {
+    final isPortrait =
+        MediaQuery.of(context).orientation == Orientation.portrait;
+
+    return FloatingSearchBar(
+      hint: 'Search...',
+      scrollPadding: const EdgeInsets.only(top: 16, bottom: 56),
+      transitionDuration: const Duration(milliseconds: 800),
+      transitionCurve: Curves.easeInOut,
+      physics: const BouncingScrollPhysics(),
+      axisAlignment: isPortrait ? 0.0 : -1.0,
+      openAxisAlignment: 0.0,
+      width: isPortrait ? 600 : 500,
+      debounceDelay: const Duration(milliseconds: 500),
+      onQueryChanged: (query) {
+        // Call your model, bloc, controller here.
+      },
+      // Specify a custom transition to be used for
+      // animating between opened and closed stated.
+      transition: CircularFloatingSearchBarTransition(),
+      actions: [
+        FloatingSearchBarAction(
+          showIfOpened: false,
+          child: CircularButton(
+            icon: const Icon(Icons.place),
+            onPressed: () {},
+          ),
         ),
-      ),
+        FloatingSearchBarAction.searchToClear(
+          showIfClosed: false,
+        ),
+      ],
+      builder: (context, transition) {
+        return ClipRRect(
+          borderRadius: BorderRadius.circular(8),
+          child: Material(
+            color: Colors.white,
+            elevation: 4.0,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: Colors.accents.map((color) {
+                return Container(height: 112, color: color);
+              }).toList(),
+            ),
+          ),
+        );
+      },
     );
   }
 }

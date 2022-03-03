@@ -1,13 +1,11 @@
 import 'package:geolocator/geolocator.dart';
 
 class GeolocatorService {
-  final LocationSettings _locationSettings = const LocationSettings(
-      accuracy: LocationAccuracy.high, distanceFilter: 10);
-
-  bool isLoading = false;
+  static const LocationSettings _locationSettings =
+      LocationSettings(accuracy: LocationAccuracy.high, distanceFilter: 10);
 
   // Get user location with exception handling
-  Future<Position> getInitialLocation(context) async {
+  static Future<Position> getInitialLocation(context) async {
     LocationPermission permission;
     bool serviceEnabled;
 
@@ -35,9 +33,7 @@ class GeolocatorService {
   }
 
   // Stream update current user locations
-  Stream<Position> getCurrentLocation() {
+  static Stream<Position> getCurrentLocation() {
     return Geolocator.getPositionStream(locationSettings: _locationSettings);
   }
-
-  bool getIsLoading() => isLoading;
 }

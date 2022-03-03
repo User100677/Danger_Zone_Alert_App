@@ -26,7 +26,7 @@ class Wrapper extends StatelessWidget {
             builder: (context, provider, child) => (provider.position == null)
                 ? const Loading()
                 : (provider.position is String)
-                    ? GoogleMapScreen()
+                    ? const GoogleMapScreen()
                     : GoogleMapScreen(position: provider.position),
           );
   }
