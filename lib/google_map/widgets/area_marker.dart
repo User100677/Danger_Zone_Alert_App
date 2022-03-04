@@ -1,14 +1,12 @@
 import 'dart:ui';
 
+import 'package:danger_zone_alert/google_map/util/camera_navigation.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class AreaMarker {
   final List<Marker> _markers = [];
 
-  createMarker(
-      {required latLng,
-      required placemark,
-      required googleMapController}) async {
+  createMarker(latLng, placemark, googleMapController) async {
     _markers.clear();
 
     _markers.add(
@@ -24,9 +22,7 @@ class AreaMarker {
     );
 
     // Re-center the screens corresponding to the latLng of the marker
-    final GoogleMapController controller = await googleMapController.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(
-        CameraPosition(target: latLng, zoom: 18)));
+    navigateToLocation(latLng, googleMapController);
   }
 
   List<Marker> get markers => _markers;

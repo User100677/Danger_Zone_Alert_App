@@ -1,39 +1,32 @@
+import 'package:danger_zone_alert/auth/screens/sign_in.dart';
 import 'package:danger_zone_alert/auth/widgets/button_divider.dart';
 import 'package:danger_zone_alert/auth/widgets/email_text_field.dart';
 import 'package:danger_zone_alert/auth/widgets/password_text_field.dart';
 import 'package:danger_zone_alert/constants/app_constants.dart';
 import 'package:danger_zone_alert/services/auth.dart';
 import 'package:danger_zone_alert/shared/widgets/rounded_rectangle_button.dart';
+import 'package:danger_zone_alert/widget_view/widget_view.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
-
-import 'sign_in.dart';
 
 class RegisterScreen extends StatefulWidget {
   static String id = "register_screen";
   const RegisterScreen({Key? key}) : super(key: key);
 
   @override
-  _RegisterScreenState createState() => _RegisterScreenState();
+  _RegisterScreenController createState() => _RegisterScreenController();
 }
 
-class _RegisterScreenState extends State<RegisterScreen> {
+// Register Screen's WidgetView with sign up logic
+class _RegisterScreenController extends State<RegisterScreen> {
   final AuthService _authService = AuthService();
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _reenterPasswordController = TextEditingController();
-  late bool _isLoading;
-  late bool _isEmailIncorrect;
-  late bool _isPasswordIncorrect;
-
-  @override
-  void initState() {
-    super.initState();
-    _isLoading = false;
-    _isEmailIncorrect = false;
-    _isPasswordIncorrect = false;
-  }
+  bool _isLoading = false;
+  bool _isEmailIncorrect = false;
+  bool _isPasswordIncorrect = false;
 
   @override
   void dispose() {
@@ -43,12 +36,55 @@ class _RegisterScreenState extends State<RegisterScreen> {
     _reenterPasswordController.dispose();
   }
 
+  Future handleSignupPressed() async {
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
+    String reenterPassword = _reenterPasswordController.text.trim();
+
+    setState(() {
+      _isEmailIncorrect = false;
+      _isPasswordIncorrect = false;
+    });
+    if (_formKey.currentState!.validate()) {
+      setState(() => _isLoading = true);
+
+      if (password == reenterPassword) {
+        dynamic result = await _authService.registerWithEmailAndPassword(
+            email, reenterPassword);
+
+        if (result == null) {
+          setState(() {
+            _isEmailIncorrect = true;
+            _passwordController.clear();
+            _reenterPasswordController.clear();
+          });
+        } else {
+          await _authService.signInWithEmailAndPassword(email, reenterPassword);
+          Navigator.pop(context);
+        }
+      } else {
+        _isPasswordIncorrect = true;
+        _reenterPasswordController.clear();
+      }
+      setState(() => _isLoading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => _RegisterScreenView(this);
+}
+
+// Register Screen's View
+class _RegisterScreenView
+    extends WidgetView<RegisterScreen, _RegisterScreenController> {
+  const _RegisterScreenView(_RegisterScreenController state) : super(state);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.lightBlueAccent,
       resizeToAvoidBottomInset: false,
-      // AppBar with arrow back button
+// AppBar with arrow back button
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.lightBlueAccent,
@@ -61,13 +97,13 @@ class _RegisterScreenState extends State<RegisterScreen> {
           ),
         ),
       ),
-      // Loading Indicator
+// Loading Indicator
       body: ModalProgressHUD(
-        inAsyncCall: _isLoading,
+        inAsyncCall: state._isLoading,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-            // Title Text
+// Title Text
             Expanded(
               child: Container(
                 width: double.infinity,
@@ -91,7 +127,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
             ),
-            // A container containing the Divider, Email & Password text field as well as SignIn & SignUp buttons
+// A container containing the Divider, Email & Password text field as well as SignIn & SignUp buttons
             Container(
               padding: const EdgeInsets.only(
                 top: 16.0,
@@ -107,7 +143,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                 ),
               ),
               child: Form(
-                key: _formKey,
+                key: state._formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -115,66 +151,31 @@ class _RegisterScreenState extends State<RegisterScreen> {
                     Column(
                       children: <Widget>[
                         EmailTextField(
-                          emailController: _emailController,
-                          isEmailIncorrect: _isEmailIncorrect,
+                          emailController: state._emailController,
+                          isEmailIncorrect: state._isEmailIncorrect,
                           emailIncorrectText: 'Please supply a valid email',
                         ),
                       ],
                     ),
                     PasswordTextField(
-                      passwordController: _passwordController,
-                      isPasswordIncorrect: _isPasswordIncorrect,
+                      passwordController: state._passwordController,
+                      isPasswordIncorrect: state._isPasswordIncorrect,
                       passwordIncorrectText: "Password doesn't match",
                     ),
                     PasswordTextField(
-                      passwordController: _reenterPasswordController,
-                      isPasswordIncorrect: _isPasswordIncorrect,
+                      passwordController: state._reenterPasswordController,
+                      isPasswordIncorrect: state._isPasswordIncorrect,
                       passwordHintText: "Re-enter password",
                     ),
-                    // Signup button
+// Signup button
                     RoundedRectangleButton(
                       buttonText: 'Sign up',
                       buttonStyle: kLightBlueButtonStyle,
                       textColor: Colors.white,
-                      onPressed: () async {
-                        String email = _emailController.text.trim();
-                        String password = _passwordController.text.trim();
-                        String reenterPassword =
-                            _reenterPasswordController.text.trim();
-
-                        setState(() {
-                          _isEmailIncorrect = false;
-                          _isPasswordIncorrect = false;
-                        });
-                        if (_formKey.currentState!.validate()) {
-                          setState(() => _isLoading = true);
-
-                          if (password == reenterPassword) {
-                            dynamic result =
-                                await _authService.registerWithEmailAndPassword(
-                                    email, reenterPassword);
-
-                            if (result == null) {
-                              setState(() {
-                                _isEmailIncorrect = true;
-                                _passwordController.clear();
-                                _reenterPasswordController.clear();
-                              });
-                            } else {
-                              await _authService.signInWithEmailAndPassword(
-                                  email, reenterPassword);
-                              Navigator.pop(context);
-                            }
-                          } else {
-                            _isPasswordIncorrect = true;
-                            _reenterPasswordController.clear();
-                          }
-                          setState(() => _isLoading = false);
-                        }
-                      },
+                      onPressed: () => state.handleSignupPressed(),
                     ),
                     const ButtonDivider(),
-                    // Login button
+// Login button
                     RoundedRectangleButton(
                       buttonText: 'Log in',
                       buttonStyle: kWhiteButtonStyle,

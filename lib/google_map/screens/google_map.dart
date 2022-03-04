@@ -77,6 +77,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
             BottomTabBar(
               googleMapController: _googleMapController,
             ),
+            buildFloatingSearchBar(),
           ],
         ),
       ),
@@ -148,10 +149,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
             () {
               bool isWithinAnyCircle = false;
 
-              areaMarker.createMarker(
-                  latLng: tapLatLng,
-                  placemark: address,
-                  googleMapController: _googleMapController);
+              areaMarker.createMarker(tapLatLng, address, _googleMapController);
 
               // Check if tapLatLng is within any circles
               if (area.circles.isNotEmpty) {
@@ -193,6 +191,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
     );
   }
 
+  // TODO: Search Bar
   // Floating search bar
   Widget buildFloatingSearchBar() {
     final isPortrait =

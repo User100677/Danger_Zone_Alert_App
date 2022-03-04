@@ -1,4 +1,3 @@
-import 'package:danger_zone_alert/auth/screens/forgot_password.dart';
 import 'package:danger_zone_alert/auth/screens/register.dart';
 import 'package:danger_zone_alert/auth/widgets/button_divider.dart';
 import 'package:danger_zone_alert/auth/widgets/email_text_field.dart';
@@ -6,31 +5,28 @@ import 'package:danger_zone_alert/auth/widgets/password_text_field.dart';
 import 'package:danger_zone_alert/constants/app_constants.dart';
 import 'package:danger_zone_alert/services/auth.dart';
 import 'package:danger_zone_alert/shared/widgets/rounded_rectangle_button.dart';
+import 'package:danger_zone_alert/widget_view/widget_view.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
+
+import 'forgot_password.dart';
 
 class LoginScreen extends StatefulWidget {
   static String id = "login_screen";
   const LoginScreen({Key? key}) : super(key: key);
 
   @override
-  _LoginScreenState createState() => _LoginScreenState();
+  _LoginScreenController createState() => _LoginScreenController();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+// Sign In Screen's WidgetView with sign in logic
+class _LoginScreenController extends State<LoginScreen> {
   final AuthService _authService = AuthService();
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
-  late bool _isLoading;
-  late bool _isEmailIncorrect;
-
-  @override
-  void initState() {
-    super.initState();
-    _isLoading = false;
-    _isEmailIncorrect = false;
-  }
+  bool _isLoading = false;
+  bool _isEmailIncorrect = false;
 
   @override
   void dispose() {
@@ -38,6 +34,38 @@ class _LoginScreenState extends State<LoginScreen> {
     _emailController.dispose();
     _passwordController.dispose();
   }
+
+  Future handleLoginPressed() async {
+    String email = _emailController.text.trim();
+    String password = _passwordController.text.trim();
+
+    setState(() => _isEmailIncorrect = false);
+
+    if (_formKey.currentState!.validate()) {
+      setState(() => _isLoading = true);
+
+      dynamic result =
+          await _authService.signInWithEmailAndPassword(email, password);
+
+      if (result == null) {
+        setState(() {
+          _isEmailIncorrect = true;
+          _passwordController.clear();
+        });
+      } else {
+        Navigator.pop(context);
+      }
+      setState(() => _isLoading = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => _LoginScreenView(this);
+}
+
+// Sign In Screen's View
+class _LoginScreenView extends WidgetView<LoginScreen, _LoginScreenController> {
+  const _LoginScreenView(_LoginScreenController state) : super(state);
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +87,7 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
       // Loading Indicator
       body: ModalProgressHUD(
-        inAsyncCall: _isLoading,
+        inAsyncCall: state._isLoading,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
@@ -99,18 +127,18 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
               ),
               child: Form(
-                key: _formKey,
+                key: state._formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     EmailTextField(
-                      emailController: _emailController,
-                      isEmailIncorrect: _isEmailIncorrect,
+                      emailController: state._emailController,
+                      isEmailIncorrect: state._isEmailIncorrect,
                       emailIncorrectText: "Incorrect email or password",
                     ),
                     PasswordTextField(
-                      passwordController: _passwordController,
+                      passwordController: state._passwordController,
                     ),
                     // Forgot password button
                     Row(
@@ -150,29 +178,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       buttonText: 'Log in',
                       buttonStyle: kLightBlueButtonStyle,
                       textColor: Colors.white,
-                      onPressed: () async {
-                        String email = _emailController.text.trim();
-                        String password = _passwordController.text.trim();
-
-                        setState(() => _isEmailIncorrect = false);
-
-                        if (_formKey.currentState!.validate()) {
-                          setState(() => _isLoading = true);
-
-                          dynamic result = await _authService
-                              .signInWithEmailAndPassword(email, password);
-
-                          if (result == null) {
-                            setState(() {
-                              _isEmailIncorrect = true;
-                              _passwordController.clear();
-                            });
-                          } else {
-                            Navigator.pop(context);
-                          }
-                          setState(() => _isLoading = false);
-                        }
-                      },
+                      onPressed: () => state.handleLoginPressed(),
                     ),
                     const ButtonDivider(),
                     // Sign up button

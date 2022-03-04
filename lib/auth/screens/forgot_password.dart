@@ -2,6 +2,7 @@ import 'package:danger_zone_alert/auth/widgets/email_text_field.dart';
 import 'package:danger_zone_alert/constants/app_constants.dart';
 import 'package:danger_zone_alert/services/auth.dart';
 import 'package:danger_zone_alert/shared/widgets/rounded_rectangle_button.dart';
+import 'package:danger_zone_alert/widget_view/widget_view.dart';
 import 'package:flutter/material.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
@@ -9,20 +10,16 @@ class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({Key? key}) : super(key: key);
 
   @override
-  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
+  _ForgotPasswordScreenController createState() =>
+      _ForgotPasswordScreenController();
 }
 
-class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
+// Forgot Password Screen's WidgetView with reset password logic
+class _ForgotPasswordScreenController extends State<ForgotPasswordScreen> {
   final AuthService _authService = AuthService();
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
-  late bool _isEmailIncorrect;
-
-  @override
-  void initState() {
-    super.initState();
-    _isEmailIncorrect = false;
-  }
+  bool _isEmailIncorrect = false;
 
   @override
   void dispose() {
@@ -30,12 +27,39 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     _emailController.dispose();
   }
 
+  Future handleResetPasswordPressed() async {
+    String email = _emailController.text.trim();
+
+    setState(() => _isEmailIncorrect = false);
+
+    if (_formKey.currentState!.validate()) {
+      dynamic result = await _authService.sendPasswordResetEmail(email);
+
+      if (result == null) {
+        setState(() {
+          _isEmailIncorrect = true;
+        });
+      } else {
+        Navigator.pop(context);
+      }
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => _ForgotPasswordScreenView(this);
+}
+
+// Forgot Password's Screen's View
+class _ForgotPasswordScreenView
+    extends WidgetView<ForgotPasswordScreen, _ForgotPasswordScreenController> {
+  const _ForgotPasswordScreenView(_ForgotPasswordScreenController state)
+      : super(state);
+
   @override
   Widget build(BuildContext context) {
-    // First container that represent the grey shade
     return Container(
       color: const Color(0xff757575),
-      // Second container that contains the Title, Email text field & Reset password button
+// Second container that contains the Title, Email text field & Reset password button
       child: Container(
         padding: const EdgeInsets.all(20.0),
         decoration: const BoxDecoration(
@@ -45,7 +69,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             topRight: Radius.circular(20.0),
           ),
         ),
-        // Title
+// Title
         child: Column(
           children: <Widget>[
             const Text(
@@ -59,41 +83,22 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             const SizedBox(
               height: 16.0,
             ),
-            // Email Text Field
+// Email Text Field
             Form(
-              key: _formKey,
+              key: state._formKey,
               child: EmailTextField(
-                emailController: _emailController,
-                isEmailIncorrect: _isEmailIncorrect,
+                emailController: state._emailController,
+                isEmailIncorrect: state._isEmailIncorrect,
                 emailIncorrectText: "Email doesn't exist",
               ),
             ),
-            // Reset password button
+// Reset password button
             RoundedRectangleButton(
-                buttonText: 'RESET PASSWORD',
-                buttonStyle: kLightBlueButtonStyle,
-                textColor: Colors.white,
-                onPressed: () async {
-                  String email = _emailController.text.trim();
-
-                  setState(() => _isEmailIncorrect = false);
-
-                  if (_formKey.currentState!.validate()) {
-                    // setState(() => _isLoading = true);
-
-                    dynamic result =
-                        await _authService.sendPasswordResetEmail(email);
-
-                    if (result == null) {
-                      setState(() {
-                        _isEmailIncorrect = true;
-                      });
-                    } else {
-                      Navigator.pop(context);
-                    }
-                    // setState(() => _isLoading = false);
-                  }
-                }),
+              buttonText: 'RESET PASSWORD',
+              buttonStyle: kLightBlueButtonStyle,
+              textColor: Colors.white,
+              onPressed: () => state.handleResetPasswordPressed(),
+            ),
           ],
         ),
       ),
