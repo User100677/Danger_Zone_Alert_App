@@ -7,11 +7,14 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../area.dart';
+import '../calculate_distance.dart';
+import 'alert_dialog_box.dart';
 
 class AreaRatingBox extends StatelessWidget {
   final Area area;
   final String areaDescription;
   final LatLng areaLatLng;
+  final LatLng userLatLng;
   final Function boxCallback;
 
   final int numberRating;
@@ -29,6 +32,7 @@ class AreaRatingBox extends StatelessWidget {
       {required this.area,
       required this.areaDescription,
       required this.areaLatLng,
+      required this.userLatLng,
       required this.boxCallback,
       this.numberRating = 10,
       this.dangerRating = 4.5});
@@ -41,56 +45,47 @@ class AreaRatingBox extends StatelessWidget {
           margin: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 24.0),
           decoration: BoxDecoration(
             color: primaryColor,
-            borderRadius: const BorderRadius.all(
-              Radius.circular(10.0),
-            ),
+            borderRadius: const BorderRadius.all(Radius.circular(10.0)),
           ),
           child: Column(
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(top: 24.0),
-                child: Text(
-                  '$dangerRating',
+                child: Text('$dangerRating',
+                    style: Theme.of(context).textTheme.bodyText2?.copyWith(
+                        fontSize: 50.0,
+                        // TODO: Text Color base on rating Danger Level: Red, Orange, Yellow, Green, Grey
+                        color: ratingColor,
+                        fontWeight: FontWeight.w800,
+                        fontFamily: 'RobotoMono'),
+                    textAlign: TextAlign.center),
+              ),
+              Text('Danger Level',
                   style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                      fontSize: 50.0,
-                      // TODO: Text Color base on rating Danger Level: Red, Orange, Yellow, Green, Grey
-                      color: ratingColor,
-                      fontWeight: FontWeight.w800,
-                      fontFamily: 'RobotoMono'),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              Text(
-                'Danger Level',
-                style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                    fontSize: 18.0,
-                    color: dangerLevelColor,
-                    fontWeight: FontWeight.bold),
-                textAlign: TextAlign.center,
-              ),
+                      fontSize: 18.0,
+                      color: dangerLevelColor,
+                      fontWeight: FontWeight.bold),
+                  textAlign: TextAlign.center),
               // Rating Bar
               Padding(
                 padding: const EdgeInsets.only(top: 6.0),
                 child: RatingBarIndicator(
-                  rating: dangerRating,
-                  itemBuilder: (BuildContext context, int index) =>
-                      const Icon(Icons.star_border, color: Color(0xffFEBC48)),
-                  itemCount: 5,
-                  itemSize: 18.0,
-                  direction: Axis.horizontal,
-                ),
+                    rating: dangerRating,
+                    itemBuilder: (BuildContext context, int index) =>
+                        const Icon(Icons.star_border, color: Color(0xffFEBC48)),
+                    itemCount: 5,
+                    itemSize: 18.0,
+                    direction: Axis.horizontal),
               ),
               // People Rated
               Padding(
                 padding: const EdgeInsets.only(top: 6.0),
-                child: Text(
-                  '$numberRating People Rated',
-                  style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                        fontSize: 10.0,
-                        color: locationTextColor,
-                      ),
-                  textAlign: TextAlign.center,
-                ),
+                child: Text('$numberRating People Rated',
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyText2
+                        ?.copyWith(fontSize: 10.0, color: locationTextColor),
+                    textAlign: TextAlign.center),
               ),
               // Container for location icon and description
               Container(
@@ -101,19 +96,14 @@ class AreaRatingBox extends StatelessWidget {
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.only(right: 6.0),
-                      child: Icon(
-                        Icons.location_on_outlined,
-                        size: 24.0,
-                        color: iconColor,
-                      ),
+                      child: Icon(Icons.location_on_outlined,
+                          size: 24.0, color: iconColor),
                     ),
                     Flexible(
                       child: Text(
                         areaDescription,
                         style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                              fontSize: 14.0,
-                              color: locationTextColor,
-                            ),
+                            fontSize: 14.0, color: locationTextColor),
                         textAlign: TextAlign.left,
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
@@ -140,10 +130,13 @@ class AreaRatingBox extends StatelessWidget {
                         buttonStyle: kBlueButtonStyle,
                         textColor: textColor,
                         onPressed: () {
-                          Navigator.popAndPushNamed(
-                              context, RatingQuestionsList.id);
-                          // Navigator.pop(context);
-                          boxCallback();
+                          if (calculateDistance(userLatLng, areaLatLng) < 1) {
+                            Navigator.popAndPushNamed(
+                                context, RatingQuestionsList.id);
+                            boxCallback();
+                          } else {
+                            showAlertDialog(context, 'rating');
+                          }
                         },
                       ),
                     ),
@@ -156,9 +149,12 @@ class AreaRatingBox extends StatelessWidget {
                         buttonStyle: kBlueButtonStyle,
                         textColor: textColor,
                         onPressed: () {
-                          Navigator.popAndPushNamed(context, Comment.id);
-                          // Navigator.pop(context);
-                          boxCallback();
+                          if (calculateDistance(userLatLng, areaLatLng) < 1) {
+                            Navigator.popAndPushNamed(context, Comment.id);
+                            boxCallback();
+                          } else {
+                            showAlertDialog(context, 'comment');
+                          }
                         },
                       ),
                     ),

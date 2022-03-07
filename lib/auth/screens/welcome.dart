@@ -49,13 +49,13 @@ class _WelcomeScreenView extends StatelessView<WelcomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 RoundedRectangleButton(
-                  buttonText: 'Log in',
+                  buttonText: kSignInText,
                   buttonStyle: kWhiteButtonStyle,
                   textColor: Colors.lightBlueAccent,
                   onPressed: () => Navigator.pushNamed(context, LoginScreen.id),
                 ),
                 RoundedRectangleButton(
-                  buttonText: 'Sign up',
+                  buttonText: kSignUpText,
                   buttonStyle: kLightBlueButtonStyle,
                   textColor: Colors.white,
                   onPressed: () =>

@@ -175,15 +175,15 @@ class _LoginScreenView extends WidgetView<LoginScreen, _LoginScreenController> {
                     ),
                     // Login button
                     RoundedRectangleButton(
-                      buttonText: 'Log in',
+                      buttonText: kSignInText,
                       buttonStyle: kLightBlueButtonStyle,
                       textColor: Colors.white,
                       onPressed: () => state.handleLoginPressed(),
                     ),
-                    const ButtonDivider(),
+                    buildButtonDivider(),
                     // Sign up button
                     RoundedRectangleButton(
-                      buttonText: 'Sign up',
+                      buttonText: kSignUpText,
                       buttonStyle: kWhiteButtonStyle,
                       textColor: Colors.grey,
                       onPressed: () =>

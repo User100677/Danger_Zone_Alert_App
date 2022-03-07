@@ -169,15 +169,15 @@ class _RegisterScreenView
                     ),
 // Signup button
                     RoundedRectangleButton(
-                      buttonText: 'Sign up',
+                      buttonText: kSignUpText,
                       buttonStyle: kLightBlueButtonStyle,
                       textColor: Colors.white,
                       onPressed: () => state.handleSignupPressed(),
                     ),
-                    const ButtonDivider(),
+                    buildButtonDivider(),
 // Login button
                     RoundedRectangleButton(
-                      buttonText: 'Log in',
+                      buttonText: kSignInText,
                       buttonStyle: kWhiteButtonStyle,
                       textColor: Colors.grey,
                       onPressed: () =>

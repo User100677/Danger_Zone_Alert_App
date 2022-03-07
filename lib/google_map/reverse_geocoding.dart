@@ -1,3 +1,4 @@
+import 'package:danger_zone_alert/constants/app_constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
@@ -12,6 +13,7 @@ Future<String> getAddress({@required latLng}) async {
 
 // This method format the address into String
 String _parseAddress(Placemark placemarks) {
+  String keyword = 'Malaysia';
   String street = '${placemarks.street}';
   String subLocality = '${placemarks.subLocality}';
   String postalCode = '${placemarks.postalCode}';
@@ -21,14 +23,14 @@ String _parseAddress(Placemark placemarks) {
 
   String formattedAddress;
 
-  if (street != 'Malaysia' && country == 'Malaysia') {
+  if (street != keyword && country == keyword) {
     subLocality.isEmpty
         ? formattedAddress =
             '$street, $postalCode $locality, $administrativeArea, $locality $country'
         : formattedAddress =
             '$street, $subLocality, $postalCode $locality, $administrativeArea, $country';
   } else {
-    formattedAddress = 'Invalid';
+    formattedAddress = kInvalidAddress;
   }
 
   return formattedAddress;

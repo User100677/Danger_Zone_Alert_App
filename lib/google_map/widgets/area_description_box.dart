@@ -1,5 +1,7 @@
 import 'package:danger_zone_alert/comment/comment.dart';
 import 'package:danger_zone_alert/constants/app_constants.dart';
+import 'package:danger_zone_alert/google_map/calculate_distance.dart';
+import 'package:danger_zone_alert/google_map/widgets/alert_dialog_box.dart';
 import 'package:danger_zone_alert/rating/new_rating.dart';
 import 'package:danger_zone_alert/shared/widgets/rounded_rectangle_button.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +13,7 @@ class AreaDescriptionBox extends StatelessWidget {
   final Area area;
   final String areaDescription;
   final LatLng areaLatLng;
+  final LatLng userLatLng;
   final Function boxCallback;
 
   final primaryColor = Colors.white;
@@ -23,6 +26,7 @@ class AreaDescriptionBox extends StatelessWidget {
       {required this.area,
       required this.areaDescription,
       required this.areaLatLng,
+      required this.userLatLng,
       required this.boxCallback});
 
   @override
@@ -47,19 +51,14 @@ class AreaDescriptionBox extends StatelessWidget {
                   children: <Widget>[
                     Padding(
                       padding: const EdgeInsets.only(right: 6.0),
-                      child: Icon(
-                        Icons.location_on_outlined,
-                        size: 28.0,
-                        color: iconColor,
-                      ),
+                      child: Icon(Icons.location_on_outlined,
+                          size: 28.0, color: iconColor),
                     ),
                     Flexible(
                       child: Text(
                         areaDescription,
                         style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                              fontSize: 16.0,
-                              color: locationTextColor,
-                            ),
+                            fontSize: 16.0, color: locationTextColor),
                         textAlign: TextAlign.left,
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
@@ -86,11 +85,14 @@ class AreaDescriptionBox extends StatelessWidget {
                         buttonStyle: kBlueButtonStyle,
                         textColor: textColor,
                         onPressed: () {
-                          area.addCircle(areaLatLng);
-                          Navigator.popAndPushNamed(
-                              context, RatingQuestionsList.id);
-                          // Navigator.pop(context);
-                          boxCallback();
+                          if (calculateDistance(userLatLng, areaLatLng) < 1) {
+                            area.addCircle(areaLatLng);
+                            Navigator.popAndPushNamed(
+                                context, RatingQuestionsList.id);
+                            boxCallback();
+                          } else {
+                            showAlertDialog(context, 'rate');
+                          }
                         },
                       ),
                     ),
@@ -103,10 +105,13 @@ class AreaDescriptionBox extends StatelessWidget {
                         buttonStyle: kBlueButtonStyle,
                         textColor: textColor,
                         onPressed: () {
-                          area.addCircle(areaLatLng);
-                          Navigator.popAndPushNamed(context, Comment.id);
-                          // Navigator.pop(context);
-                          boxCallback();
+                          if (calculateDistance(userLatLng, areaLatLng) < 1) {
+                            area.addCircle(areaLatLng);
+                            Navigator.popAndPushNamed(context, Comment.id);
+                            boxCallback();
+                          } else {
+                            showAlertDialog(context, 'comment');
+                          }
                         },
                       ),
                     ),

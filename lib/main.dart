@@ -1,5 +1,6 @@
 import 'package:danger_zone_alert/auth/screens/forgot_password.dart';
 import 'package:danger_zone_alert/comment/comment.dart';
+import 'package:danger_zone_alert/google_map/widgets/search_bar.dart';
 import 'package:danger_zone_alert/rating/new_rating.dart';
 import 'package:danger_zone_alert/services/auth.dart';
 import 'package:danger_zone_alert/wrapper.dart';
@@ -35,19 +36,18 @@ class MyApp extends StatelessWidget {
         future: _initialization,
         builder: (context, snapshot) {
           if (snapshot.hasError) {
-            print("Error");
+            print("Error initialization");
           }
           if (snapshot.connectionState == ConnectionState.done) {
-            // The following line return the first screens of the app
-            return StreamProvider<UserModel?>.value(
-              value: AuthService().user,
-              initialData: null,
-              catchError: null,
-              child: ChangeNotifierProvider.value(
-                value: ApplicationBloc(context),
-                child: const Wrapper(),
-              ),
-            );
+            return MultiProvider(providers: [
+              StreamProvider<UserModel?>.value(
+                  value: AuthService().user,
+                  initialData: null,
+                  catchError: null),
+              ChangeNotifierProvider.value(value: ApplicationBloc(context)),
+              ChangeNotifierProvider(create: (_) => SearchModel()),
+            ], child: const Wrapper());
+            // );
           }
           return const CircularProgressIndicator();
         },
@@ -57,7 +57,7 @@ class MyApp extends StatelessWidget {
         LoginScreen.id: (context) => const LoginScreen(),
         ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
         RegisterScreen.id: (context) => const RegisterScreen(),
-        GoogleMapScreen.id: (context) => GoogleMapScreen(),
+        GoogleMapScreen.id: (context) => const GoogleMapScreen(),
         RatingQuestionsList.id: (context) => const RatingQuestionsList(),
         Comment.id: (context) => Comment(),
       },

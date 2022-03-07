@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:danger_zone_alert/google_map/util/camera_navigation.dart';
 import 'package:danger_zone_alert/models/user.dart';
 import 'package:danger_zone_alert/services/auth.dart';
@@ -8,99 +6,88 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
-class BottomTabBar extends StatelessWidget {
-  final Completer<GoogleMapController> googleMapController;
-
-  BottomTabBar({Key? key, required this.googleMapController}) : super(key: key);
-
+@override
+Widget buildBottomTabBar(context, googleMapController) {
+  final user = Provider.of<UserModel?>(context);
   final AuthService _authService = AuthService();
-  final double height = 60;
-  final primaryColor = Colors.blueAccent;
-  final secondaryColor = const Color(0xff818181);
-  final backgroundColor = Colors.white;
+  const double height = 60;
+  const primaryColor = Colors.blueAccent;
 
-  @override
-  Widget build(BuildContext context) {
-    final user = Provider.of<UserModel?>(context);
+  return Column(
+    mainAxisAlignment: MainAxisAlignment.end,
+    children: [
+      BottomAppBar(
+        color: Colors.transparent,
+        child: Stack(
+          children: [
+            CustomPaint(
+              size: Size(MediaQuery.of(context).size.width, height),
+              painter: BottomTabBarPainter(),
+            ),
+            // Current user location button
+            Center(
+              heightFactor: 0.6,
+              child: FloatingActionButton(
+                backgroundColor: primaryColor,
+                elevation: 10,
+                child: const Icon(
+                  Icons.my_location_rounded,
+                  color: Colors.white,
+                ),
+                // onPressed: onPressed,
+                onPressed: () async {
+                  LatLng? userPosition = user?.latLng;
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.end,
-      children: [
-        BottomAppBar(
-          color: Colors.transparent,
-          child: Stack(
-            children: [
-              CustomPaint(
-                size: Size(MediaQuery.of(context).size.width, height),
-                painter: BottomTabBarPainter(),
+                  // Display error notification if userPosition is null else navigate to user position
+                  (userPosition == null)
+                      ? errorSnackBar(context, 'Navigation failed!')
+                      : navigateToLocation(userPosition, googleMapController);
+                },
               ),
-              // Current user location button
-              Center(
-                heightFactor: 0.6,
-                child: FloatingActionButton(
-                  backgroundColor: primaryColor,
-                  elevation: 10,
-                  child: const Icon(
-                    Icons.my_location_rounded,
-                    color: Colors.white,
+            ),
+            SizedBox(
+              height: height,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  // NewsAPI button
+                  IconBar(
+                    icon: Icons.web_rounded,
+                    onPressed: () {},
                   ),
-                  // onPressed: onPressed,
-                  onPressed: () async {
-                    LatLng? userPosition = user?.latLng;
-
-                    // Display error notification if userPosition is null else navigate to user position
-                    if (userPosition == null) {
-                      errorSnackBar(context, 'Navigation failed!');
-                    } else {
-                      navigateToLocation(userPosition, googleMapController);
-                    }
-                  },
-                ),
+                  const SizedBox(width: 56),
+                  // Log out button
+                  IconBar(
+                    icon: Icons.logout_rounded,
+                    onPressed: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: const Text('Do you wish to log out?'),
+                          actions: <Widget>[
+                            TextButton(
+                                onPressed: () => Navigator.pop(context),
+                                child: const Text('No')),
+                            TextButton(
+                                onPressed: () async {
+                                  await _authService.signOut();
+                                  Navigator.pop(context);
+                                },
+                                child: const Text('Yes')),
+                          ],
+                        ),
+                      );
+                      // await _authService.signOut();
+                    },
+                  ),
+                ],
               ),
-              SizedBox(
-                height: height,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    // NewsAPI button
-                    IconBar(
-                      icon: Icons.web_rounded,
-                      onPressed: () {},
-                    ),
-                    const SizedBox(width: 56),
-                    // Log out button
-                    IconBar(
-                      icon: Icons.logout_rounded,
-                      onPressed: () {
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: const Text('Do you wish to log out?'),
-                            actions: <Widget>[
-                              TextButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: const Text('No')),
-                              TextButton(
-                                  onPressed: () async {
-                                    await _authService.signOut();
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text('Yes')),
-                            ],
-                          ),
-                        );
-                        // await _authService.signOut();
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
 }
 
 // Tab Bar graphic canvas
