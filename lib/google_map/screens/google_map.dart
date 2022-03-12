@@ -108,7 +108,7 @@ class _GoogleMapScreenController extends State<GoogleMapScreen> {
                         area: area,
                         areaDescription: address,
                         areaLatLng: tapLatLng,
-                        userLatLng: user.latLng,
+                        user: user,
                         boxCallback: boxCallback));
                 isWithinAnyCircle = true;
                 break;
@@ -123,7 +123,7 @@ class _GoogleMapScreenController extends State<GoogleMapScreen> {
                     area: area,
                     areaDescription: address,
                     areaLatLng: tapLatLng,
-                    userLatLng: user.latLng,
+                    user: user,
                     boxCallback: boxCallback));
             isWithinAnyCircle = false;
           }
@@ -133,10 +133,10 @@ class _GoogleMapScreenController extends State<GoogleMapScreen> {
   }
 
   // Contain the logic of notification alert using user GPS
-  void _notificationLogic(user) {
+  void _notificationLogic(UserModel user) {
     if (area.circles.isNotEmpty) {
       for (Circle circle in area.circles) {
-        double userDistance = calculateDistance(circle.center, user?.latLng);
+        double userDistance = calculateDistance(circle.center, user.latLng);
 
         if (area.isWithinCircle(userDistance) && isUserInCircle == false) {
           isUserInCircle = true;
@@ -151,22 +151,23 @@ class _GoogleMapScreenController extends State<GoogleMapScreen> {
   }
 
   // Called when the google map is created
-  _onMapCreated(GoogleMapController controller, user) async {
+  _onMapCreated(GoogleMapController controller, UserModel user) async {
     _googleMapController.complete(controller);
 
     try {
-      user?.setLatLng(
-          await validateLocation(context: context, position: widget.position));
+      user.setLatLng(await validateLocation(widget.position));
+      user.setAccess = true;
     } catch (e) {
       errorSnackBar(context, e.toString());
+      user.setAccess = false;
     }
 
     // Navigate and set stream for user location
-    if (user?.latLng != null) {
-      navigateToLocation(user?.latLng, _googleMapController);
+    if (user.latLng != null) {
+      navigateToLocation(user.latLng, _googleMapController);
 
       GeolocatorService.getCurrentLocation().listen((position) {
-        user?.setLatLng(LatLng(position.latitude, position.longitude));
+        user.setLatLng(LatLng(position.latitude, position.longitude));
 
         _notificationLogic(user);
       });
@@ -194,7 +195,7 @@ class _GoogleMapScreenView
           children: <Widget>[
             GoogleMap(
               onMapCreated: (GoogleMapController controller) =>
-                  state._onMapCreated(controller, user),
+                  state._onMapCreated(controller, user!),
               minMaxZoomPreference: const MinMaxZoomPreference(7, 19),
               initialCameraPosition: kInitialCameraPosition,
               cameraTargetBounds: CameraTargetBounds(kMalaysiaBounds),

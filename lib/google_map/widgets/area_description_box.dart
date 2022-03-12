@@ -1,7 +1,8 @@
 import 'package:danger_zone_alert/comment/comment.dart';
 import 'package:danger_zone_alert/constants/app_constants.dart';
-import 'package:danger_zone_alert/google_map/calculate_distance.dart';
+import 'package:danger_zone_alert/google_map/util/calculate_distance.dart';
 import 'package:danger_zone_alert/google_map/widgets/alert_dialog_box.dart';
+import 'package:danger_zone_alert/models/user.dart';
 import 'package:danger_zone_alert/rating/new_rating.dart';
 import 'package:danger_zone_alert/shared/widgets/rounded_rectangle_button.dart';
 import 'package:flutter/material.dart';
@@ -13,7 +14,7 @@ class AreaDescriptionBox extends StatelessWidget {
   final Area area;
   final String areaDescription;
   final LatLng areaLatLng;
-  final LatLng userLatLng;
+  final UserModel user;
   final Function boxCallback;
 
   final primaryColor = Colors.white;
@@ -26,7 +27,7 @@ class AreaDescriptionBox extends StatelessWidget {
       {required this.area,
       required this.areaDescription,
       required this.areaLatLng,
-      required this.userLatLng,
+      required this.user,
       required this.boxCallback});
 
   @override
@@ -85,13 +86,18 @@ class AreaDescriptionBox extends StatelessWidget {
                         buttonStyle: kBlueButtonStyle,
                         textColor: textColor,
                         onPressed: () {
-                          if (calculateDistance(userLatLng, areaLatLng) < 1) {
-                            area.addCircle(areaLatLng);
-                            Navigator.popAndPushNamed(
-                                context, RatingQuestionsList.id);
-                            boxCallback();
+                          if (user.access == false) {
+                            showAlertDialog(context, kLocationDenied);
                           } else {
-                            showAlertDialog(context, 'rate');
+                            if (calculateDistance(user.latLng, areaLatLng) <
+                                1) {
+                              area.addCircle(areaLatLng);
+                              Navigator.popAndPushNamed(
+                                  context, RatingQuestionsList.id);
+                              boxCallback();
+                            } else {
+                              showAlertDialog(context, kAlertRateText);
+                            }
                           }
                         },
                       ),
@@ -105,12 +111,17 @@ class AreaDescriptionBox extends StatelessWidget {
                         buttonStyle: kBlueButtonStyle,
                         textColor: textColor,
                         onPressed: () {
-                          if (calculateDistance(userLatLng, areaLatLng) < 1) {
-                            area.addCircle(areaLatLng);
-                            Navigator.popAndPushNamed(context, Comment.id);
-                            boxCallback();
+                          if (user.access == false) {
+                            showAlertDialog(context, kLocationDenied);
                           } else {
-                            showAlertDialog(context, 'comment');
+                            if (calculateDistance(user.latLng, areaLatLng) <
+                                1) {
+                              area.addCircle(areaLatLng);
+                              Navigator.popAndPushNamed(context, Comment.id);
+                              boxCallback();
+                            } else {
+                              showAlertDialog(context, kAlertCommentText);
+                            }
                           }
                         },
                       ),

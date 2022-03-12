@@ -2,14 +2,19 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class UserModel {
-  // Store the unique id of the user
+  // User's unique id
   final String uid;
-  // Latitude and Longitude of the user position
   LatLng? _latLng;
+
+  bool? _access;
 
   UserModel({required this.uid});
 
   get latLng => _latLng;
 
   void setLatLng(LatLng? value) => _latLng = value;
+
+  bool? get access => _access;
+
+  set setAccess(bool value) => _access = value;
 }

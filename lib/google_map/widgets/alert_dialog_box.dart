@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 
-void showAlertDialog(context, String action) {
+void showAlertDialog(context, String alertText) {
   showDialog(
       context: context,
       builder: (context) => AlertDialog(
               title: Text(
-                  'Location selected is too far from your current location to ' +
-                      action +
-                      '.'),
+                  alertText),
               actions: <Widget>[
                 TextButton(
                     onPressed: () => Navigator.of(context).pop(),

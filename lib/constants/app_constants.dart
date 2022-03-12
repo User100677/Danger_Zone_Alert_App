@@ -3,8 +3,17 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 // TODO: Remove the API key before submission as the account associate with it contain billing information
 const String kApiKey = "AIzaSyD6eM4LXUhjcLH8aqa-uTyd8AJ9OE_9c0c";
+
 const String kSignUpText = 'Sign up';
 const String kSignInText = 'Log in';
+
+// Text for alert_dialog_box
+const String kLocationDenied =
+    'Rate & Comment functionality are disabled when location condition is not met';
+const String kAlertCommentText =
+    'Location selected is too far from your current location to comment';
+const String kAlertRateText =
+    'Location selected is too far from your current location to rate';
 
 /* --------------- Constant Variable --------------- */
 final LatLngBounds kMalaysiaBounds = LatLngBounds(
@@ -14,7 +23,6 @@ final LatLngBounds kMalaysiaBounds = LatLngBounds(
 const CameraPosition kInitialCameraPosition = CameraPosition(
     target: LatLng(4.445446291086245, 102.04430367797612), zoom: 7);
 
-// Usage: google_map and reverse_geocoding
 const String kInvalidAddress = 'Invalid_Address';
 
 /* --------------- Constant Widget Style --------------- */
