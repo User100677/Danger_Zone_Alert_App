@@ -5,6 +5,7 @@ import 'package:danger_zone_alert/constants/app_constants.dart';
 import 'package:danger_zone_alert/google_map/all_google_map.dart';
 import 'package:danger_zone_alert/google_map/widgets/search_bar.dart';
 import 'package:danger_zone_alert/models/user.dart';
+import 'package:danger_zone_alert/services/database.dart';
 import 'package:danger_zone_alert/services/geolocator_service.dart';
 import 'package:danger_zone_alert/shared/widgets/error_snackbar.dart';
 import 'package:danger_zone_alert/widget_view/widget_view.dart';
@@ -96,6 +97,11 @@ class _GoogleMapScreenController extends State<GoogleMapScreen> {
           areaMarker.addMarker(tapLatLng);
           navigateToLocation(tapLatLng, _googleMapController);
 
+          // TODO: Database testing
+          DatabaseService(uid: user.uid).getUserData(user);
+          print('The length of user.ratedAreas after tapping');
+          print(user.ratedAreas.length);
+
           // Check if tapLatLng is within any circles
           if (area.circles.isNotEmpty) {
             for (Circle circle in area.circles) {
@@ -107,7 +113,7 @@ class _GoogleMapScreenController extends State<GoogleMapScreen> {
                     builder: (context) => AreaRatingBox(
                         area: area,
                         areaDescription: address,
-                        areaLatLng: tapLatLng,
+                        areaLatLng: circle.center,
                         user: user,
                         boxCallback: boxCallback));
                 isWithinAnyCircle = true;
