@@ -68,7 +68,7 @@ class DatabaseService {
 
   // <---------------------- Area -------------------->
   Future updateAreaData(
-      LatLng latLng, String color, int rateCount, int rating) async {
+      LatLng latLng, String color, int rateCount, double rating) async {
     return await areaCollection.doc(latLng.toString()).set({
       'rating': rating,
       'rateCount': rateCount,
@@ -92,6 +92,9 @@ class DatabaseService {
       );
     }).toList();
   }
+
+  Stream<List<Area>> get areas =>
+      areaCollection.snapshots().map(_areaListFromSnapshot);
 
   // Add a comment using as the current user
   Future addCommentData(LatLng latLng, String text, User user) async {
@@ -128,9 +131,6 @@ class DatabaseService {
       );
     }).toList();
   }
-
-  Stream<List<Area>> get areas =>
-      areaCollection.snapshots().map(_areaListFromSnapshot);
 
   Stream<List<Comment>> getComments(LatLng latLng) {
     return areaCollection

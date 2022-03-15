@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:danger_zone_alert/constants/app_constants.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 // Algorithm to calculate the distance between 2 latLng
@@ -24,3 +25,8 @@ double calculateDistance(LatLng circle, LatLng tapLatLng) {
   // calculate the result
   return radiusEarth * b;
 }
+
+// Circle Radius 100.0 = 0.1km
+// Check if the tapPosition is within the circle
+bool isWithinCircle(double distance) =>
+    (distance < (kAreaRadius / 1000)) ? true : false;

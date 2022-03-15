@@ -9,10 +9,7 @@ import 'package:danger_zone_alert/shared/widgets/rounded_rectangle_button.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../area.dart';
-
 class AreaDescriptionBox extends StatelessWidget {
-  final Area area;
   final String areaDescription;
   final LatLng areaLatLng;
   final UserModel user;
@@ -25,8 +22,7 @@ class AreaDescriptionBox extends StatelessWidget {
   final textColor = Colors.white;
 
   AreaDescriptionBox(
-      {required this.area,
-      required this.areaDescription,
+      {required this.areaDescription,
       required this.areaLatLng,
       required this.user,
       required this.boxCallback});
@@ -95,7 +91,7 @@ class AreaDescriptionBox extends StatelessWidget {
                               // TODO
                               handleRatePressed();
 
-                              area.addCircle(areaLatLng);
+                              // area.addCircle(areaLatLng);
                               Navigator.popAndPushNamed(
                                   context, RatingQuestionsList.id);
                               boxCallback();
@@ -120,7 +116,7 @@ class AreaDescriptionBox extends StatelessWidget {
                           } else {
                             if (calculateDistance(user.latLng, areaLatLng) <
                                 1) {
-                              area.addCircle(areaLatLng);
+                              // area.addCircle(areaLatLng);
                               Navigator.popAndPushNamed(context, Comment.id);
                               boxCallback();
                             } else {
@@ -142,6 +138,8 @@ class AreaDescriptionBox extends StatelessWidget {
 
   Future<void> handleRatePressed() async {
     await DatabaseService(uid: user.uid).updateUserData(areaLatLng, 4.2);
+    await DatabaseService(uid: user.uid)
+        .updateAreaData(areaLatLng, 'Colors.red', 10, 4.2);
     print('Completed!');
   }
 }

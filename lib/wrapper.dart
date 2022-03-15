@@ -1,4 +1,6 @@
 import 'package:danger_zone_alert/auth/screens/welcome.dart';
+import 'package:danger_zone_alert/models/area.dart';
+import 'package:danger_zone_alert/services/database.dart';
 import 'package:danger_zone_alert/shared/widgets/loading.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -20,14 +22,29 @@ class Wrapper extends StatelessWidget {
     // Assign userModel after log in
     final user = Provider.of<UserModel?>(context);
 
-    return user == null
-        ? const WelcomeScreen()
-        : Consumer<ApplicationBloc>(
-            builder: (context, provider, child) => (provider.position == null)
-                ? const Loading()
-                : (provider.position is String)
-                    ? const GoogleMapScreen()
-                    : GoogleMapScreen(position: provider.position),
-          );
+    if (user == null) {
+      return const WelcomeScreen();
+    } else {
+      return Consumer<ApplicationBloc>(
+        builder: (context, provider, child) => (provider.position == null)
+            ? const Loading()
+            : (provider.position is String)
+                ? const GoogleMapScreen()
+                // TODO: Database provider
+                : MultiProvider(
+                    providers: [
+                      StreamProvider<List<Area>>.value(
+                          catchError: null,
+                          initialData: const [],
+                          value: DatabaseService().areas),
+                      StreamProvider<List<RatedArea>>.value(
+                          catchError: null,
+                          initialData: const [],
+                          value: DatabaseService().userRatedArea),
+                    ],
+                    child: GoogleMapScreen(position: provider.position),
+                  ),
+      );
+    }
   }
 }

@@ -6,6 +6,7 @@ import 'package:danger_zone_alert/services/geolocator_service.dart';
 import 'package:danger_zone_alert/services/places_service.dart';
 import 'package:danger_zone_alert/shared/widgets/error_snackbar.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 class ApplicationBloc with ChangeNotifier {
   StreamController<PlaceDetail?>? selectedLocation =

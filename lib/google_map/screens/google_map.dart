@@ -4,6 +4,7 @@ import 'package:danger_zone_alert/blocs/application_bloc.dart';
 import 'package:danger_zone_alert/constants/app_constants.dart';
 import 'package:danger_zone_alert/google_map/all_google_map.dart';
 import 'package:danger_zone_alert/google_map/widgets/search_bar.dart';
+import 'package:danger_zone_alert/models/area.dart';
 import 'package:danger_zone_alert/models/user.dart';
 import 'package:danger_zone_alert/services/database.dart';
 import 'package:danger_zone_alert/services/geolocator_service.dart';
@@ -34,7 +35,7 @@ class _GoogleMapScreenController extends State<GoogleMapScreen> {
   final notifications = FlutterLocalNotificationsPlugin();
   final Completer<GoogleMapController> _googleMapController = Completer();
 
-  Area area = Area();
+  // AreaCircle areaCircle = AreaCircle();
   AreaMarker areaMarker = AreaMarker();
   bool isUserInCircle = false;
 
@@ -99,19 +100,17 @@ class _GoogleMapScreenController extends State<GoogleMapScreen> {
 
           // TODO: Database testing
           DatabaseService(uid: user.uid).getUserData(user);
-          print('The length of user.ratedAreas after tapping');
-          print(user.ratedAreas.length);
+          print("User num of rated area: " + user.ratedAreas.length.toString());
 
           // Check if tapLatLng is within any circles
-          if (area.circles.isNotEmpty) {
-            for (Circle circle in area.circles) {
+          if (areaCircles.isNotEmpty) {
+            for (Circle circle in areaCircles) {
               double distance = calculateDistance(circle.center, tapLatLng);
 
-              if (area.isWithinCircle(distance)) {
+              if (isWithinCircle(distance)) {
                 showDialog(
                     context: context,
                     builder: (context) => AreaRatingBox(
-                        area: area,
                         areaDescription: address,
                         areaLatLng: circle.center,
                         user: user,
@@ -126,7 +125,6 @@ class _GoogleMapScreenController extends State<GoogleMapScreen> {
             showDialog(
                 context: context,
                 builder: (context) => AreaDescriptionBox(
-                    area: area,
                     areaDescription: address,
                     areaLatLng: tapLatLng,
                     user: user,
@@ -140,22 +138,23 @@ class _GoogleMapScreenController extends State<GoogleMapScreen> {
 
   // Contain the logic of notification alert using user GPS
   void _notificationLogic(UserModel user) {
-    if (area.circles.isNotEmpty) {
-      for (Circle circle in area.circles) {
+    if (areaCircles.isNotEmpty) {
+      for (Circle circle in areaCircles) {
         double userDistance = calculateDistance(circle.center, user.latLng);
 
-        if (area.isWithinCircle(userDistance) && isUserInCircle == false) {
+        if (isWithinCircle(userDistance) && isUserInCircle == false) {
           isUserInCircle = true;
           showOngoingNotification(notifications,
               title: 'You entered a Red Zone', body: 'Stay cautious!');
           break;
         }
 
-        !area.isWithinCircle(userDistance) ? isUserInCircle = false : null;
+        !isWithinCircle(userDistance) ? isUserInCircle = false : null;
       }
     }
   }
 
+  List<Area> areas = [];
   // Called when the google map is created
   _onMapCreated(GoogleMapController controller, UserModel user) async {
     _googleMapController.complete(controller);
@@ -167,6 +166,24 @@ class _GoogleMapScreenController extends State<GoogleMapScreen> {
       errorSnackBar(context, e.toString());
       user.setAccess = false;
     }
+
+    // TODO: Database
+    DatabaseService(uid: user.uid).areas.listen((areas) {
+      setState(() {
+        this.areas = areas;
+      });
+    });
+
+    print("Logic areas' length " + areas.length.toString());
+
+    // DatabaseService(uid: user.uid).userRatedArea.listen((userRatedAreas) {
+    //   setState(() {
+    //     user.ratedAreas = userRatedAreas;
+    //   });
+    // });
+    //
+    // print(
+    //     "Logic user ratedAreas' length: " + user.ratedAreas.length.toString());
 
     // Navigate and set stream for user location
     if (user.latLng != null) {
@@ -191,7 +208,10 @@ class _GoogleMapScreenView
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<UserModel?>(context);
+    final user = Provider.of<UserModel>(context);
+    // final user = context.watch<UserModel?>();
+    // TODO: Database user ratedAreas always 0 the first click
+    user.ratedAreas = Provider.of<List<RatedArea>>(context);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -201,7 +221,7 @@ class _GoogleMapScreenView
           children: <Widget>[
             GoogleMap(
               onMapCreated: (GoogleMapController controller) =>
-                  state._onMapCreated(controller, user!),
+                  state._onMapCreated(controller, user),
               minMaxZoomPreference: const MinMaxZoomPreference(7, 19),
               initialCameraPosition: kInitialCameraPosition,
               cameraTargetBounds: CameraTargetBounds(kMalaysiaBounds),
@@ -213,8 +233,9 @@ class _GoogleMapScreenView
               trafficEnabled: false,
               zoomControlsEnabled: false,
               markers: Set.from(state.areaMarker.markers),
-              circles: Set.from(state.area.circles),
-              onTap: (tapLatLng) => state.handleGoogleMapTap(tapLatLng, user!),
+              // circles: Set.from(state.areaCircle.circles),
+              circles: Set.from(areaCircles),
+              onTap: (tapLatLng) => state.handleGoogleMapTap(tapLatLng, user),
             ),
             buildBottomTabBar(context, state._googleMapController),
             buildFloatingSearchBar(

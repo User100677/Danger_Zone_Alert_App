@@ -7,12 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../area.dart';
 import '../util/calculate_distance.dart';
 import 'alert_dialog_box.dart';
 
 class AreaRatingBox extends StatelessWidget {
-  final Area area;
   final String areaDescription;
   final LatLng areaLatLng;
   final UserModel user;
@@ -30,8 +28,7 @@ class AreaRatingBox extends StatelessWidget {
   final textColor = Colors.white;
 
   AreaRatingBox(
-      {required this.area,
-      required this.areaDescription,
+      {required this.areaDescription,
       required this.areaLatLng,
       required this.user,
       required this.boxCallback,
@@ -136,7 +133,6 @@ class AreaRatingBox extends StatelessWidget {
                           } else {
                             if (calculateDistance(user.latLng, areaLatLng) <
                                 1) {
-                              area.addCircle(areaLatLng);
                               Navigator.popAndPushNamed(
                                   context, RatingQuestionsList.id);
                               boxCallback();
@@ -161,7 +157,6 @@ class AreaRatingBox extends StatelessWidget {
                           } else {
                             if (calculateDistance(user.latLng, areaLatLng) <
                                 1) {
-                              area.addCircle(areaLatLng);
                               Navigator.popAndPushNamed(context, Comment.id);
                               boxCallback();
                             } else {

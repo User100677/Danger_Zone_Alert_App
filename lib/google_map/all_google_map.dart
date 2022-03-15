@@ -1,4 +1,3 @@
-export 'package:danger_zone_alert/google_map/area.dart';
 export 'package:danger_zone_alert/google_map/util/area_notification.dart';
 export 'package:danger_zone_alert/google_map/util/calculate_distance.dart';
 export 'package:danger_zone_alert/google_map/util/camera_navigation.dart';

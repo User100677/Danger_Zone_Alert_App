@@ -1,27 +1,40 @@
 // Abstract user model
+import 'package:flutter/cupertino.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class UserModel {
   // User's unique id
   final String uid;
-  LatLng? _latLng;
-  bool? _access;
+  // LatLng? _latLng;
+  // bool? _access;
+  late LatLng _latLng;
+  late bool _access;
   List<RatedArea> ratedAreas = [];
 
   UserModel({required this.uid});
 
   get latLng => _latLng;
   bool? get access => _access;
-  void setLatLng(LatLng? value) => _latLng = value;
+  void setLatLng(LatLng value) => _latLng = value;
   set setAccess(bool value) => _access = value;
 }
 
-class RatedArea {
+// class RatedArea {
+//   LatLng latLng;
+//   double rating;
+//   List<CommentedArea> commentedArea = [];
+//
+//   RatedArea({required this.latLng, this.rating = 0});
+// }
+
+class RatedArea with ChangeNotifier {
   LatLng latLng;
   double rating;
   List<CommentedArea> commentedArea = [];
 
-  RatedArea({required this.latLng, this.rating = 0});
+  RatedArea({required this.latLng, this.rating = 0}) {
+    notifyListeners();
+  }
 }
 
 class CommentedArea {

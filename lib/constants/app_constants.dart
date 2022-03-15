@@ -10,10 +10,14 @@ const String kSignInText = 'Log in';
 // Text for alert_dialog_box
 const String kLocationDenied =
     'Rate & Comment functionality are disabled when location condition is not met';
+
 const String kAlertCommentText =
     'Location selected is too far from your current location to comment';
+
 const String kAlertRateText =
     'Location selected is too far from your current location to rate';
+
+const String kInvalidAddress = 'Invalid_Address';
 
 /* --------------- Constant Variable --------------- */
 final LatLngBounds kMalaysiaBounds = LatLngBounds(
@@ -23,7 +27,8 @@ final LatLngBounds kMalaysiaBounds = LatLngBounds(
 const CameraPosition kInitialCameraPosition = CameraPosition(
     target: LatLng(4.445446291086245, 102.04430367797612), zoom: 7);
 
-const String kInvalidAddress = 'Invalid_Address';
+// Circle Radius 100.0 = 0.1km
+const double kAreaRadius = 100.0;
 
 /* --------------- Constant Widget Style --------------- */
 
