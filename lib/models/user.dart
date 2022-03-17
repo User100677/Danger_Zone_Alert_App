@@ -1,5 +1,4 @@
 // Abstract user model
-import 'package:flutter/cupertino.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class UserModel {
@@ -17,23 +16,23 @@ class UserModel {
   set setAccess(bool value) => _access = value;
 }
 
-// class RatedArea {
-//   LatLng latLng;
-//   double rating;
-//   List<CommentedArea> commentedArea = [];
-//
-//   RatedArea({required this.latLng, this.rating = 0});
-// }
-
-class RatedArea with ChangeNotifier {
+class RatedArea {
   LatLng latLng;
   double rating;
   List<CommentedArea> commentedArea = [];
 
-  RatedArea({required this.latLng, this.rating = 0}) {
-    notifyListeners();
-  }
+  RatedArea({required this.latLng, this.rating = 0});
 }
+
+// class RatedArea with ChangeNotifier {
+//   LatLng latLng;
+//   double rating;
+//   List<CommentedArea> commentedArea = [];
+//
+//   RatedArea({required this.latLng, this.rating = 0}) {
+//     notifyListeners();
+//   }
+// }
 
 class CommentedArea {
   bool isLike;

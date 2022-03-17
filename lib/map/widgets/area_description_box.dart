@@ -22,10 +22,12 @@ class AreaDescriptionBox extends StatelessWidget {
   final textColor = Colors.white;
 
   AreaDescriptionBox(
-      {required this.areaDescription,
+      {Key? key,
+      required this.areaDescription,
       required this.areaLatLng,
       required this.user,
-      required this.boxCallback});
+      required this.boxCallback})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -142,6 +144,5 @@ class AreaDescriptionBox extends StatelessWidget {
     await DatabaseService(uid: user.uid)
         .updateAreaData(areaLatLng, 'Colors.red', 10, 4.2);
     print('Completed!');
-    print(user.uid);
   }
 }

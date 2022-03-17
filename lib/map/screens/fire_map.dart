@@ -44,7 +44,7 @@ class _FireMapScreenController extends State<FireMapScreen> {
   final Completer<GoogleMapController> _googleMapController = Completer();
 
   // AreaCircle areaCircle = AreaCircle();
-  AreaMarker areaMarker = AreaMarker();
+  // AreaMarker areaMarker = AreaMarker();
   bool isUserInCircle = false;
   // List<Area> areas = [];
 
@@ -91,7 +91,7 @@ class _FireMapScreenController extends State<FireMapScreen> {
   // Callback method to clear markers
   void boxCallback() {
     setState(() {
-      areaMarker.markers.clear();
+      markers.clear();
     });
   }
 
@@ -104,7 +104,7 @@ class _FireMapScreenController extends State<FireMapScreen> {
         () {
           bool isWithinAnyCircle = false;
 
-          areaMarker.addMarker(tapLatLng);
+          updateMarker(tapLatLng);
           animateToLocation(tapLatLng, _googleMapController);
 
           // TODO: Database testing
@@ -175,7 +175,7 @@ class _FireMapScreenController extends State<FireMapScreen> {
       user.setAccess = false;
     }
 
-    // TODO: Problem occcured when running below databaseservice code
+    // TODO: Problem occured when running below databaseservice code
     // TODO: It happen probably because setState is constantly called even
     // TODO: during reload
     // DatabaseService(uid: user.uid).areas.listen((areas) {
@@ -245,14 +245,12 @@ class _FireMapScreenView
               mapToolbarEnabled: false,
               trafficEnabled: false,
               zoomControlsEnabled: false,
-              markers: Set.from(state.areaMarker.markers),
-              // circles: Set.from(state.areaCircle.circles),
+              markers: Set.from(markers),
               circles: Set.from(areaCircles),
               onTap: (tapLatLng) => state._handleMapTap(tapLatLng, user!),
             ),
             buildBottomTabBar(context, state._googleMapController),
-            buildFloatingSearchBar(
-                context, state._searchBarController, state.areaMarker),
+            buildSearchBar(context, state._searchBarController),
           ],
         ),
       ),

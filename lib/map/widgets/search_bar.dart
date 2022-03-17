@@ -8,22 +8,16 @@ import 'package:provider/provider.dart';
 
 import 'area_marker.dart';
 
-Widget buildFloatingSearchBar(context,
-    FloatingSearchBarController searchBarController, AreaMarker areaMarker) {
+Widget buildSearchBar(context, searchBarController) {
   final applicationBloc = Provider.of<ApplicationBloc>(context);
   final isPortrait = MediaQuery.of(context).orientation == Orientation.portrait;
 
   final actions = [
     FloatingSearchBarAction(
-      showIfOpened: false,
-      child: CircularButton(
-        icon: const Icon(Icons.search),
-        onPressed: () {},
-      ),
-    ),
-    FloatingSearchBarAction.searchToClear(
-      showIfClosed: false,
-    ),
+        showIfOpened: false,
+        child:
+            CircularButton(icon: const Icon(Icons.search), onPressed: () {})),
+    FloatingSearchBarAction.searchToClear(showIfClosed: false),
   ];
 
   return Consumer<SearchModel>(
@@ -46,14 +40,12 @@ Widget buildFloatingSearchBar(context,
       progress: model.isLoading,
       onQueryChanged: (query) => model.onQueryChanged(query, applicationBloc),
       transition: CircularFloatingSearchBarTransition(spacing: 16.0),
-      builder: (context, _) =>
-          buildExpandableBody(model, applicationBloc, areaMarker),
+      builder: (context, _) => buildExpandableBody(model, applicationBloc),
     ),
   );
 }
 
-Widget buildExpandableBody(
-    SearchModel model, ApplicationBloc applicationBloc, AreaMarker areaMarker) {
+Widget buildExpandableBody(SearchModel model, ApplicationBloc applicationBloc) {
   return Container(
     padding: const EdgeInsets.symmetric(vertical: 16),
     child: Material(
@@ -63,22 +55,18 @@ Widget buildExpandableBody(
       child: ImplicitlyAnimatedList<PlaceSearch>(
         shrinkWrap: true,
         physics: const NeverScrollableScrollPhysics(),
-        // items: model.suggestions,
         items: applicationBloc.searchResults,
         insertDuration: const Duration(milliseconds: 700),
         itemBuilder: (context, animation, item, i) {
           return SizeFadeTransition(
             animation: animation,
-            child: SearchItem(
-              place: item,
-              areaMarker: areaMarker,
-            ),
+            child: ItemFinder(place: item),
           );
         },
         updateItemBuilder: (context, animation, item) {
           return FadeTransition(
             opacity: animation,
-            child: SearchItem(place: item, areaMarker: areaMarker),
+            child: ItemFinder(place: item),
           );
         },
         areItemsTheSame: (a, b) => a == b,
@@ -87,18 +75,16 @@ Widget buildExpandableBody(
   );
 }
 
-class SearchItem extends StatefulWidget {
-  PlaceSearch place;
-  AreaMarker areaMarker;
+class ItemFinder extends StatefulWidget {
+  final PlaceSearch place;
 
-  SearchItem({Key? key, required this.place, required this.areaMarker})
-      : super(key: key);
+  const ItemFinder({Key? key, required this.place}) : super(key: key);
 
   @override
-  State<SearchItem> createState() => _SearchItemState();
+  State<ItemFinder> createState() => _ItemFinderState();
 }
 
-class _SearchItemState extends State<SearchItem> {
+class _ItemFinderState extends State<ItemFinder> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -115,14 +101,10 @@ class _SearchItemState extends State<SearchItem> {
           onTap: () async {
             FloatingSearchBar.of(context)?.close();
             Future.delayed(
-              const Duration(milliseconds: 500),
-              () => model.clear(),
-            );
+                const Duration(milliseconds: 500), () => model.clear());
             await applicationBloc.setSelectedLocation(widget.place.placeId);
-            setState(() {
-              widget.areaMarker.addMarker(applicationBloc
-                  .selectedLocationStatic!.geometry.location.latLng);
-            });
+            setState(() => updateMarker(applicationBloc
+                .selectedLocationStatic!.geometry.location.latLng));
           },
           child: Padding(
             padding: const EdgeInsets.all(16),
@@ -131,9 +113,8 @@ class _SearchItemState extends State<SearchItem> {
                 const SizedBox(
                   width: 36,
                   child: AnimatedSwitcher(
-                    duration: Duration(milliseconds: 500),
-                    child: Icon(Icons.place, key: Key('place')),
-                  ),
+                      duration: Duration(milliseconds: 500),
+                      child: Icon(Icons.place, key: Key('place'))),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -141,16 +122,7 @@ class _SearchItemState extends State<SearchItem> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        widget.place.description,
-                        style: textTheme.subtitle1,
-                      ),
-                      // const SizedBox(height: 2),
-                      // Text(
-                      //   widget.place.description,
-                      //   style: textTheme.bodyText2
-                      //       ?.copyWith(color: Colors.grey.shade600),
-                      // ),
+                      Text(widget.place.description, style: textTheme.subtitle1)
                     ],
                   ),
                 ),
@@ -164,7 +136,7 @@ class _SearchItemState extends State<SearchItem> {
   }
 }
 
-// for loading animation purposes
+// Loading Animation
 class SearchModel extends ChangeNotifier {
   bool _isLoading = false;
   String _query = '';

@@ -1,20 +1,13 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-// TODO: Try use controller.addMarker
-class AreaMarker {
-  final List<Marker> _markers = [];
+List<Marker> markers = [];
 
-  addMarker(latLng) async {
-    _markers.clear();
+updateMarker(latLng) async {
+  markers.clear();
 
-    _markers.add(
-      Marker(
-        markerId: MarkerId(latLng.toString()),
-        position: latLng,
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
-      ),
-    );
-  }
-
-  List<Marker> get markers => _markers;
+  markers.add(Marker(
+    markerId: MarkerId(latLng.toString()),
+    position: latLng,
+    icon: BitmapDescriptor.defaultMarker,
+  ));
 }

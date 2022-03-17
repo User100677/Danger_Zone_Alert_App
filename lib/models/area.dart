@@ -11,7 +11,7 @@ class Area {
   double rating;
   int rateCount;
   // TODO: Change the datatype of color from string to Colors
-  // Colors color;
+  // https://stackoverflow.com/questions/58812802/how-to-store-and-retrieve-color-from-firestore-in-flutter
   String color;
   List<Comment> comment = [];
 
