@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'blocs/application_bloc.dart';
-import 'google_map/screens/google_map.dart';
+import 'map/screens/fire_map.dart';
 import 'models/user.dart';
 
 /* This widget decide whether to load WelcomeScreen widget or GoogleMapScreen widget
@@ -29,21 +29,18 @@ class Wrapper extends StatelessWidget {
         builder: (context, provider, child) => (provider.position == null)
             ? const Loading()
             : (provider.position is String)
-                ? const GoogleMapScreen()
+                ? const FireMapScreen()
                 // TODO: Database provider
-                : MultiProvider(
-                    providers: [
-                      StreamProvider<List<Area>>.value(
-                          catchError: null,
-                          initialData: const [],
-                          value: DatabaseService().areas),
-                      StreamProvider<List<RatedArea>>.value(
-                          catchError: null,
-                          initialData: const [],
-                          value: DatabaseService().userRatedArea),
-                    ],
-                    child: GoogleMapScreen(position: provider.position),
-                  ),
+                : MultiProvider(providers: [
+                    StreamProvider<List<Area>>.value(
+                        catchError: null,
+                        initialData: const [],
+                        value: DatabaseService().areas),
+                    StreamProvider<List<RatedArea>>.value(
+                        catchError: null,
+                        initialData: const [],
+                        value: DatabaseService().userRatedArea),
+                  ], child: FireMapScreen(position: provider.position)),
       );
     }
   }

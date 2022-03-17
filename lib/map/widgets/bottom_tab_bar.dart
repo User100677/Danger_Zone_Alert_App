@@ -1,4 +1,4 @@
-import 'package:danger_zone_alert/google_map/util/camera_navigation.dart';
+import 'package:danger_zone_alert/map/util/animate_location.dart';
 import 'package:danger_zone_alert/models/user.dart';
 import 'package:danger_zone_alert/services/auth.dart';
 import 'package:danger_zone_alert/shared/widgets/error_snackbar.dart';
@@ -41,7 +41,7 @@ Widget buildBottomTabBar(context, googleMapController) {
                   // Display error notification if userPosition is null else navigate to user position
                   (userPosition == null)
                       ? errorSnackBar(context, 'Navigation failed!')
-                      : navigateToLocation(userPosition, googleMapController);
+                      : animateToLocation(userPosition, googleMapController);
                 },
               ),
             ),

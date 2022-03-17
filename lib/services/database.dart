@@ -20,8 +20,22 @@ class DatabaseService {
   final CollectionReference areaCollection =
       FirebaseFirestore.instance.collection('areas');
 
+  // <------------------------ User ---------------------------->
   /* Each user contain a unique id and thus we can differentiate them using that id */
-  Future updateUserData(LatLng latLng, double rating) async {
+  Future getUserData(UserModel user) async {
+    await userCollection
+        .doc(uid)
+        .collection('ratedAreas')
+        .get()
+        .then((querySnapshot) => {
+              user.ratedAreas = _userRatedAreaListFromSnapshot(querySnapshot),
+              // print("Store in model? "),
+              // print(user.ratedAreas.first.latLng),
+            });
+  }
+
+  // Update data regarding the ratedArea of the user
+  Future updateUserRatedAreaData(LatLng latLng, double rating) async {
     return await userCollection
         .doc(uid)
         .collection('ratedAreas')
@@ -32,19 +46,6 @@ class DatabaseService {
   }
 
   // What if the user don't have any ratedArea? = No error apparently
-  // For testing purposes
-  Future getUserData(UserModel user) async {
-    await userCollection
-        .doc(uid)
-        .collection('ratedAreas')
-        .get()
-        .then((querySnapshot) => {
-              user.ratedAreas = _userRatedAreaListFromSnapshot(querySnapshot),
-              print("Store in model? "),
-              print(user.ratedAreas.first.latLng),
-            });
-  }
-
   // Return a list of ratedArea into class RatedArea in user.dart
   List<RatedArea> _userRatedAreaListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
@@ -54,17 +55,54 @@ class DatabaseService {
       double latitude = double.parse(latLng[0]);
       double longitude = double.parse(latLng[1]);
 
-      print("Recorded Latitude & Longitude: ");
-      print(LatLng(latitude, longitude));
-
       return RatedArea(
           latLng: LatLng(latitude, longitude), rating: doc['rating']);
     }).toList();
   }
 
+  // TODO: Need include userCollection.doc(uid).snapshots().map(_userRatedAreaListFromSnapshot) ?
+  // Stream<List<RatedArea>> get userRatedArea {
+  //   return userCollection.snapshots().map(_userRatedAreaListFromSnapshot);
+  // }
   Stream<List<RatedArea>> get userRatedArea {
     return userCollection.snapshots().map(_userRatedAreaListFromSnapshot);
   }
+
+  // Update data regarding the comment of the user
+  Future updateUserCommentedAreaData(
+      LatLng latLng, int commentIndex, bool value) async {
+    return await userCollection
+        .doc(uid)
+        .collection('ratedAreas')
+        .doc(latLng.toString())
+        .collection('commentAreas')
+        .doc(commentIndex.toString())
+        .set({'isLike': value});
+  }
+
+  // List<CommentedArea> _userCommentedAreaListFromSnapshot(
+  //     QuerySnapshot snapshot) {
+  //   // return snapshot.docs.map((doc) {
+  //   //   List<String> commentIndex =
+  //   //       doc.id.replaceAll('LatLng(', "").replaceAll(')', "").split(', ');
+  //   //
+  //   //   double latitude = double.parse(latLng[0]);
+  //   //   double longitude = double.parse(latLng[1]);
+  //   //
+  //   //   print("Recorded Latitude & Longitude: ");
+  //   //   print(LatLng(latitude, longitude));
+  //   //
+  //   //   return RatedArea(
+  //   //       latLng: LatLng(latitude, longitude), rating: doc['rating']);
+  //   // }).toList();
+  // }
+
+  // Stream<List<CommentedArea>> get userCommentedArea {
+  //   // return userCollection
+  //   //     .doc(uid)
+  //   //     .snapshots()
+  //   //     .map(_userRatedAreaListFromSnapshot);
+  // }
 
   // <---------------------- Area -------------------->
   Future updateAreaData(
@@ -96,6 +134,7 @@ class DatabaseService {
   Stream<List<Area>> get areas =>
       areaCollection.snapshots().map(_areaListFromSnapshot);
 
+  // <-------------------------- Comment --------------------->
   // Add a comment using as the current user
   Future addCommentData(LatLng latLng, String text, User user) async {
     return await areaCollection

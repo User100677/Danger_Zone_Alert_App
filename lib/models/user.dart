@@ -5,10 +5,8 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 class UserModel {
   // User's unique id
   final String uid;
-  // LatLng? _latLng;
-  // bool? _access;
-  late LatLng _latLng;
-  late bool _access;
+  LatLng? _latLng;
+  bool? _access;
   List<RatedArea> ratedAreas = [];
 
   UserModel({required this.uid});

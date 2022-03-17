@@ -1,7 +1,7 @@
 import 'package:danger_zone_alert/comment/comment.dart';
 import 'package:danger_zone_alert/constants/app_constants.dart';
-import 'package:danger_zone_alert/google_map/util/calculate_distance.dart';
-import 'package:danger_zone_alert/google_map/widgets/alert_dialog_box.dart';
+import 'package:danger_zone_alert/map/util/calculate_distance.dart';
+import 'package:danger_zone_alert/map/widgets/alert_dialog_box.dart';
 import 'package:danger_zone_alert/models/user.dart';
 import 'package:danger_zone_alert/rating/new_rating.dart';
 import 'package:danger_zone_alert/services/database.dart';
@@ -137,9 +137,11 @@ class AreaDescriptionBox extends StatelessWidget {
   }
 
   Future<void> handleRatePressed() async {
-    await DatabaseService(uid: user.uid).updateUserData(areaLatLng, 4.2);
+    await DatabaseService(uid: user.uid)
+        .updateUserRatedAreaData(areaLatLng, 4.2);
     await DatabaseService(uid: user.uid)
         .updateAreaData(areaLatLng, 'Colors.red', 10, 4.2);
     print('Completed!');
+    print(user.uid);
   }
 }

@@ -2,8 +2,16 @@ import 'dart:async';
 
 import 'package:danger_zone_alert/blocs/application_bloc.dart';
 import 'package:danger_zone_alert/constants/app_constants.dart';
-import 'package:danger_zone_alert/google_map/all_google_map.dart';
-import 'package:danger_zone_alert/google_map/widgets/search_bar.dart';
+import 'package:danger_zone_alert/map/util/animate_location.dart';
+import 'package:danger_zone_alert/map/util/area_notification.dart';
+import 'package:danger_zone_alert/map/util/calculate_distance.dart';
+import 'package:danger_zone_alert/map/util/location_validation.dart';
+import 'package:danger_zone_alert/map/util/reverse_geocoding.dart';
+import 'package:danger_zone_alert/map/widgets/area_description_box.dart';
+import 'package:danger_zone_alert/map/widgets/area_marker.dart';
+import 'package:danger_zone_alert/map/widgets/area_rating_box.dart';
+import 'package:danger_zone_alert/map/widgets/bottom_tab_bar.dart';
+import 'package:danger_zone_alert/map/widgets/search_bar.dart';
 import 'package:danger_zone_alert/models/area.dart';
 import 'package:danger_zone_alert/models/user.dart';
 import 'package:danger_zone_alert/services/database.dart';
@@ -17,27 +25,28 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:provider/provider.dart';
 
-class GoogleMapScreen extends StatefulWidget {
-  static String id = "google_map_screen";
+class FireMapScreen extends StatefulWidget {
+  static String id = "fire_map_screen";
   final Position? position;
 
-  const GoogleMapScreen({Key? key, this.position}) : super(key: key);
+  const FireMapScreen({Key? key, this.position}) : super(key: key);
 
   @override
-  _GoogleMapScreenController createState() => _GoogleMapScreenController();
+  _FireMapScreenController createState() => _FireMapScreenController();
 
   BuildContext getContext() {
-    return _GoogleMapScreenController().context;
+    return _FireMapScreenController().context;
   }
 }
 
-class _GoogleMapScreenController extends State<GoogleMapScreen> {
+class _FireMapScreenController extends State<FireMapScreen> {
   final notifications = FlutterLocalNotificationsPlugin();
   final Completer<GoogleMapController> _googleMapController = Completer();
 
   // AreaCircle areaCircle = AreaCircle();
   AreaMarker areaMarker = AreaMarker();
   bool isUserInCircle = false;
+  // List<Area> areas = [];
 
   StreamSubscription? locationSubscription;
   final _searchBarController = FloatingSearchBarController();
@@ -62,8 +71,7 @@ class _GoogleMapScreenController extends State<GoogleMapScreen> {
         applicationBloc.selectedLocation?.stream.listen((place) {
       if (place != null) {
         _searchBarController.query = place.name;
-        navigateToLocation(
-            place.geometry.location.latLng, _googleMapController);
+        animateToLocation(place.geometry.location.latLng, _googleMapController);
         _searchBarController.close();
       } else {
         _searchBarController.clear();
@@ -75,6 +83,7 @@ class _GoogleMapScreenController extends State<GoogleMapScreen> {
   void dispose() {
     super.dispose();
 
+    areaCircles.clear();
     _searchBarController.dispose();
     locationSubscription?.cancel();
   }
@@ -86,9 +95,9 @@ class _GoogleMapScreenController extends State<GoogleMapScreen> {
     });
   }
 
-  handleGoogleMapTap(tapLatLng, UserModel user) async {
+  _handleMapTap(tapLatLng, UserModel user) async {
     // Get the description of the tapped position
-    var address = await getAddress(latLng: tapLatLng);
+    var address = await getAddress(tapLatLng);
 
     if (address != kInvalidAddress) {
       setState(
@@ -96,7 +105,7 @@ class _GoogleMapScreenController extends State<GoogleMapScreen> {
           bool isWithinAnyCircle = false;
 
           areaMarker.addMarker(tapLatLng);
-          navigateToLocation(tapLatLng, _googleMapController);
+          animateToLocation(tapLatLng, _googleMapController);
 
           // TODO: Database testing
           DatabaseService(uid: user.uid).getUserData(user);
@@ -154,7 +163,6 @@ class _GoogleMapScreenController extends State<GoogleMapScreen> {
     }
   }
 
-  List<Area> areas = [];
   // Called when the google map is created
   _onMapCreated(GoogleMapController controller, UserModel user) async {
     _googleMapController.complete(controller);
@@ -167,14 +175,16 @@ class _GoogleMapScreenController extends State<GoogleMapScreen> {
       user.setAccess = false;
     }
 
-    // TODO: Database
-    DatabaseService(uid: user.uid).areas.listen((areas) {
-      setState(() {
-        this.areas = areas;
-      });
-    });
+    // TODO: Problem occcured when running below databaseservice code
+    // TODO: It happen probably because setState is constantly called even
+    // TODO: during reload
+    // DatabaseService(uid: user.uid).areas.listen((areas) {
+    //   setState(() {
+    //     areaList = areas;
+    //   });
+    // });
 
-    print("Logic areas' length " + areas.length.toString());
+    // print("Logic areas' length " + areas.length.toString());
 
     // DatabaseService(uid: user.uid).userRatedArea.listen((userRatedAreas) {
     //   setState(() {
@@ -187,7 +197,7 @@ class _GoogleMapScreenController extends State<GoogleMapScreen> {
 
     // Navigate and set stream for user location
     if (user.latLng != null) {
-      navigateToLocation(user.latLng, _googleMapController);
+      animateToLocation(user.latLng, _googleMapController);
 
       GeolocatorService.getCurrentLocation().listen((position) {
         user.setLatLng(LatLng(position.latitude, position.longitude));
@@ -198,20 +208,23 @@ class _GoogleMapScreenController extends State<GoogleMapScreen> {
   }
 
   @override
-  Widget build(BuildContext context) => _GoogleMapScreenView(this);
+  Widget build(BuildContext context) => _FireMapScreenView(this);
 }
 
 // GoogleMapScreenView
-class _GoogleMapScreenView
-    extends WidgetView<GoogleMapScreen, _GoogleMapScreenController> {
-  const _GoogleMapScreenView(_GoogleMapScreenController state) : super(state);
+class _FireMapScreenView
+    extends WidgetView<FireMapScreen, _FireMapScreenController> {
+  const _FireMapScreenView(_FireMapScreenController state) : super(state);
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<UserModel>(context);
+    final user = Provider.of<UserModel?>(context);
     // final user = context.watch<UserModel?>();
     // TODO: Database user ratedAreas always 0 the first click
-    user.ratedAreas = Provider.of<List<RatedArea>>(context);
+    // This is 0 because the following code doesn't work and the working one
+    // is the one on the tap google map
+    // Solution to try: Notify listener, pass user in google map instead
+    user?.ratedAreas = Provider.of<List<RatedArea>>(context);
 
     return Scaffold(
       resizeToAvoidBottomInset: false,
@@ -221,7 +234,7 @@ class _GoogleMapScreenView
           children: <Widget>[
             GoogleMap(
               onMapCreated: (GoogleMapController controller) =>
-                  state._onMapCreated(controller, user),
+                  state._onMapCreated(controller, user!),
               minMaxZoomPreference: const MinMaxZoomPreference(7, 19),
               initialCameraPosition: kInitialCameraPosition,
               cameraTargetBounds: CameraTargetBounds(kMalaysiaBounds),
@@ -235,7 +248,7 @@ class _GoogleMapScreenView
               markers: Set.from(state.areaMarker.markers),
               // circles: Set.from(state.areaCircle.circles),
               circles: Set.from(areaCircles),
-              onTap: (tapLatLng) => state.handleGoogleMapTap(tapLatLng, user),
+              onTap: (tapLatLng) => state._handleMapTap(tapLatLng, user!),
             ),
             buildBottomTabBar(context, state._googleMapController),
             buildFloatingSearchBar(

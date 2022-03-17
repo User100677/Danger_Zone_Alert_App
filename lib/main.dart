@@ -1,6 +1,6 @@
 import 'package:danger_zone_alert/auth/screens/forgot_password.dart';
 import 'package:danger_zone_alert/comment/comment.dart';
-import 'package:danger_zone_alert/google_map/widgets/search_bar.dart';
+import 'package:danger_zone_alert/map/widgets/search_bar.dart';
 import 'package:danger_zone_alert/rating/new_rating.dart';
 import 'package:danger_zone_alert/services/auth.dart';
 import 'package:danger_zone_alert/wrapper.dart';
@@ -12,7 +12,7 @@ import 'auth/screens/register.dart';
 import 'auth/screens/sign_in.dart';
 import 'auth/screens/welcome.dart';
 import 'blocs/application_bloc.dart';
-import 'google_map/screens/google_map.dart';
+import 'map/screens/fire_map.dart';
 import 'models/user.dart';
 
 void main() {
@@ -57,7 +57,7 @@ class MyApp extends StatelessWidget {
         LoginScreen.id: (context) => const LoginScreen(),
         ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
         RegisterScreen.id: (context) => const RegisterScreen(),
-        GoogleMapScreen.id: (context) => const GoogleMapScreen(),
+        FireMapScreen.id: (context) => const FireMapScreen(),
         RatingQuestionsList.id: (context) => const RatingQuestionsList(),
         Comment.id: (context) => Comment(),
       },

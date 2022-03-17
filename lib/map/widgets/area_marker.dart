@@ -1,5 +1,6 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+// TODO: Try use controller.addMarker
 class AreaMarker {
   final List<Marker> _markers = [];
 

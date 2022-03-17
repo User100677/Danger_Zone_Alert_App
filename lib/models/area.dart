@@ -4,6 +4,7 @@ import 'package:danger_zone_alert/constants/app_constants.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 List<Circle> areaCircles = [];
+List<Area> areaList = [];
 
 class Area {
   LatLng latLng;
