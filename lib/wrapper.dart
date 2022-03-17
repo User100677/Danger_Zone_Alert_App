@@ -1,6 +1,4 @@
 import 'package:danger_zone_alert/auth/screens/welcome.dart';
-import 'package:danger_zone_alert/models/area.dart';
-import 'package:danger_zone_alert/services/database.dart';
 import 'package:danger_zone_alert/shared/widgets/loading.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -29,18 +27,23 @@ class Wrapper extends StatelessWidget {
         builder: (context, provider, child) => (provider.position == null)
             ? const Loading()
             : (provider.position is String)
-                ? const FireMapScreen()
+                ? FireMapScreen(user: user)
                 // TODO: Database provider
-                : MultiProvider(providers: [
-                    StreamProvider<List<Area>>.value(
-                        catchError: null,
-                        initialData: const [],
-                        value: DatabaseService().areas),
-                    StreamProvider<List<RatedArea>>.value(
-                        catchError: null,
-                        initialData: const [],
-                        value: DatabaseService().userRatedArea),
-                  ], child: FireMapScreen(position: provider.position)),
+                // : MultiProvider(
+                //     providers: [
+                //       StreamProvider<List<Area>>.value(
+                //           catchError: null,
+                //           initialData: const [],
+                //           value: DatabaseService().areas),
+                //       StreamProvider<List<RatedArea>>.value(
+                //           catchError: null,
+                //           initialData: const [],
+                //           value: DatabaseService().userRatedArea),
+                //     ],
+                //     child:
+                //         FireMapScreen(user: user, position: provider.position),
+                //   ),
+                : FireMapScreen(user: user, position: provider.position),
       );
     }
   }

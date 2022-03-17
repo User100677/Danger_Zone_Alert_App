@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:danger_zone_alert/blocs/application_bloc.dart';
 import 'package:danger_zone_alert/constants/app_constants.dart';
 import 'package:danger_zone_alert/map/util/animate_location.dart';
@@ -14,7 +15,7 @@ import 'package:danger_zone_alert/map/widgets/bottom_tab_bar.dart';
 import 'package:danger_zone_alert/map/widgets/search_bar.dart';
 import 'package:danger_zone_alert/models/area.dart';
 import 'package:danger_zone_alert/models/user.dart';
-import 'package:danger_zone_alert/services/database.dart';
+import 'package:danger_zone_alert/services/DatabaseServiceTest.dart';
 import 'package:danger_zone_alert/services/geolocator_service.dart';
 import 'package:danger_zone_alert/shared/widgets/error_snackbar.dart';
 import 'package:danger_zone_alert/widget_view/widget_view.dart';
@@ -27,9 +28,11 @@ import 'package:provider/provider.dart';
 
 class FireMapScreen extends StatefulWidget {
   static String id = "fire_map_screen";
+  final UserModel user;
   final Position? position;
 
-  const FireMapScreen({Key? key, this.position}) : super(key: key);
+  const FireMapScreen({Key? key, required this.user, this.position})
+      : super(key: key);
 
   @override
   _FireMapScreenController createState() => _FireMapScreenController();
@@ -42,11 +45,7 @@ class FireMapScreen extends StatefulWidget {
 class _FireMapScreenController extends State<FireMapScreen> {
   final notifications = FlutterLocalNotificationsPlugin();
   final Completer<GoogleMapController> _googleMapController = Completer();
-
-  // AreaCircle areaCircle = AreaCircle();
-  // AreaMarker areaMarker = AreaMarker();
   bool isUserInCircle = false;
-  // List<Area> areas = [];
 
   StreamSubscription? locationSubscription;
   final _searchBarController = FloatingSearchBarController();
@@ -83,6 +82,7 @@ class _FireMapScreenController extends State<FireMapScreen> {
   void dispose() {
     super.dispose();
 
+    markers.clear();
     areaCircles.clear();
     _searchBarController.dispose();
     locationSubscription?.cancel();
@@ -95,61 +95,93 @@ class _FireMapScreenController extends State<FireMapScreen> {
     });
   }
 
-  _handleMapTap(tapLatLng, UserModel user) async {
+  _handleMapTap(tapLatLng) async {
     // Get the description of the tapped position
     var address = await getAddress(tapLatLng);
 
-    if (address != kInvalidAddress) {
-      setState(
-        () {
-          bool isWithinAnyCircle = false;
-
-          updateMarker(tapLatLng);
-          animateToLocation(tapLatLng, _googleMapController);
-
-          // TODO: Database testing
-          DatabaseService(uid: user.uid).getUserData(user);
-          print("User num of rated area: " + user.ratedAreas.length.toString());
-
-          // Check if tapLatLng is within any circles
-          if (areaCircles.isNotEmpty) {
-            for (Circle circle in areaCircles) {
-              double distance = calculateDistance(circle.center, tapLatLng);
-
-              if (isWithinCircle(distance)) {
-                showDialog(
-                    context: context,
-                    builder: (context) => AreaRatingBox(
-                        areaDescription: address,
-                        areaLatLng: circle.center,
-                        user: user,
-                        boxCallback: boxCallback));
-                isWithinAnyCircle = true;
-                break;
-              }
-            }
-          }
-
-          if (!isWithinAnyCircle) {
-            showDialog(
-                context: context,
-                builder: (context) => AreaDescriptionBox(
-                    areaDescription: address,
-                    areaLatLng: tapLatLng,
-                    user: user,
-                    boxCallback: boxCallback));
-            isWithinAnyCircle = false;
-          }
-        },
-      );
+    // TODO: Database testing
+    if (widget.user.ratedAreas.isNotEmpty) {
+      print(widget.user.ratedAreas.first.latLng);
+    } else {
+      print("The current user didn't rate that area before!");
     }
+
+    // TODO: Database testing
+    // await DatabaseServiceTest(uid: widget.user.uid)
+    //     .updateUserRatedAreasData(tapLatLng, 4.2);
+    //
+    // await DatabaseServiceTest(uid: widget.user.uid)
+    //     .updateAreasData(tapLatLng, 4.2, 'Colors.red', 10);
+
+    if (address != kInvalidAddress) {
+      bool isWithinAnyCircle = false;
+
+      updateMarker(tapLatLng);
+      animateToLocation(tapLatLng, _googleMapController);
+
+      // Check if tapLatLng is within any circles
+      if (areaCircles.isNotEmpty) {
+        for (Circle circle in areaCircles) {
+          double distance = calculateDistance(circle.center, tapLatLng);
+
+          if (isWithinCircle(distance)) {
+            isWithinAnyCircle = true;
+            setState(() {
+              showDialog(
+                  context: context,
+                  builder: (context) => AreaRatingBox(
+                      areaDescription: address,
+                      areaLatLng: circle.center,
+                      user: widget.user,
+                      boxCallback: boxCallback));
+            });
+
+            // TODO: Database
+            widget.user.ratedAreas.clear();
+            var x = await DatabaseServiceTest(uid: widget.user.uid)
+                .getUserCurrentRatedAreaData(circle.center);
+
+            if (x.data() != null) {
+              widget.user.ratedAreas.add(RatedArea(
+                  latLng: LatLng(
+                      x.get('geopoint').latitude, x.get('geopoint').longitude),
+                  rating: x.get('rating')));
+            }
+
+            break;
+          }
+        }
+      }
+
+      if (!isWithinAnyCircle) {
+        isWithinAnyCircle = false;
+        setState(() {
+          showDialog(
+              context: context,
+              builder: (context) => AreaDescriptionBox(
+                  areaDescription: address,
+                  tapLatLng: tapLatLng,
+                  user: widget.user,
+                  boxCallback: boxCallback));
+        });
+      }
+    }
+
+    // TODO: Database
+    // if (circleLatLng != null) {
+    //   var x = await DatabaseServiceTest(uid: widget.user.uid)
+    //       .getUserCurrentRatedAreaData(circleLatLng);
+    //
+    //   print(x.get('geopoint').latitude);
+    // }
   }
 
   // Contain the logic of notification alert using user GPS
-  void _notificationLogic(UserModel user) {
+  void _notificationLogic() {
     if (areaCircles.isNotEmpty) {
       for (Circle circle in areaCircles) {
-        double userDistance = calculateDistance(circle.center, user.latLng);
+        double userDistance =
+            calculateDistance(circle.center, widget.user.latLng);
 
         if (isWithinCircle(userDistance) && isUserInCircle == false) {
           isUserInCircle = true;
@@ -164,21 +196,84 @@ class _FireMapScreenController extends State<FireMapScreen> {
   }
 
   // Called when the google map is created
-  _onMapCreated(GoogleMapController controller, UserModel user) async {
+  _onMapCreated(GoogleMapController controller) async {
     _googleMapController.complete(controller);
 
     try {
-      user.setLatLng(await validateLocation(widget.position));
-      user.setAccess = true;
+      widget.user.setLatLng(await validateLocation(widget.position));
+      widget.user.setAccess = true;
     } catch (e) {
       errorSnackBar(context, e.toString());
-      user.setAccess = false;
+      widget.user.setAccess = false;
     }
+
+    // DatabaseServiceTest(uid: widget.user.uid)
+    //     .getRatedArea(controller, context)
+    //     .listen((List<DocumentSnapshot> documentList) {
+    //   widget.user.ratedAreas.clear();
+    //
+    //   // TODO: For some reason this work but not when put in a method
+    //   documentList.forEach((DocumentSnapshot document) {
+    //     var lat = document.get('geoData')['geopoint'].latitude;
+    //     var lon = document.get('geoData')['geopoint'].longitude;
+    //
+    //     areaCircles2.add(Circle(
+    //       circleId: CircleId(LatLng(lat, lon).toString()),
+    //       center: LatLng(lat, lon),
+    //       radius: kAreaRadius,
+    //       strokeWidth: 0,
+    //       fillColor: const Color.fromRGBO(255, 0, 0, .5),
+    //       consumeTapEvents: false,
+    //     ));
+    //
+    //     widget.user.ratedAreas
+    //         .add(RatedArea(latLng: LatLng(lat, lon), rating: 4.2));
+    //   });
+    // });
+
+    // Navigate and set stream for user location
+    if (widget.user.latLng != null) {
+      animateToLocation(widget.user.latLng, _googleMapController);
+
+      GeolocatorService.getCurrentLocation().listen((position) {
+        // widget.user.setLatLng(LatLng(position.latitude, position.longitude));
+        setState(() {
+          widget.user.setLatLng(LatLng(position.latitude, position.longitude));
+        });
+
+        _notificationLogic();
+      });
+    }
+
+    DatabaseServiceTest(uid: widget.user.uid)
+        .getAreas(controller, context)
+        .listen((List<DocumentSnapshot> documentList) {
+      widget.user.ratedAreas.clear();
+
+      // TODO: For some reason this work but not when put in a method
+      documentList.forEach((DocumentSnapshot document) {
+        if (!mounted) return;
+
+        var lat = document.get('geoData')['geopoint'].latitude;
+        var lon = document.get('geoData')['geopoint'].longitude;
+
+        setState(() {
+          areaList.add(Area(
+              latLng: LatLng(lat, lon),
+              rating: 4.2,
+              rateCount: 8,
+              color: 'Colors.red'));
+        });
+        // widget.user.ratedAreas
+        //     .add(RatedArea(latLng: LatLng(lat, lon), rating: 4.2));
+      });
+    });
 
     // TODO: Problem occured when running below databaseservice code
     // TODO: It happen probably because setState is constantly called even
     // TODO: during reload
-    // DatabaseService(uid: user.uid).areas.listen((areas) {
+
+    // DatabaseService(uid: widget.user.uid).areas.listen((areas) {
     //   setState(() {
     //     areaList = areas;
     //   });
@@ -194,17 +289,6 @@ class _FireMapScreenController extends State<FireMapScreen> {
     //
     // print(
     //     "Logic user ratedAreas' length: " + user.ratedAreas.length.toString());
-
-    // Navigate and set stream for user location
-    if (user.latLng != null) {
-      animateToLocation(user.latLng, _googleMapController);
-
-      GeolocatorService.getCurrentLocation().listen((position) {
-        user.setLatLng(LatLng(position.latitude, position.longitude));
-
-        _notificationLogic(user);
-      });
-    }
   }
 
   @override
@@ -218,14 +302,6 @@ class _FireMapScreenView
 
   @override
   Widget build(BuildContext context) {
-    final user = Provider.of<UserModel?>(context);
-    // final user = context.watch<UserModel?>();
-    // TODO: Database user ratedAreas always 0 the first click
-    // This is 0 because the following code doesn't work and the working one
-    // is the one on the tap google map
-    // Solution to try: Notify listener, pass user in google map instead
-    user?.ratedAreas = Provider.of<List<RatedArea>>(context);
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       extendBody: true,
@@ -234,7 +310,7 @@ class _FireMapScreenView
           children: <Widget>[
             GoogleMap(
               onMapCreated: (GoogleMapController controller) =>
-                  state._onMapCreated(controller, user!),
+                  state._onMapCreated(controller),
               minMaxZoomPreference: const MinMaxZoomPreference(7, 19),
               initialCameraPosition: kInitialCameraPosition,
               cameraTargetBounds: CameraTargetBounds(kMalaysiaBounds),
@@ -247,7 +323,7 @@ class _FireMapScreenView
               zoomControlsEnabled: false,
               markers: Set.from(markers),
               circles: Set.from(areaCircles),
-              onTap: (tapLatLng) => state._handleMapTap(tapLatLng, user!),
+              onTap: (tapLatLng) => state._handleMapTap(tapLatLng),
             ),
             buildBottomTabBar(context, state._googleMapController),
             buildSearchBar(context, state._searchBarController),

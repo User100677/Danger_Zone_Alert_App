@@ -12,7 +12,6 @@ import 'auth/screens/register.dart';
 import 'auth/screens/sign_in.dart';
 import 'auth/screens/welcome.dart';
 import 'blocs/application_bloc.dart';
-import 'map/screens/fire_map.dart';
 import 'models/user.dart';
 
 void main() {
@@ -57,7 +56,6 @@ class MyApp extends StatelessWidget {
         LoginScreen.id: (context) => const LoginScreen(),
         ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
         RegisterScreen.id: (context) => const RegisterScreen(),
-        FireMapScreen.id: (context) => const FireMapScreen(),
         RatingQuestionsList.id: (context) => const RatingQuestionsList(),
         Comment.id: (context) => Comment(),
       },

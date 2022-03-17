@@ -24,16 +24,6 @@ class RatedArea {
   RatedArea({required this.latLng, this.rating = 0});
 }
 
-// class RatedArea with ChangeNotifier {
-//   LatLng latLng;
-//   double rating;
-//   List<CommentedArea> commentedArea = [];
-//
-//   RatedArea({required this.latLng, this.rating = 0}) {
-//     notifyListeners();
-//   }
-// }
-
 class CommentedArea {
   bool isLike;
   CommentedArea({required this.isLike});

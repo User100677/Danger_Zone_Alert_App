@@ -4,14 +4,14 @@ import 'package:danger_zone_alert/map/util/calculate_distance.dart';
 import 'package:danger_zone_alert/map/widgets/alert_dialog_box.dart';
 import 'package:danger_zone_alert/models/user.dart';
 import 'package:danger_zone_alert/rating/new_rating.dart';
-import 'package:danger_zone_alert/services/database.dart';
+import 'package:danger_zone_alert/services/DatabaseServiceTest.dart';
 import 'package:danger_zone_alert/shared/widgets/rounded_rectangle_button.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class AreaDescriptionBox extends StatelessWidget {
   final String areaDescription;
-  final LatLng areaLatLng;
+  final LatLng tapLatLng;
   final UserModel user;
   final Function boxCallback;
 
@@ -24,7 +24,7 @@ class AreaDescriptionBox extends StatelessWidget {
   AreaDescriptionBox(
       {Key? key,
       required this.areaDescription,
-      required this.areaLatLng,
+      required this.tapLatLng,
       required this.user,
       required this.boxCallback})
       : super(key: key);
@@ -88,8 +88,7 @@ class AreaDescriptionBox extends StatelessWidget {
                           if (user.access == false) {
                             showAlertDialog(context, kLocationDenied);
                           } else {
-                            if (calculateDistance(user.latLng, areaLatLng) <
-                                1) {
+                            if (calculateDistance(user.latLng, tapLatLng) < 1) {
                               // TODO
                               handleRatePressed();
 
@@ -116,8 +115,7 @@ class AreaDescriptionBox extends StatelessWidget {
                           if (user.access == false) {
                             showAlertDialog(context, kLocationDenied);
                           } else {
-                            if (calculateDistance(user.latLng, areaLatLng) <
-                                1) {
+                            if (calculateDistance(user.latLng, tapLatLng) < 1) {
                               // area.addCircle(areaLatLng);
                               Navigator.popAndPushNamed(context, Comment.id);
                               boxCallback();
@@ -138,11 +136,21 @@ class AreaDescriptionBox extends StatelessWidget {
     );
   }
 
-  Future<void> handleRatePressed() async {
-    await DatabaseService(uid: user.uid)
-        .updateUserRatedAreaData(areaLatLng, 4.2);
-    await DatabaseService(uid: user.uid)
-        .updateAreaData(areaLatLng, 'Colors.red', 10, 4.2);
+  // Future<void> handleRatePressed() async {
+  //   await DatabaseService(uid: user.uid)
+  //       .updateUserRatedAreaData(areaLatLng, 4.2);
+  //   await DatabaseService(uid: user.uid)
+  //       .updateAreaData(areaLatLng, 'Colors.red', 10, 4.2);
+  //   print('Completed!');
+  // }
+
+  handleRatePressed() async {
+    await DatabaseServiceTest(uid: user.uid)
+        .updateUserRatedAreasData(tapLatLng, 4.2);
+
+    await DatabaseServiceTest(uid: user.uid)
+        .updateAreasData(tapLatLng, 4.2, 'Colors.red', 10);
+
     print('Completed!');
   }
 }

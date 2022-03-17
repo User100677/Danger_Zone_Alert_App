@@ -133,6 +133,8 @@ class AreaRatingBox extends StatelessWidget {
                           } else {
                             if (calculateDistance(user.latLng, areaLatLng) <
                                 1) {
+                              // TODO: Database
+
                               Navigator.popAndPushNamed(
                                   context, RatingQuestionsList.id);
                               boxCallback();

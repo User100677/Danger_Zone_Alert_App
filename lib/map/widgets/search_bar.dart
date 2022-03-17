@@ -103,8 +103,10 @@ class _ItemFinderState extends State<ItemFinder> {
             Future.delayed(
                 const Duration(milliseconds: 500), () => model.clear());
             await applicationBloc.setSelectedLocation(widget.place.placeId);
-            setState(() => updateMarker(applicationBloc
-                .selectedLocationStatic!.geometry.location.latLng));
+            setState(() {
+              updateMarker(applicationBloc
+                  .selectedLocationStatic!.geometry.location.latLng);
+            });
           },
           child: Padding(
             padding: const EdgeInsets.all(16),
