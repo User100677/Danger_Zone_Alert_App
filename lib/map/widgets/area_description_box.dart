@@ -143,7 +143,7 @@ class AreaDescriptionBox extends StatelessWidget {
         .updateUserRatedAreasData(tapLatLng, 4.2);
 
     await DatabaseService(uid: user.uid)
-        .updateAreasData(tapLatLng, 4.2, 'Colors.red', 10);
+        .updateAreasData(tapLatLng, 4.2, 0xFF000000, 1);
 
     print('Rating completed!');
   }
@@ -154,7 +154,7 @@ class AreaDescriptionBox extends StatelessWidget {
         .postAreasCommentData(tapLatLng, 'Testing123', 'test@email.com');
 
     await DatabaseService(uid: user.uid)
-        .updateAreasData(tapLatLng, 0, 'Colors.grey', 0);
+        .updateAreasData(tapLatLng, 0, 0xFF000000, 0);
 
     print('Comment completed!');
   }

@@ -58,7 +58,7 @@ class _FireMapScreenController extends State<FireMapScreen> {
 
   // Set up android & ios notification
   _initializeNotificationsSettings() {
-    const settingsAndroid = AndroidInitializationSettings('app_icon');
+    const settingsAndroid = AndroidInitializationSettings('ic_launcher');
     final settingsIOS = IOSInitializationSettings(
         onDidReceiveLocalNotification: (id, title, body, payload) {});
 
@@ -89,27 +89,33 @@ class _FireMapScreenController extends State<FireMapScreen> {
       animateToLocation(widget.user.latLng, _googleMapController);
 
       GeolocatorService.getCurrentLocation().listen((position) {
-        setState(() {
-          widget.user.setLatLng(LatLng(position.latitude, position.longitude));
-        });
-
-        // local_notification logic
-        if (areaCircles.isNotEmpty) {
-          for (Circle circle in areaCircles) {
-            double userDistance =
-                calculateDistance(circle.center, widget.user.latLng);
-
-            if (isWithinCircle(userDistance) && isUserInCircle == false) {
-              isUserInCircle = true;
-              showOngoingNotification(notifications,
-                  title: 'You entered a Red Zone', body: 'Stay cautious!');
-              break;
-            }
-
-            !isWithinCircle(userDistance) ? isUserInCircle = false : null;
-          }
+        if (mounted) {
+          setState(() {
+            widget.user
+                .setLatLng(LatLng(position.latitude, position.longitude));
+          });
         }
+        _initializeNotificationLogic();
       });
+    }
+  }
+
+  // local_notification logic
+  _initializeNotificationLogic() {
+    if (areaCircles.isNotEmpty) {
+      for (Circle circle in areaCircles) {
+        double userDistance =
+            calculateDistance(circle.center, widget.user.latLng);
+
+        if (isWithinCircle(userDistance) && isUserInCircle == false) {
+          isUserInCircle = true;
+          showOngoingNotification(notifications,
+              title: 'You entered a Red Zone', body: 'Stay cautious!');
+          break;
+        }
+
+        !isWithinCircle(userDistance) ? isUserInCircle = false : null;
+      }
     }
   }
 
@@ -120,19 +126,24 @@ class _FireMapScreenController extends State<FireMapScreen> {
         .listen((List<DocumentSnapshot> documentList) {
       widget.user.ratedAreas.clear();
 
-      for (var document in documentList) {
-        if (!mounted) return;
+      if (mounted) {
+        for (DocumentSnapshot document in documentList) {
+          // if (!mounted) return;
 
-        var lat = document.get('geoData')['geopoint'].latitude;
-        var lon = document.get('geoData')['geopoint'].longitude;
+          LatLng latLng = LatLng(document.get('geoData')['geopoint'].latitude,
+              document.get('geoData')['geopoint'].longitude);
+          double rating = document.get('rating');
+          var totalUsers = document.get('totalUsers');
+          int color = document.get('color');
 
-        setState(() {
-          areaList.add(Area(
-              latLng: LatLng(lat, lon),
-              rating: 4.2,
-              rateCount: 8,
-              color: 'Colors.red'));
-        });
+          setState(() {
+            areaList.add(Area(
+                latLng: latLng,
+                rating: rating,
+                totalUsers: totalUsers,
+                color: Color(color).withOpacity(0.7)));
+          });
+        }
       }
     });
   }
@@ -173,22 +184,27 @@ class _FireMapScreenController extends State<FireMapScreen> {
 
       // Check if tapLatLng is within any circles
       if (areaCircles.isNotEmpty) {
-        for (Circle area in areaCircles) {
-          double distance = calculateDistance(area.center, tapLatLng);
+        for (Circle circle in areaCircles) {
+          double distance = calculateDistance(circle.center, tapLatLng);
 
           if (isWithinCircle(distance)) {
+            Area area = areaList[areaCircles.indexOf(circle)];
+
             isWithinAnyCircle = true;
             setState(() {
               showDialog(
                   context: context,
                   builder: (context) => AreaRatingBox(
+                      areaLatLng: area.latLng,
+                      color: area.color,
+                      rating: area.rating,
+                      totalUsers: area.totalUsers,
                       areaDescription: address,
-                      areaLatLng: area.center,
                       user: widget.user,
                       boxCallback: boxCallback));
             });
 
-            _handleUserRatedArea(area);
+            _handleUserRatedArea(circle);
             break;
           }
         }

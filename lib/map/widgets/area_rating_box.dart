@@ -12,49 +12,49 @@ import '../util/calculate_distance.dart';
 import 'alert_dialog_box.dart';
 
 class AreaRatingBox extends StatelessWidget {
-  final String areaDescription;
-  final LatLng areaLatLng;
+  final Color color;
+  final double rating;
   final UserModel user;
+  final int totalUsers;
+  final LatLng areaLatLng;
   final Function boxCallback;
+  final String areaDescription;
 
-  final int numberRating;
-  final double dangerRating;
-
-  final ratingColor = Colors.redAccent;
-  final dangerLevelColor = const Color(0xffFF6666);
-  final primaryColor = Colors.white;
-  final locationTextColor = const Color(0xff6E7CA8);
-  final iconColor = const Color(0xffAAB1C9);
-  final containerButtonColor = const Color(0xffF2F4F5);
-  final textColor = Colors.white;
-
-  AreaRatingBox(
-      {required this.areaDescription,
-      required this.areaLatLng,
-      required this.user,
-      required this.boxCallback,
-      this.numberRating = 10,
-      this.dangerRating = 4.5});
+  AreaRatingBox({
+    required this.areaDescription,
+    required this.areaLatLng,
+    required this.user,
+    required this.totalUsers,
+    required this.rating,
+    required this.color,
+    required this.boxCallback,
+  });
 
   @override
   Widget build(BuildContext context) {
+    const dangerLevelColor = Color(0xffFF6666);
+    const primaryColor = Colors.white;
+    const locationTextColor = Color(0xff6E7CA8);
+    const iconColor = Color(0xffAAB1C9);
+    const containerButtonColor = Color(0xffF2F4F5);
+    const textColor = Colors.white;
+
     return Column(
       children: <Widget>[
         Container(
           margin: const EdgeInsets.symmetric(horizontal: 30.0, vertical: 24.0),
-          decoration: BoxDecoration(
-            color: primaryColor,
-            borderRadius: const BorderRadius.all(Radius.circular(10.0)),
-          ),
+          decoration: const BoxDecoration(
+              color: primaryColor,
+              borderRadius: BorderRadius.all(Radius.circular(10.0))),
           child: Column(
             children: <Widget>[
               Padding(
                 padding: const EdgeInsets.only(top: 24.0),
-                child: Text('$dangerRating',
+                child: Text('$rating',
                     style: Theme.of(context).textTheme.bodyText2?.copyWith(
                         fontSize: 50.0,
                         // TODO: Text Color base on rating Danger Level: Red, Orange, Yellow, Green, Grey
-                        color: ratingColor,
+                        color: color,
                         fontWeight: FontWeight.w800,
                         fontFamily: 'RobotoMono'),
                     textAlign: TextAlign.center),
@@ -69,7 +69,7 @@ class AreaRatingBox extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 6.0),
                 child: RatingBarIndicator(
-                    rating: dangerRating,
+                    rating: rating,
                     itemBuilder: (BuildContext context, int index) =>
                         const Icon(Icons.star_border, color: Color(0xffFEBC48)),
                     itemCount: 5,
@@ -79,7 +79,7 @@ class AreaRatingBox extends StatelessWidget {
               // People Rated
               Padding(
                 padding: const EdgeInsets.only(top: 6.0),
-                child: Text('$numberRating People Rated',
+                child: Text('$totalUsers People Rated',
                     style: Theme.of(context)
                         .textTheme
                         .bodyText2
@@ -93,8 +93,8 @@ class AreaRatingBox extends StatelessWidget {
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.only(right: 6.0),
+                    const Padding(
+                      padding: EdgeInsets.only(right: 6.0),
                       child: Icon(Icons.location_on_outlined,
                           size: 24.0, color: iconColor),
                     ),
@@ -115,9 +115,9 @@ class AreaRatingBox extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(
                     horizontal: 12.0, vertical: 12.0),
-                decoration: BoxDecoration(
+                decoration: const BoxDecoration(
                   color: containerButtonColor,
-                  borderRadius: const BorderRadius.only(
+                  borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(10.0),
                       bottomRight: Radius.circular(10.0)),
                 ),
@@ -147,9 +147,7 @@ class AreaRatingBox extends StatelessWidget {
                         },
                       ),
                     ),
-                    const SizedBox(
-                      width: 12.0,
-                    ),
+                    const SizedBox(width: 12.0),
                     Expanded(
                       child: RoundedRectangleButton(
                         buttonText: 'Comment',
@@ -161,6 +159,9 @@ class AreaRatingBox extends StatelessWidget {
                           } else {
                             if (calculateDistance(user.latLng, areaLatLng) <
                                 1) {
+                              // TODO: Database
+                              handleCommentPressed();
+
                               Navigator.popAndPushNamed(
                                   context, CommentScreen.id);
                               boxCallback();
@@ -186,7 +187,7 @@ class AreaRatingBox extends StatelessWidget {
         .updateUserRatedAreasData(areaLatLng, 4.2);
 
     await DatabaseService(uid: user.uid)
-        .updateAreasData(areaLatLng, 4.2, 'Colors.red', 10);
+        .updateAreasData(areaLatLng, 4.2, 0xFF0000, 10);
 
     print('Rating completed!');
   }

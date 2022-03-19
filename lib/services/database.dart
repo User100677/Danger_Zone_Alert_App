@@ -47,7 +47,7 @@ class DatabaseService {
   /* Areas */
   // Might need to split into multiple function for individual component's update or even an initialAreasData()
   Future updateAreasData(
-      LatLng latLng, double? rating, String color, int totalUsers) async {
+      LatLng latLng, double rating, int color, int totalUsers) async {
     GeoFirePoint location =
         geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
 
@@ -58,22 +58,6 @@ class DatabaseService {
       'geoData': location.data
     });
   }
-
-  // Stream<List<DocumentSnapshot>> getAreasData(controller, context) async* {
-  //
-  //   var latLng = await controller.getLatLng(cameraMiddleCoordinate(context));
-  //
-  //   GeoFirePoint center =
-  //       geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
-  //
-  //   double radius = 40;
-  //   String field = 'geoData';
-  //
-  //   yield* geo
-  //       .collection(
-  //           collectionRef: FirebaseFirestore.instance.collection('areas'))
-  //       .within(center: center, radius: radius, field: field);
-  // }
 
   Stream<List<DocumentSnapshot>> getAreasData(
       googleMapController, context) async* {
