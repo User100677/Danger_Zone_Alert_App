@@ -4,7 +4,7 @@ import 'package:danger_zone_alert/map/util/calculate_distance.dart';
 import 'package:danger_zone_alert/map/widgets/alert_dialog_box.dart';
 import 'package:danger_zone_alert/models/user.dart';
 import 'package:danger_zone_alert/rating/new_rating.dart';
-import 'package:danger_zone_alert/services/DatabaseServiceTest.dart';
+import 'package:danger_zone_alert/services/database.dart';
 import 'package:danger_zone_alert/shared/widgets/rounded_rectangle_button.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -92,7 +92,6 @@ class AreaDescriptionBox extends StatelessWidget {
                               // TODO
                               handleRatePressed();
 
-                              // area.addCircle(areaLatLng);
                               Navigator.popAndPushNamed(
                                   context, RatingQuestionsList.id);
                               boxCallback();
@@ -116,8 +115,11 @@ class AreaDescriptionBox extends StatelessWidget {
                             showAlertDialog(context, kLocationDenied);
                           } else {
                             if (calculateDistance(user.latLng, tapLatLng) < 1) {
-                              // area.addCircle(areaLatLng);
-                              Navigator.popAndPushNamed(context, Comment.id);
+                              // TODO
+                              handleInitialCommentPressed();
+
+                              Navigator.popAndPushNamed(
+                                  context, CommentScreen.id);
                               boxCallback();
                             } else {
                               showAlertDialog(context, kAlertCommentText);
@@ -136,21 +138,24 @@ class AreaDescriptionBox extends StatelessWidget {
     );
   }
 
-  // Future<void> handleRatePressed() async {
-  //   await DatabaseService(uid: user.uid)
-  //       .updateUserRatedAreaData(areaLatLng, 4.2);
-  //   await DatabaseService(uid: user.uid)
-  //       .updateAreaData(areaLatLng, 'Colors.red', 10, 4.2);
-  //   print('Completed!');
-  // }
-
   handleRatePressed() async {
-    await DatabaseServiceTest(uid: user.uid)
+    await DatabaseService(uid: user.uid)
         .updateUserRatedAreasData(tapLatLng, 4.2);
 
-    await DatabaseServiceTest(uid: user.uid)
+    await DatabaseService(uid: user.uid)
         .updateAreasData(tapLatLng, 4.2, 'Colors.red', 10);
 
-    print('Completed!');
+    print('Rating completed!');
+  }
+
+  // A method to create a circle if the user first rate the area.
+  handleInitialCommentPressed() async {
+    await DatabaseService(uid: user.uid)
+        .postAreasCommentData(tapLatLng, 'Testing123', 'test@email.com');
+
+    await DatabaseService(uid: user.uid)
+        .updateAreasData(tapLatLng, 0, 'Colors.grey', 0);
+
+    print('Comment completed!');
   }
 }

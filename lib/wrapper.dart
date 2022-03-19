@@ -31,19 +31,23 @@ class Wrapper extends StatelessWidget {
                 // TODO: Database provider
                 // : MultiProvider(
                 //     providers: [
-                //       StreamProvider<List<Area>>.value(
+                //       // StreamProvider<List<Area>>.value(
+                //       //     catchError: null,
+                //       //     initialData: const [],
+                //       //     value: DatabaseService().areas),
+                //       // StreamProvider<List<RatedArea>>.value(
+                //       //     catchError: null,
+                //       //     initialData: const [],
+                //       //     value: DatabaseService().userRatedArea),
+                //       StreamProvider<List<Comment>>.value(
                 //           catchError: null,
-                //           initialData: const [],
-                //           value: DatabaseService().areas),
-                //       StreamProvider<List<RatedArea>>.value(
-                //           catchError: null,
-                //           initialData: const [],
-                //           value: DatabaseService().userRatedArea),
+                //           value: DatabaseService().getComments(null),
+                //           initialData: const []),
                 //     ],
                 //     child:
                 //         FireMapScreen(user: user, position: provider.position),
                 //   ),
-                : FireMapScreen(user: user, position: provider.position),
+                : FireMapScreen(user: user, userPosition: provider.position),
       );
     }
   }

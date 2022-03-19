@@ -57,7 +57,7 @@ class MyApp extends StatelessWidget {
         ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
         RegisterScreen.id: (context) => const RegisterScreen(),
         RatingQuestionsList.id: (context) => const RatingQuestionsList(),
-        Comment.id: (context) => Comment(),
+        CommentScreen.id: (context) => CommentScreen(),
       },
     );
   }

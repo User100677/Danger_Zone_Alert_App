@@ -33,10 +33,14 @@ class Area {
 }
 
 class Comment {
-  int likeNDislike;
-  String text;
+  int like;
+  int dislike;
+  String content;
   String email;
 
   Comment(
-      {required this.likeNDislike, required this.text, required this.email});
+      {required this.like,
+      required this.dislike,
+      required this.content,
+      required this.email});
 }

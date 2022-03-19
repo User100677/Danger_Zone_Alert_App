@@ -1,181 +1,265 @@
-// import 'package:cloud_firestore/cloud_firestore.dart';
-// import 'package:danger_zone_alert/models/area.dart';
-// import 'package:danger_zone_alert/models/user.dart';
-// import 'package:firebase_auth/firebase_auth.dart';
-// import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:danger_zone_alert/map/camera_coordinate.dart';
+import 'package:danger_zone_alert/models/area.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
+class DatabaseService {
+  final String? uid;
+
+  final geo = Geoflutterfire();
+
+  final CollectionReference userCollection =
+      FirebaseFirestore.instance.collection('users');
+
+  final CollectionReference areaCollection =
+      FirebaseFirestore.instance.collection('areas');
+
+  DatabaseService({this.uid});
+
+  /* - User - */
+  Future updateUserRatedAreasData(LatLng latLng, double rating) async {
+    GeoFirePoint location =
+        geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
+
+    // Use geoHash as document id
+    return await userCollection
+        .doc(uid)
+        .collection('ratedAreas')
+        .doc(location.hash)
+        .set({'rating': rating, 'geopoint': location.geoPoint});
+  }
+
+  // This function should be in area_rating_box
+  // Return a single snapshot (The clicked circle's data center or null)
+  Future<DocumentSnapshot> getUserCurrentRatedAreaData(LatLng latLng) {
+    GeoFirePoint location =
+        geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
+
+    final userRatedAreasCollection = FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .collection('ratedAreas');
+
+    return userRatedAreasCollection.doc(location.hash).get();
+  }
+
+  /* Areas */
+  // Might need to split into multiple function for individual component's update or even an initialAreasData()
+  Future updateAreasData(
+      LatLng latLng, double? rating, String color, int totalUsers) async {
+    GeoFirePoint location =
+        geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
+
+    return await areaCollection.doc(location.hash).set({
+      'color': color,
+      'totalUsers': totalUsers,
+      'rating': rating,
+      'geoData': location.data
+    });
+  }
+
+  // Stream<List<DocumentSnapshot>> getAreasData(controller, context) async* {
+  //
+  //   var latLng = await controller.getLatLng(cameraMiddleCoordinate(context));
+  //
+  //   GeoFirePoint center =
+  //       geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
+  //
+  //   double radius = 40;
+  //   String field = 'geoData';
+  //
+  //   yield* geo
+  //       .collection(
+  //           collectionRef: FirebaseFirestore.instance.collection('areas'))
+  //       .within(center: center, radius: radius, field: field);
+  // }
+
+  Stream<List<DocumentSnapshot>> getAreasData(
+      googleMapController, context) async* {
+    final GoogleMapController controller = await googleMapController.future;
+
+    var latLng = await controller.getLatLng(cameraMiddleCoordinate(context));
+
+    GeoFirePoint center =
+        geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
+
+    double radius = 40;
+    String field = 'geoData';
+
+    yield* geo
+        .collection(
+            collectionRef: FirebaseFirestore.instance.collection('areas'))
+        .within(center: center, radius: radius, field: field);
+  }
+
+  /* Areas Comment */
+
+  // TODO: Need to store user's like & dislike (Update) to make sure 1 can't increase the like or dislike count more than once
+  // Solution: Get the unique id of the comment and store it in user/ratedAreas/comments
+  // so we can check when the user re-like. Get it when the user tap on the like or dislike
+  Future postAreasCommentData(latLng, String content, String email) async {
+    GeoFirePoint location =
+        geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
+
+    return await areaCollection.doc(location.hash).collection('comments').add({
+      'like': 0,
+      'dislike': 0,
+      'content': content,
+      'email': email,
+      // 'time': time,
+    });
+  }
+
+  List<Comment> _commentListFromSnapshot(QuerySnapshot snapshot) {
+    return snapshot.docs.map((doc) {
+      return Comment(
+        like: doc['like'],
+        dislike: doc['dislike'],
+        content: doc['email'],
+        email: doc['email'],
+      );
+    }).toList();
+  }
+
+  Stream<List<Comment>> getComments(LatLng latLng) {
+    GeoFirePoint location =
+        geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
+
+    return areaCollection
+        .doc(location.hash)
+        .collection('comments')
+        .snapshots()
+        .map(_commentListFromSnapshot);
+  }
+
+  // Edge Case: the user can re-tap on the like button to remove it &
+  // pressing dislike remove the like
+  Future updateLikeCommentData(
+      LatLng latLng, String documentID, bool isLiked, bool isDisliked) async {
+    GeoFirePoint location =
+        geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
+
+    if (!isLiked && !isDisliked) {
+      return await areaCollection
+          .doc(location.hash)
+          .collection('comments')
+          .doc(documentID)
+          .set({
+        'like': FieldValue.increment(1),
+      });
+    }
+
+    if (isLiked) {
+      return await areaCollection
+          .doc(location.hash)
+          .collection('comments')
+          .doc(documentID)
+          .set({
+        'like': FieldValue.increment(-1),
+      });
+    }
+
+    if (isDisliked) {
+      return await areaCollection
+          .doc(location.hash)
+          .collection('comments')
+          .doc(documentID)
+          .set({
+        'like': FieldValue.increment(1),
+        'dislike': FieldValue.increment(-1),
+      });
+    }
+  }
+
+  Future updateDislikeCommentData(
+      LatLng latLng, String documentID, bool isLiked, bool isDisliked) async {
+    GeoFirePoint location =
+        geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
+
+    if (!isLiked && !isDisliked) {
+      return await areaCollection
+          .doc(location.hash)
+          .collection('comments')
+          .doc(documentID)
+          .set({
+        'dislike': FieldValue.increment(1),
+      });
+    }
+
+    if (isLiked) {
+      return await areaCollection
+          .doc(location.hash)
+          .collection('comments')
+          .doc(documentID)
+          .set({
+        'dislike': FieldValue.increment(1),
+        'like': FieldValue.increment(-1),
+      });
+    }
+
+    if (isDisliked) {
+      return await areaCollection
+          .doc(location.hash)
+          .collection('comments')
+          .doc(documentID)
+          .set({
+        'dislike': FieldValue.increment(-1),
+      });
+    }
+  }
+
+  // TODO: Get AreaComment (Stream)
+  // TODO: Get userCommentLike/Dislike (Stream)
+  // TODO: Update/set userCommentLike/Dislike
+}
+
+// Stream<List<DocumentSnapshot>> userRatedAreaDefault(latLng) {
+//   print(latLng);
 //
-// class DatabaseService {
-//   final String? uid;
+//   GeoFirePoint center =
+//       geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
 //
-//   DatabaseService({this.uid});
+//   double radius = 1;
+//   String field = 'position';
 //
-//   // collection reference
-//   /* It doesn't matter whether the collection exist or not. If it doesn't exist
-//      then firebase will create the new collection for you. */
-//   final CollectionReference userCollection =
-//       FirebaseFirestore.instance.collection('users');
+//   return geo
+//       .collection(
+//           collectionRef: userCollection.doc(uid).collection('ratedAreas'))
+//       .within(center: center, radius: radius, field: field);
+// }
+
+// Stream<List<DocumentSnapshot>> userRatedArea(controller, context) async* {
+//   var latLng = await controller.getLatLng(cameraMiddleCoordinate(context));
 //
-//   // TODO: Only all area data needs to be extracted all at once. Comment of each
-//   // only needed when the comment button is clicked
-//   final CollectionReference areaCollection =
-//       FirebaseFirestore.instance.collection('areas');
+//   print(latLng);
 //
-//   // <------------------------ User ---------------------------->
-//   /* Each user contain a unique id and thus we can differentiate them using that id */
-//   Future getUserData(UserModel user) async {
-//     await userCollection
-//         .doc(uid)
-//         .collection('ratedAreas')
-//         .get()
-//         .then((querySnapshot) => {
-//               user.ratedAreas = _userRatedAreaListFromSnapshot(querySnapshot),
-//               // print("Store in model? "),
-//               // print(user.ratedAreas.first.latLng),
-//             });
-//   }
+//   GeoFirePoint center =
+//       geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
 //
-//   // Update data regarding the ratedArea of the user
-//   Future updateUserRatedAreaData(LatLng latLng, double rating) async {
-//     return await userCollection
-//         .doc(uid)
-//         .collection('ratedAreas')
-//         .doc(latLng.toString())
-//         .set({
-//       'rating': rating,
-//     });
-//   }
+//   double radius = 2;
+//   String field = 'position';
 //
-//   // What if the user don't have any ratedArea? = No error apparently
-//   // Return a list of ratedArea into class RatedArea in user.dart
-//   List<RatedArea> _userRatedAreaListFromSnapshot(QuerySnapshot snapshot) {
-//     return snapshot.docs.map((doc) {
-//       List<String> latLng =
-//           doc.id.replaceAll('LatLng(', "").replaceAll(')', "").split(', ');
+//   yield* geo
+//       .collection(
+//           collectionRef: userCollection.doc(uid).collection('ratedAreas'))
+//       .within(center: center, radius: radius, field: field);
+// }
 //
-//       double latitude = double.parse(latLng[0]);
-//       double longitude = double.parse(latLng[1]);
+// void updateCircle(List<DocumentSnapshot> documentList, UserModel user) {
+//   documentList.forEach((DocumentSnapshot document) {
+//     var lat = document.get('position')['geopoint'].latitude;
+//     var lon = document.get('position')['geopoint'].longitude;
 //
-//       return RatedArea(
-//           latLng: LatLng(latitude, longitude), rating: doc['rating']);
-//     }).toList();
-//   }
+//     areaCircles2.add(Circle(
+//       circleId: CircleId(LatLng(lat, lon).toString()),
+//       center: LatLng(lat, lon),
+//       radius: kAreaRadius,
+//       strokeWidth: 0,
+//       fillColor: const Color.fromRGBO(255, 0, 0, .5),
+//       consumeTapEvents: false,
+//     ));
 //
-//   // TODO: Need include userCollection.doc(uid).snapshots().map(_userRatedAreaListFromSnapshot) ?
-//   // Stream<List<RatedArea>> get userRatedArea {
-//   //   return userCollection.snapshots().map(_userRatedAreaListFromSnapshot);
-//   // }
-//   Stream<List<RatedArea>> get userRatedArea {
-//     return userCollection.snapshots().map(_userRatedAreaListFromSnapshot);
-//   }
-//
-//   // Update data regarding the comment of the user
-//   Future updateUserCommentedAreaData(
-//       LatLng latLng, int commentIndex, bool value) async {
-//     return await userCollection
-//         .doc(uid)
-//         .collection('ratedAreas')
-//         .doc(latLng.toString())
-//         .collection('commentAreas')
-//         .doc(commentIndex.toString())
-//         .set({'isLike': value});
-//   }
-//
-//   // List<CommentedArea> _userCommentedAreaListFromSnapshot(
-//   //     QuerySnapshot snapshot) {
-//   //   // return snapshot.docs.map((doc) {
-//   //   //   List<String> commentIndex =
-//   //   //       doc.id.replaceAll('LatLng(', "").replaceAll(')', "").split(', ');
-//   //   //
-//   //   //   double latitude = double.parse(latLng[0]);
-//   //   //   double longitude = double.parse(latLng[1]);
-//   //   //
-//   //   //   print("Recorded Latitude & Longitude: ");
-//   //   //   print(LatLng(latitude, longitude));
-//   //   //
-//   //   //   return RatedArea(
-//   //   //       latLng: LatLng(latitude, longitude), rating: doc['rating']);
-//   //   // }).toList();
-//   // }
-//
-//   // Stream<List<CommentedArea>> get userCommentedArea {
-//   //   // return userCollection
-//   //   //     .doc(uid)
-//   //   //     .snapshots()
-//   //   //     .map(_userRatedAreaListFromSnapshot);
-//   // }
-//
-//   // <---------------------- Area -------------------->
-//   Future updateAreaData(
-//       LatLng latLng, String color, int rateCount, double rating) async {
-//     return await areaCollection.doc(latLng.toString()).set({
-//       'rating': rating,
-//       'rateCount': rateCount,
-//       'color': color,
-//     });
-//   }
-//
-//   List<Area> _areaListFromSnapshot(QuerySnapshot snapshot) {
-//     return snapshot.docs.map((doc) {
-//       List<String> latLng =
-//           doc.id.replaceAll('LatLng(', "").replaceAll(')', "").split(', ');
-//
-//       double latitude = double.parse(latLng[0]);
-//       double longitude = double.parse(latLng[1]);
-//
-//       return Area(
-//         latLng: LatLng(latitude, longitude),
-//         rating: doc['rating'] ?? 0.0,
-//         rateCount: doc['rateCount'] ?? 0,
-//         color: doc['color'] ?? 'Colors.grey',
-//       );
-//     }).toList();
-//   }
-//
-//   Stream<List<Area>> get areas =>
-//       areaCollection.snapshots().map(_areaListFromSnapshot);
-//
-//   // <-------------------------- Comment --------------------->
-//   // Add a comment using as the current user
-//   Future addCommentData(LatLng latLng, String text, User user) async {
-//     return await areaCollection
-//         .doc(latLng.toString())
-//         .collection('comments')
-//         .doc(uid)
-//         .set({
-//       'likeNDislike': 0,
-//       'text': text,
-//       'email': user.email,
-//     });
-//   }
-//
-//   // TODO: How do you know if the user already like that specific comment?
-//   // TODO: If so how to make sure he/she can only affect it once (Add stuff to userModel)
-//   Future updateCommentLikeCount(
-//       LatLng latLng, bool isIncrement, int index) async {
-//     return await areaCollection
-//         .doc(latLng.toString())
-//         .collection('comments')
-//         .doc(index.toString())
-//         .update({
-//       "like": isIncrement ? FieldValue.increment(1) : FieldValue.increment(-1)
-//     });
-//   }
-//
-//   List<Comment> _commentListFromSnapshot(QuerySnapshot snapshot) {
-//     return snapshot.docs.map((doc) {
-//       return Comment(
-//         likeNDislike: doc['likeNDislike'],
-//         text: doc['text'],
-//         email: doc['email'],
-//       );
-//     }).toList();
-//   }
-//
-//   Stream<List<Comment>> getComments(LatLng latLng) {
-//     return areaCollection
-//         .doc(latLng.toString())
-//         .collection('comments')
-//         .snapshots()
-//         .map(_commentListFromSnapshot);
-//   }
+//     // user.ratedAreas.add(RatedArea(latLng: LatLng(lat, lon), rating: 4.2));
+//   });
 // }

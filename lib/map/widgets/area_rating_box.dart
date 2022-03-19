@@ -2,6 +2,7 @@ import 'package:danger_zone_alert/comment/comment.dart';
 import 'package:danger_zone_alert/constants/app_constants.dart';
 import 'package:danger_zone_alert/models/user.dart';
 import 'package:danger_zone_alert/rating/new_rating.dart';
+import 'package:danger_zone_alert/services/database.dart';
 import 'package:danger_zone_alert/shared/widgets/rounded_rectangle_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -134,6 +135,7 @@ class AreaRatingBox extends StatelessWidget {
                             if (calculateDistance(user.latLng, areaLatLng) <
                                 1) {
                               // TODO: Database
+                              handleRatePressed();
 
                               Navigator.popAndPushNamed(
                                   context, RatingQuestionsList.id);
@@ -159,7 +161,8 @@ class AreaRatingBox extends StatelessWidget {
                           } else {
                             if (calculateDistance(user.latLng, areaLatLng) <
                                 1) {
-                              Navigator.popAndPushNamed(context, Comment.id);
+                              Navigator.popAndPushNamed(
+                                  context, CommentScreen.id);
                               boxCallback();
                             } else {
                               showAlertDialog(context, kAlertCommentText);
@@ -176,5 +179,22 @@ class AreaRatingBox extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  handleRatePressed() async {
+    await DatabaseService(uid: user.uid)
+        .updateUserRatedAreasData(areaLatLng, 4.2);
+
+    await DatabaseService(uid: user.uid)
+        .updateAreasData(areaLatLng, 4.2, 'Colors.red', 10);
+
+    print('Rating completed!');
+  }
+
+  handleCommentPressed() async {
+    await DatabaseService(uid: user.uid)
+        .postAreasCommentData(areaLatLng, 'Testing123', 'test@email.com');
+
+    print('Comment completed!');
   }
 }
