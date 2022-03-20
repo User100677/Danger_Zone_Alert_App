@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:danger_zone_alert/map/camera_coordinate.dart';
+import 'package:danger_zone_alert/map/util/camera_coordinate.dart';
 import 'package:danger_zone_alert/models/area.dart';
+import 'package:danger_zone_alert/models/user.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -77,12 +78,46 @@ class DatabaseService {
         .within(center: center, radius: radius, field: field);
   }
 
+  /* Users Comment */
+  Future updateUserCommentedArea(
+      latLng, String commentID, bool isLiked, bool isDisliked) async {
+    GeoFirePoint location =
+        geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
+
+    // Use geoHash as document id
+    return await userCollection
+        .doc(uid)
+        .collection('ratedAreas')
+        .doc(location.hash)
+        .collection('comments')
+        .doc(commentID)
+        .set({'liked': isLiked, 'disliked': isDisliked});
+  }
+
+  List<CommentedArea> _userCommentListFromSnapshot(QuerySnapshot snapshot) {
+    return snapshot.docs.map((doc) {
+      return CommentedArea(
+          isLiked: doc['isLiked'], isDisliked: doc['isDislike']);
+    }).toList();
+  }
+
+  Stream<List<CommentedArea>> getUserComments(LatLng latLng) {
+    GeoFirePoint location =
+        geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
+
+    return userCollection
+        .doc(location.hash)
+        .collection('comments')
+        .snapshots()
+        .map(_userCommentListFromSnapshot);
+  }
+
   /* Areas Comment */
 
   // TODO: Need to store user's like & dislike (Update) to make sure 1 can't increase the like or dislike count more than once
   // Solution: Get the unique id of the comment and store it in user/ratedAreas/comments
   // so we can check when the user re-like. Get it when the user tap on the like or dislike
-  Future postAreasCommentData(latLng, String content, String email) async {
+  Future postAreasCommentData(latLng, String content, String? email) async {
     GeoFirePoint location =
         geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
 
@@ -90,7 +125,7 @@ class DatabaseService {
       'like': 0,
       'dislike': 0,
       'content': content,
-      'email': email,
+      'email': email ?? 'example@email.com',
       // 'time': time,
     });
   }

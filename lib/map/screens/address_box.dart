@@ -1,41 +1,34 @@
 import 'package:danger_zone_alert/comment/comment.dart';
 import 'package:danger_zone_alert/constants/app_constants.dart';
+import 'package:danger_zone_alert/map/randomization.dart';
+import 'package:danger_zone_alert/map/util/calculate_distance.dart';
+import 'package:danger_zone_alert/map/widgets/alert_dialog.dart';
 import 'package:danger_zone_alert/models/user.dart';
 import 'package:danger_zone_alert/rating/new_rating.dart';
 import 'package:danger_zone_alert/services/database.dart';
-import 'package:danger_zone_alert/shared/widgets/rounded_rectangle_button.dart';
+import 'package:danger_zone_alert/shared/rounded_rectangle_button.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-import '../util/calculate_distance.dart';
-import 'alert_dialog_box.dart';
-
-class AreaRatingBox extends StatelessWidget {
-  final Color color;
-  final double rating;
+class AddressBox extends StatelessWidget {
+  final LatLng latLng;
   final UserModel user;
-  final int totalUsers;
-  final LatLng areaLatLng;
+  final String description;
   final Function boxCallback;
-  final String areaDescription;
 
-  AreaRatingBox({
-    required this.areaDescription,
-    required this.areaLatLng,
-    required this.user,
-    required this.totalUsers,
-    required this.rating,
-    required this.color,
-    required this.boxCallback,
-  });
+  const AddressBox(
+      {Key? key,
+      required this.description,
+      required this.latLng,
+      required this.user,
+      required this.boxCallback})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    const dangerLevelColor = Color(0xffFF6666);
     const primaryColor = Colors.white;
-    const locationTextColor = Color(0xff6E7CA8);
-    const iconColor = Color(0xffAAB1C9);
+    const locationTextColor = Colors.black;
+    const iconColor = Colors.lightBlueAccent;
     const containerButtonColor = Color(0xffF2F4F5);
     const textColor = Colors.white;
 
@@ -48,61 +41,21 @@ class AreaRatingBox extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(10.0))),
           child: Column(
             children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(top: 24.0),
-                child: Text('$rating',
-                    style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                        fontSize: 50.0,
-                        // TODO: Text Color base on rating Danger Level: Red, Orange, Yellow, Green, Grey
-                        color: color,
-                        fontWeight: FontWeight.w800,
-                        fontFamily: 'RobotoMono'),
-                    textAlign: TextAlign.center),
-              ),
-              Text('Danger Level',
-                  style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                      fontSize: 18.0,
-                      color: dangerLevelColor,
-                      fontWeight: FontWeight.bold),
-                  textAlign: TextAlign.center),
-              // Rating Bar
-              Padding(
-                padding: const EdgeInsets.only(top: 6.0),
-                child: RatingBarIndicator(
-                    rating: rating,
-                    itemBuilder: (BuildContext context, int index) =>
-                        const Icon(Icons.star_border, color: Color(0xffFEBC48)),
-                    itemCount: 5,
-                    itemSize: 18.0,
-                    direction: Axis.horizontal),
-              ),
-              // People Rated
-              Padding(
-                padding: const EdgeInsets.only(top: 6.0),
-                child: Text('$totalUsers People Rated',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyText2
-                        ?.copyWith(fontSize: 10.0, color: locationTextColor),
-                    textAlign: TextAlign.center),
-              ),
-              // Container for location icon and description
               Container(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24),
+                    const EdgeInsets.symmetric(horizontal: 12.0, vertical: 24),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: <Widget>[
                     const Padding(
-                      padding: EdgeInsets.only(right: 6.0),
-                      child: Icon(Icons.location_on_outlined,
-                          size: 24.0, color: iconColor),
-                    ),
+                        padding: EdgeInsets.only(right: 6.0),
+                        child: Icon(Icons.location_on_outlined,
+                            size: 28.0, color: iconColor)),
                     Flexible(
                       child: Text(
-                        areaDescription,
+                        description,
                         style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                            fontSize: 14.0, color: locationTextColor),
+                            fontSize: 16.0, color: locationTextColor),
                         textAlign: TextAlign.left,
                         maxLines: 3,
                         overflow: TextOverflow.ellipsis,
@@ -116,11 +69,10 @@ class AreaRatingBox extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(
                     horizontal: 12.0, vertical: 12.0),
                 decoration: const BoxDecoration(
-                  color: containerButtonColor,
-                  borderRadius: BorderRadius.only(
-                      bottomLeft: Radius.circular(10.0),
-                      bottomRight: Radius.circular(10.0)),
-                ),
+                    color: containerButtonColor,
+                    borderRadius: BorderRadius.only(
+                        bottomLeft: Radius.circular(10.0),
+                        bottomRight: Radius.circular(10.0))),
                 child: Row(
                   children: <Widget>[
                     Expanded(
@@ -132,9 +84,8 @@ class AreaRatingBox extends StatelessWidget {
                           if (user.access == false) {
                             showAlertDialog(context, kLocationDenied);
                           } else {
-                            if (calculateDistance(user.latLng, areaLatLng) <
-                                1) {
-                              // TODO: Database
+                            if (calculateDistance(user.latLng, latLng) < 1) {
+                              // TODO
                               handleRatePressed();
 
                               Navigator.popAndPushNamed(
@@ -157,10 +108,9 @@ class AreaRatingBox extends StatelessWidget {
                           if (user.access == false) {
                             showAlertDialog(context, kLocationDenied);
                           } else {
-                            if (calculateDistance(user.latLng, areaLatLng) <
-                                1) {
-                              // TODO: Database
-                              handleCommentPressed();
+                            if (calculateDistance(user.latLng, latLng) < 1) {
+                              // TODO
+                              handleInitialCommentPressed();
 
                               Navigator.popAndPushNamed(
                                   context, CommentScreen.id);
@@ -183,18 +133,25 @@ class AreaRatingBox extends StatelessWidget {
   }
 
   handleRatePressed() async {
-    await DatabaseService(uid: user.uid)
-        .updateUserRatedAreasData(areaLatLng, 4.2);
+    double randomRating = doubleInRange(2.0, 5.0);
+    int randomTotalUsers = intInRange(5, 20);
 
     await DatabaseService(uid: user.uid)
-        .updateAreasData(areaLatLng, 4.2, 0xFF0000, 10);
+        .updateUserRatedAreasData(latLng, randomRating);
+
+    await DatabaseService(uid: user.uid).updateAreasData(latLng, randomRating,
+        colorAssignment(randomRating, randomTotalUsers), randomTotalUsers);
 
     print('Rating completed!');
   }
 
-  handleCommentPressed() async {
+  // A method to create a circle if the user first rate the area.
+  handleInitialCommentPressed() async {
     await DatabaseService(uid: user.uid)
-        .postAreasCommentData(areaLatLng, 'Testing123', 'test@email.com');
+        .postAreasCommentData(latLng, 'Testing123', user.email);
+
+    await DatabaseService(uid: user.uid)
+        .updateAreasData(latLng, 0, 0xFF000000, 0);
 
     print('Comment completed!');
   }

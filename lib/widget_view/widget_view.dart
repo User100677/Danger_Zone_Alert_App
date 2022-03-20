@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 
+// Design Pattern
 // Stateless Widget
 abstract class StatelessView<T1> extends StatelessWidget {
   final T1 widget;

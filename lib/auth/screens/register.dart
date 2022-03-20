@@ -4,7 +4,7 @@ import 'package:danger_zone_alert/auth/widgets/email_text_field.dart';
 import 'package:danger_zone_alert/auth/widgets/password_text_field.dart';
 import 'package:danger_zone_alert/constants/app_constants.dart';
 import 'package:danger_zone_alert/services/auth.dart';
-import 'package:danger_zone_alert/shared/widgets/rounded_rectangle_button.dart';
+import 'package:danger_zone_alert/shared/rounded_rectangle_button.dart';
 import 'package:danger_zone_alert/widget_view/widget_view.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
@@ -84,26 +84,23 @@ class _RegisterScreenView
     return Scaffold(
       backgroundColor: Colors.lightBlueAccent,
       resizeToAvoidBottomInset: false,
-// AppBar with arrow back button
+      // AppBar with arrow back button
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.lightBlueAccent,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
-          icon: const Icon(
-            Icons.arrow_back_sharp,
-            size: 20,
-            color: Colors.white,
-          ),
+          icon:
+              const Icon(Icons.arrow_back_sharp, size: 20, color: Colors.white),
         ),
       ),
-// Loading Indicator
+      // Loading Indicator
       body: ModalProgressHUD(
         inAsyncCall: state._isLoading,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
-// Title Text
+            // Title Text
             Expanded(
               child: Container(
                 width: double.infinity,
@@ -113,16 +110,13 @@ class _RegisterScreenView
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const <Widget>[
-                    Text(
-                      'Create\nAccount',
-                      style: TextStyle(
-                        fontFamily: 'Agne',
-                        fontSize: 32.0,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.left,
-                    ),
+                    Text('Create\nAccount',
+                        style: TextStyle(
+                            fontFamily: 'Agne',
+                            fontSize: 32.0,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.left),
                   ],
                 ),
               ),
@@ -130,59 +124,46 @@ class _RegisterScreenView
 // A container containing the Divider, Email & Password text field as well as SignIn & SignUp buttons
             Container(
               padding: const EdgeInsets.only(
-                top: 16.0,
-                left: 24.0,
-                right: 24.0,
-                bottom: 16.0,
-              ),
+                  top: 16.0, left: 24.0, right: 24.0, bottom: 16.0),
               decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20.0),
-                  topRight: Radius.circular(20.0),
-                ),
-              ),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20.0),
+                      topRight: Radius.circular(20.0))),
               child: Form(
                 key: state._formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    Column(
-                      children: <Widget>[
-                        EmailTextField(
+                    Column(children: <Widget>[
+                      EmailTextField(
                           emailController: state._emailController,
                           isEmailIncorrect: state._isEmailIncorrect,
-                          emailIncorrectText: 'Please supply a valid email',
-                        ),
-                      ],
-                    ),
+                          emailIncorrectText: 'Please supply a valid email'),
+                    ]),
                     PasswordTextField(
-                      passwordController: state._passwordController,
-                      isPasswordIncorrect: state._isPasswordIncorrect,
-                      passwordIncorrectText: "Password doesn't match",
-                    ),
+                        passwordController: state._passwordController,
+                        isPasswordIncorrect: state._isPasswordIncorrect,
+                        passwordIncorrectText: "Password doesn't match"),
                     PasswordTextField(
-                      passwordController: state._reenterPasswordController,
-                      isPasswordIncorrect: state._isPasswordIncorrect,
-                      passwordHintText: "Re-enter password",
-                    ),
-// Signup button
+                        passwordController: state._reenterPasswordController,
+                        isPasswordIncorrect: state._isPasswordIncorrect,
+                        passwordHintText: "Re-enter password"),
+                    // Signup button
                     RoundedRectangleButton(
-                      buttonText: kSignUpText,
-                      buttonStyle: kLightBlueButtonStyle,
-                      textColor: Colors.white,
-                      onPressed: () => state.handleSignupPressed(),
-                    ),
+                        buttonText: kSignUpText,
+                        buttonStyle: kLightBlueButtonStyle,
+                        textColor: Colors.white,
+                        onPressed: () => state.handleSignupPressed()),
                     buildButtonDivider(),
-// Login button
+                    // Login button
                     RoundedRectangleButton(
-                      buttonText: kSignInText,
-                      buttonStyle: kWhiteButtonStyle,
-                      textColor: Colors.grey,
-                      onPressed: () =>
-                          Navigator.popAndPushNamed(context, LoginScreen.id),
-                    ),
+                        buttonText: kSignInText,
+                        buttonStyle: kWhiteButtonStyle,
+                        textColor: Colors.grey,
+                        onPressed: () =>
+                            Navigator.popAndPushNamed(context, LoginScreen.id)),
                   ],
                 ),
               ),

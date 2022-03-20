@@ -3,21 +3,21 @@ import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:danger_zone_alert/blocs/application_bloc.dart';
 import 'package:danger_zone_alert/constants/app_constants.dart';
+import 'package:danger_zone_alert/map/screens/address_activity_box.dart';
+import 'package:danger_zone_alert/map/screens/address_box.dart';
 import 'package:danger_zone_alert/map/util/animate_location.dart';
 import 'package:danger_zone_alert/map/util/area_notification.dart';
 import 'package:danger_zone_alert/map/util/calculate_distance.dart';
 import 'package:danger_zone_alert/map/util/location_validation.dart';
 import 'package:danger_zone_alert/map/util/reverse_geocoding.dart';
-import 'package:danger_zone_alert/map/widgets/area_description_box.dart';
-import 'package:danger_zone_alert/map/widgets/area_marker.dart';
-import 'package:danger_zone_alert/map/widgets/area_rating_box.dart';
+import 'package:danger_zone_alert/map/util/update_markers.dart';
 import 'package:danger_zone_alert/map/widgets/bottom_tab_bar.dart';
 import 'package:danger_zone_alert/map/widgets/search_bar.dart';
 import 'package:danger_zone_alert/models/area.dart';
 import 'package:danger_zone_alert/models/user.dart';
 import 'package:danger_zone_alert/services/database.dart';
 import 'package:danger_zone_alert/services/geolocator_service.dart';
-import 'package:danger_zone_alert/shared/widgets/error_snackbar.dart';
+import 'package:danger_zone_alert/shared/error_snackbar.dart';
 import 'package:danger_zone_alert/widget_view/widget_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
@@ -56,6 +56,7 @@ class _FireMapScreenController extends State<FireMapScreen> {
     _initializeNotificationsSettings();
   }
 
+  // TODO: The notification isn't popping up in the app but the notification section
   // Set up android & ios notification
   _initializeNotificationsSettings() {
     const settingsAndroid = AndroidInitializationSettings('ic_launcher');
@@ -128,8 +129,6 @@ class _FireMapScreenController extends State<FireMapScreen> {
 
       if (mounted) {
         for (DocumentSnapshot document in documentList) {
-          // if (!mounted) return;
-
           LatLng latLng = LatLng(document.get('geoData')['geopoint'].latitude,
               document.get('geoData')['geopoint'].longitude);
           double rating = document.get('rating');
@@ -141,7 +140,7 @@ class _FireMapScreenController extends State<FireMapScreen> {
                 latLng: latLng,
                 rating: rating,
                 totalUsers: totalUsers,
-                color: Color(color).withOpacity(0.7)));
+                color: Color(color).withOpacity(0.8)));
           });
         }
       }
@@ -179,7 +178,7 @@ class _FireMapScreenController extends State<FireMapScreen> {
     if (address != kInvalidAddress) {
       bool isWithinAnyCircle = false;
 
-      updateMarker(tapLatLng);
+      updateMarkers(tapLatLng);
       animateToLocation(tapLatLng, _googleMapController);
 
       // Check if tapLatLng is within any circles
@@ -188,19 +187,19 @@ class _FireMapScreenController extends State<FireMapScreen> {
           double distance = calculateDistance(circle.center, tapLatLng);
 
           if (isWithinCircle(distance)) {
-            Area area = areaList[areaCircles.indexOf(circle)];
-
             isWithinAnyCircle = true;
+            Area area = areaList[areaCircles.indexOf(circle)];
             setState(() {
               showDialog(
                   context: context,
-                  builder: (context) => AreaRatingBox(
+                  builder: (context) => AddressActivityBox(
                       areaLatLng: area.latLng,
                       color: area.color,
                       rating: area.rating,
                       totalUsers: area.totalUsers,
-                      areaDescription: address,
+                      description: address,
                       user: widget.user,
+                      preview: area.totalUsers < 10 ? false : true,
                       boxCallback: boxCallback));
             });
 
@@ -215,9 +214,9 @@ class _FireMapScreenController extends State<FireMapScreen> {
         setState(() {
           showDialog(
               context: context,
-              builder: (context) => AreaDescriptionBox(
-                  areaDescription: address,
-                  tapLatLng: tapLatLng,
+              builder: (context) => AddressBox(
+                  description: address,
+                  latLng: tapLatLng,
                   user: widget.user,
                   boxCallback: boxCallback));
         });
@@ -257,6 +256,7 @@ class _FireMapScreenController extends State<FireMapScreen> {
     super.dispose();
     cancelNotification();
     markers.clear();
+    areaList.clear();
     areaCircles.clear();
     _searchBarController.dispose();
     locationSubscription?.cancel();

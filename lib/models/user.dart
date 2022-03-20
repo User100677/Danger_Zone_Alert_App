@@ -4,11 +4,12 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 class UserModel {
   // User's unique id
   final String uid;
+  final String? email;
   LatLng? _latLng;
   bool? _access;
   List<RatedArea> ratedAreas = [];
 
-  UserModel({required this.uid});
+  UserModel({required this.uid, required this.email});
 
   get latLng => _latLng;
   bool? get access => _access;
@@ -25,6 +26,7 @@ class RatedArea {
 }
 
 class CommentedArea {
-  bool isLike;
-  CommentedArea({required this.isLike});
+  bool isLiked;
+  bool isDisliked;
+  CommentedArea({required this.isLiked, required this.isDisliked});
 }

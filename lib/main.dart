@@ -28,9 +28,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Danger Zone Alert',
-      theme: ThemeData(
-        primarySwatch: Colors.lightBlue,
-      ),
+      theme: ThemeData(primarySwatch: Colors.lightBlue),
       home: FutureBuilder(
         future: _initialization,
         builder: (context, snapshot) {
@@ -57,7 +55,7 @@ class MyApp extends StatelessWidget {
         ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
         RegisterScreen.id: (context) => const RegisterScreen(),
         RatingQuestionsList.id: (context) => const RatingQuestionsList(),
-        CommentScreen.id: (context) => CommentScreen(),
+        CommentScreen.id: (context) => const CommentScreen(),
       },
     );
   }

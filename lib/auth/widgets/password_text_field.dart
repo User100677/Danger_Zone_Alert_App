@@ -6,8 +6,6 @@ class PasswordTextField extends StatefulWidget {
   String passwordIncorrectText;
   String passwordHintText;
 
-  bool passwordVisible = false;
-
   PasswordTextField({
     Key? key,
     required this.passwordController,
@@ -21,29 +19,25 @@ class PasswordTextField extends StatefulWidget {
 }
 
 class _PasswordTextFieldState extends State<PasswordTextField> {
+  bool passwordVisible = false;
+
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       height: 70.0,
       child: TextFormField(
         controller: widget.passwordController,
-        obscureText: !widget.passwordVisible,
+        obscureText: !passwordVisible,
         textAlignVertical: TextAlignVertical.center,
         decoration: InputDecoration(
-          prefixIcon: const Icon(
-            Icons.lock,
-            size: 20.0,
-          ),
+          prefixIcon: const Icon(Icons.lock, size: 20.0),
           suffixIcon: IconButton(
             icon: Icon(
-              widget.passwordVisible ? Icons.visibility : Icons.visibility_off,
-              size: 20.0,
-            ),
+                passwordVisible ? Icons.visibility : Icons.visibility_off,
+                size: 20.0),
             tooltip: "Show password",
             onPressed: () {
-              setState(() {
-                widget.passwordVisible = !widget.passwordVisible;
-              });
+              setState(() => passwordVisible = !passwordVisible);
             },
           ),
           hintText: widget.passwordHintText,

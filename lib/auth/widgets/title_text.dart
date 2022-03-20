@@ -19,21 +19,15 @@ class TitleText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedTextKit(
-      animatedTexts: [
-        TypewriterAnimatedText(
-          text,
+    return AnimatedTextKit(animatedTexts: [
+      TypewriterAnimatedText(text,
           textStyle: TextStyle(
-            fontFamily: 'Agne',
-            fontSize: textSize,
-            color: textColor,
-            fontWeight: textWeight,
-          ),
+              fontFamily: 'Agne',
+              fontSize: textSize,
+              color: textColor,
+              fontWeight: textWeight),
           textAlign: textAlign,
-          speed: const Duration(milliseconds: 300),
-        ),
-      ],
-      totalRepeatCount: 1,
-    );
+          speed: const Duration(milliseconds: 300)),
+    ], totalRepeatCount: 1);
   }
 }

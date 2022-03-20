@@ -1,5 +1,5 @@
 import 'package:danger_zone_alert/auth/screens/welcome.dart';
-import 'package:danger_zone_alert/shared/widgets/loading.dart';
+import 'package:danger_zone_alert/shared/loading.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';

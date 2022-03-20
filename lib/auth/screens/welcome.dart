@@ -1,7 +1,7 @@
 import 'package:danger_zone_alert/auth/screens/register.dart';
 import 'package:danger_zone_alert/auth/widgets/title_text.dart';
 import 'package:danger_zone_alert/constants/app_constants.dart';
-import 'package:danger_zone_alert/shared/widgets/rounded_rectangle_button.dart';
+import 'package:danger_zone_alert/shared/rounded_rectangle_button.dart';
 import 'package:danger_zone_alert/widget_view/widget_view.dart';
 import 'package:flutter/material.dart';
 
@@ -31,20 +31,17 @@ class _WelcomeScreenView extends StatelessView<WelcomeScreen> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: const <Widget>[
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: const <Widget>[
                   TitleText(
-                    text: 'Danger Zone\nAlert',
-                    textSize: 40.0,
-                    textColor: Colors.white,
-                    textWeight: FontWeight.bold,
-                    textAlign: TextAlign.center,
-                  ),
-                ],
-              ),
-            ),
+                      text: 'Danger Zone\nAlert',
+                      textSize: 40.0,
+                      textColor: Colors.white,
+                      textWeight: FontWeight.bold,
+                      textAlign: TextAlign.center),
+                ])),
             Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
@@ -55,12 +52,11 @@ class _WelcomeScreenView extends StatelessView<WelcomeScreen> {
                   onPressed: () => Navigator.pushNamed(context, LoginScreen.id),
                 ),
                 RoundedRectangleButton(
-                  buttonText: kSignUpText,
-                  buttonStyle: kLightBlueButtonStyle,
-                  textColor: Colors.white,
-                  onPressed: () =>
-                      Navigator.pushNamed(context, RegisterScreen.id),
-                ),
+                    buttonText: kSignUpText,
+                    buttonStyle: kLightBlueButtonStyle,
+                    textColor: Colors.white,
+                    onPressed: () =>
+                        Navigator.pushNamed(context, RegisterScreen.id)),
               ],
             ),
           ],

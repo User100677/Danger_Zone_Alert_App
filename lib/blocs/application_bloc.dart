@@ -4,7 +4,7 @@ import 'package:danger_zone_alert/models/place_detail.dart';
 import 'package:danger_zone_alert/models/place_search.dart';
 import 'package:danger_zone_alert/services/geolocator_service.dart';
 import 'package:danger_zone_alert/services/places_service.dart';
-import 'package:danger_zone_alert/shared/widgets/error_snackbar.dart';
+import 'package:danger_zone_alert/shared/error_snackbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -60,26 +60,4 @@ class ApplicationBloc with ChangeNotifier {
     _position = position;
     notifyListeners();
   }
-
-  // TODO area circle
-  // final List<Circle> _areas = [];
-  //
-  // void addCircle(LatLng tappedPoint, Color color) {
-  //   _areas.add(
-  //     Circle(
-  //       // Id is unique for each circle in the _circles and the the index is basically the index. Ex: 0, 1, 2 ...
-  //       // circleId: CircleId((_areas.length).toString()),
-  //       circleId: CircleId((tappedPoint).toString()),
-  //       center: tappedPoint,
-  //       radius: kAreaRadius,
-  //       strokeWidth: 0,
-  //       // fillColor: const Color.fromRGBO(255, 0, 0, .5),
-  //       fillColor: color,
-  //       consumeTapEvents: false,
-  //     ),
-  //   );
-  //   notifyListeners();
-  // }
-  //
-  // List<Circle> get areas => _areas;
 }

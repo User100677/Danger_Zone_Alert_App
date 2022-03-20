@@ -4,7 +4,7 @@ import 'package:danger_zone_alert/auth/widgets/email_text_field.dart';
 import 'package:danger_zone_alert/auth/widgets/password_text_field.dart';
 import 'package:danger_zone_alert/constants/app_constants.dart';
 import 'package:danger_zone_alert/services/auth.dart';
-import 'package:danger_zone_alert/shared/widgets/rounded_rectangle_button.dart';
+import 'package:danger_zone_alert/shared/rounded_rectangle_button.dart';
 import 'package:danger_zone_alert/widget_view/widget_view.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
@@ -78,11 +78,8 @@ class _LoginScreenView extends WidgetView<LoginScreen, _LoginScreenController> {
         backgroundColor: Colors.lightBlueAccent,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
-          icon: const Icon(
-            Icons.arrow_back_sharp,
-            size: 20,
-            color: Colors.white,
-          ),
+          icon:
+              const Icon(Icons.arrow_back_sharp, size: 20, color: Colors.white),
         ),
       ),
       // Loading Indicator
@@ -101,16 +98,13 @@ class _LoginScreenView extends WidgetView<LoginScreen, _LoginScreenController> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const <Widget>[
-                    Text(
-                      'Welcome\nBack',
-                      style: TextStyle(
-                        fontFamily: 'Agne',
-                        fontSize: 32.0,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.left,
-                    ),
+                    Text('Welcome\nBack',
+                        style: TextStyle(
+                            fontFamily: 'Agne',
+                            fontSize: 32.0,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.left),
                   ],
                 ),
               ),
@@ -120,12 +114,10 @@ class _LoginScreenView extends WidgetView<LoginScreen, _LoginScreenController> {
               padding:
                   const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
               decoration: const BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(20.0),
-                  topRight: Radius.circular(20.0),
-                ),
-              ),
+                  color: Colors.white,
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20.0),
+                      topRight: Radius.circular(20.0))),
               child: Form(
                 key: state._formKey,
                 child: Column(
@@ -133,53 +125,44 @@ class _LoginScreenView extends WidgetView<LoginScreen, _LoginScreenController> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
                     EmailTextField(
-                      emailController: state._emailController,
-                      isEmailIncorrect: state._isEmailIncorrect,
-                      emailIncorrectText: "Incorrect email or password",
-                    ),
+                        emailController: state._emailController,
+                        isEmailIncorrect: state._isEmailIncorrect,
+                        emailIncorrectText: "Incorrect email or password"),
                     PasswordTextField(
-                      passwordController: state._passwordController,
-                    ),
+                        passwordController: state._passwordController),
                     // Forgot password button
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: <Widget>[
                         TextButton(
                           style: ElevatedButton.styleFrom(
-                            splashFactory: NoSplash.splashFactory,
-                          ),
-                          child: Text(
-                            'Forgot password?',
-                            style: TextStyle(
-                              color: Colors.lightBlueAccent.withOpacity(0.8),
-                              fontSize: 12.0,
-                            ),
-                          ),
+                              splashFactory: NoSplash.splashFactory),
+                          child: Text('Forgot password?',
+                              style: TextStyle(
+                                  color:
+                                      Colors.lightBlueAccent.withOpacity(0.8),
+                                  fontSize: 12.0)),
                           onPressed: () {
                             showModalBottomSheet(
-                              context: context,
-                              isScrollControlled: true,
-                              builder: (context) => SingleChildScrollView(
-                                child: Container(
-                                  padding: EdgeInsets.only(
-                                      bottom: MediaQuery.of(context)
-                                          .viewInsets
-                                          .bottom),
-                                  child: const ForgotPasswordScreen(),
-                                ),
-                              ),
-                            );
+                                context: context,
+                                isScrollControlled: true,
+                                builder: (context) => SingleChildScrollView(
+                                    child: Container(
+                                        padding: EdgeInsets.only(
+                                            bottom: MediaQuery.of(context)
+                                                .viewInsets
+                                                .bottom),
+                                        child: const ForgotPasswordScreen())));
                           },
                         ),
                       ],
                     ),
                     // Login button
                     RoundedRectangleButton(
-                      buttonText: kSignInText,
-                      buttonStyle: kLightBlueButtonStyle,
-                      textColor: Colors.white,
-                      onPressed: () => state.handleLoginPressed(),
-                    ),
+                        buttonText: kSignInText,
+                        buttonStyle: kLightBlueButtonStyle,
+                        textColor: Colors.white,
+                        onPressed: () => state.handleLoginPressed()),
                     buildButtonDivider(),
                     // Sign up button
                     RoundedRectangleButton(

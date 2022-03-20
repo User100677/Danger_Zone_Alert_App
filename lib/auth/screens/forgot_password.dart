@@ -1,7 +1,7 @@
 import 'package:danger_zone_alert/auth/widgets/email_text_field.dart';
 import 'package:danger_zone_alert/constants/app_constants.dart';
 import 'package:danger_zone_alert/services/auth.dart';
-import 'package:danger_zone_alert/shared/widgets/rounded_rectangle_button.dart';
+import 'package:danger_zone_alert/shared/rounded_rectangle_button.dart';
 import 'package:danger_zone_alert/widget_view/widget_view.dart';
 import 'package:flutter/material.dart';
 
@@ -59,46 +59,35 @@ class _ForgotPasswordScreenView
   Widget build(BuildContext context) {
     return Container(
       color: const Color(0xff757575),
-// Second container that contains the Title, Email text field & Reset password button
+      // Second container that contains the Title, Email text field & Reset password button
       child: Container(
         padding: const EdgeInsets.all(20.0),
         decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(20.0),
-            topRight: Radius.circular(20.0),
-          ),
-        ),
-// Title
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20.0),
+                topRight: Radius.circular(20.0))),
+        // Title
         child: Column(
           children: <Widget>[
-            const Text(
-              'Reset your password',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 24.0,
-                color: Colors.lightBlueAccent,
-              ),
-            ),
-            const SizedBox(
-              height: 16.0,
-            ),
-// Email Text Field
+            const Text('Reset your password',
+                textAlign: TextAlign.center,
+                style:
+                    TextStyle(fontSize: 24.0, color: Colors.lightBlueAccent)),
+            const SizedBox(height: 16.0),
+            // Email Text Field
             Form(
-              key: state._formKey,
-              child: EmailTextField(
-                emailController: state._emailController,
-                isEmailIncorrect: state._isEmailIncorrect,
-                emailIncorrectText: "Email doesn't exist",
-              ),
-            ),
-// Reset password button
+                key: state._formKey,
+                child: EmailTextField(
+                    emailController: state._emailController,
+                    isEmailIncorrect: state._isEmailIncorrect,
+                    emailIncorrectText: "Email doesn't exist")),
+            // Reset password button
             RoundedRectangleButton(
-              buttonText: 'RESET PASSWORD',
-              buttonStyle: kLightBlueButtonStyle,
-              textColor: Colors.white,
-              onPressed: () => state.handleResetPasswordPressed(),
-            ),
+                buttonText: 'RESET PASSWORD',
+                buttonStyle: kLightBlueButtonStyle,
+                textColor: Colors.white,
+                onPressed: () => state.handleResetPasswordPressed()),
           ],
         ),
       ),

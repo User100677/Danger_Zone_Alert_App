@@ -6,7 +6,7 @@ import 'package:implicitly_animated_reorderable_list/transitions.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:provider/provider.dart';
 
-import 'area_marker.dart';
+import '../util/update_markers.dart';
 
 Widget buildSearchBar(context, searchBarController) {
   final applicationBloc = Provider.of<ApplicationBloc>(context);
@@ -104,7 +104,7 @@ class _ItemFinderState extends State<ItemFinder> {
                 const Duration(milliseconds: 500), () => model.clear());
             await applicationBloc.setSelectedLocation(widget.place.placeId);
             setState(() {
-              updateMarker(applicationBloc
+              updateMarkers(applicationBloc
                   .selectedLocationStatic!.geometry.location.latLng);
             });
           },

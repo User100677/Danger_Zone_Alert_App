@@ -1,7 +1,7 @@
 import 'package:danger_zone_alert/map/util/animate_location.dart';
 import 'package:danger_zone_alert/models/user.dart';
 import 'package:danger_zone_alert/services/auth.dart';
-import 'package:danger_zone_alert/shared/widgets/error_snackbar.dart';
+import 'package:danger_zone_alert/shared/error_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
@@ -21,20 +21,16 @@ Widget buildBottomTabBar(context, googleMapController) {
         child: Stack(
           children: [
             CustomPaint(
-              size: Size(MediaQuery.of(context).size.width, height),
-              painter: BottomTabBarPainter(),
-            ),
+                size: Size(MediaQuery.of(context).size.width, height),
+                painter: BottomTabBarPainter()),
             // Current user location button
             Center(
               heightFactor: 0.6,
               child: FloatingActionButton(
                 backgroundColor: primaryColor,
                 elevation: 10,
-                child: const Icon(
-                  Icons.my_location_rounded,
-                  color: Colors.white,
-                ),
-                // onPressed: onPressed,
+                child:
+                    const Icon(Icons.my_location_rounded, color: Colors.white),
                 onPressed: () async {
                   LatLng? userPosition = user?.latLng;
 
@@ -51,10 +47,7 @@ Widget buildBottomTabBar(context, googleMapController) {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   // NewsAPI button
-                  IconBar(
-                    icon: Icons.web_rounded,
-                    onPressed: () {},
-                  ),
+                  IconBar(icon: Icons.web_rounded, onPressed: () {}),
                   const SizedBox(width: 56),
                   // Log out button
                   IconBar(
@@ -77,7 +70,6 @@ Widget buildBottomTabBar(context, googleMapController) {
                           ],
                         ),
                       );
-                      // await _authService.signOut();
                     },
                   ),
                 ],
@@ -143,13 +135,8 @@ class IconBar extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         IconButton(
-          icon: Icon(
-            icon,
-            size: 25.0,
-            color: const Color(0xff818181),
-          ),
-          onPressed: onPressed,
-        ),
+            icon: Icon(icon, size: 25.0, color: const Color(0xff818181)),
+            onPressed: onPressed),
       ],
     );
   }

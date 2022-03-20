@@ -22,20 +22,16 @@ class _EmailTextFieldState extends State<EmailTextField> {
     return SizedBox(
       height: 70.0,
       child: TextFormField(
-        controller: widget.emailController,
-        keyboardType: TextInputType.emailAddress,
-        textAlignVertical: TextAlignVertical.center,
-        decoration: InputDecoration(
-          prefixIcon: const Icon(
-            Icons.email_sharp,
-            size: 20.0,
-          ),
-          hintText: 'Email',
-          errorText: widget.isEmailIncorrect ? widget.emailIncorrectText : null,
-        ),
-        validator: (String? value) =>
-            value!.isEmpty ? "Field can't be empty" : null,
-      ),
+          controller: widget.emailController,
+          keyboardType: TextInputType.emailAddress,
+          textAlignVertical: TextAlignVertical.center,
+          decoration: InputDecoration(
+              prefixIcon: const Icon(Icons.email_sharp, size: 20.0),
+              hintText: 'Email',
+              errorText:
+                  widget.isEmailIncorrect ? widget.emailIncorrectText : null),
+          validator: (String? value) =>
+              value!.isEmpty ? "Field can't be empty" : null),
     );
   }
 }

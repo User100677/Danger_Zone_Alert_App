@@ -13,10 +13,9 @@ Widget buildButtonDivider() {
         child: Container(
           margin: const EdgeInsets.only(right: kDividerMargin),
           child: Divider(
-            height: kDividerHeight,
-            thickness: kDividerThickness,
-            color: kDividerColor,
-          ),
+              height: kDividerHeight,
+              thickness: kDividerThickness,
+              color: kDividerColor),
         ),
       ),
       const Text(
@@ -27,10 +26,9 @@ Widget buildButtonDivider() {
         child: Container(
           margin: const EdgeInsets.only(left: kDividerMargin),
           child: Divider(
-            height: kDividerHeight,
-            thickness: kDividerThickness,
-            color: kDividerColor,
-          ),
+              height: kDividerHeight,
+              thickness: kDividerThickness,
+              color: kDividerColor),
         ),
       ),
     ],
