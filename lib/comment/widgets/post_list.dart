@@ -17,18 +17,6 @@ class PostList extends StatefulWidget {
 }
 
 class _PostListState extends State<PostList> {
-  void like(Function callBack) {
-    setState(() {
-      callBack();
-    });
-  }
-
-  void dislike(Function callBack) {
-    setState(() {
-      callBack();
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<List<CommentedArea>>(
@@ -66,15 +54,15 @@ class _PostListState extends State<PostList> {
                       IconButton(
                           icon: const Icon(Icons.thumb_up),
                           onPressed: () {
-                            // [like(post.likePost), like(post.clash2)];
+                            post.likePost();
 
-                            DatabaseService(uid: widget.user.uid)
-                                .updateUserLikesData(widget.latLng, post.id,
-                                    post.userLiked, post.userDisLiked);
-
-                            DatabaseService(uid: widget.user.uid)
-                                .updateAreaLikesData(widget.latLng, post.id,
-                                    post.userLiked, post.userDisLiked);
+                            // DatabaseService(uid: widget.user.uid)
+                            //     .updateUserLikedData(widget.latLng, post.id,
+                            //         post.userLiked, post.userDisLiked);
+                            //
+                            // DatabaseService(uid: widget.user.uid)
+                            //     .updateAreaLikesData(widget.latLng, post.id,
+                            //         post.userLiked, post.userDisLiked);
                           },
                           color: post.userLiked ? Colors.green : Colors.black),
                       Container(
@@ -84,17 +72,15 @@ class _PostListState extends State<PostList> {
                       IconButton(
                           icon: const Icon(Icons.thumb_down),
                           onPressed: () {
-                            // [dislike(post.dislikePost), dislike(post.clash1)];
-                            // dislike(post.dislikePost);
-                            // dislike(post.clash1);
+                            post.dislikePost();
 
-                            DatabaseService(uid: widget.user.uid)
-                                .updateUserDislikesData(widget.latLng, post.id,
-                                    post.userLiked, post.userDisLiked);
-
-                            DatabaseService(uid: widget.user.uid)
-                                .updateAreaDislikesData(widget.latLng, post.id,
-                                    post.userLiked, post.userDisLiked);
+                            // DatabaseService(uid: widget.user.uid)
+                            //     .updateUserDislikedData(widget.latLng, post.id,
+                            //         post.userLiked, post.userDisLiked);
+                            //
+                            // DatabaseService(uid: widget.user.uid)
+                            //     .updateAreaDislikesData(widget.latLng, post.id,
+                            //         post.userLiked, post.userDisLiked);
                           },
                           color: post.userDisLiked ? Colors.red : Colors.black),
                     ],

@@ -28,7 +28,7 @@ class _CommentScreenState extends State<CommentScreen> {
 
   handleCommentPressed(String text) async {
     await DatabaseService(uid: widget.user.uid)
-        .updateAreaCommentData(widget.area.latLng, text, widget.user.email);
+        .postAreaCommentData(widget.area.latLng, text, widget.user.email);
   }
 
   @override
@@ -44,9 +44,14 @@ class _CommentScreenState extends State<CommentScreen> {
             areaList[widget.areaIndex].comment.addAll(snapshot.requireData);
             comments = areaList[widget.areaIndex].comment;
 
+            // for (Comment comment in comments) {
+            //   posts.add(Post(widget.user, widget.area.latLng, comment.id,
+            //       comment.content, comment.email,
+            //       likes: comment.likes, dislikes: comment.dislikes));
+            // }
+
             for (Comment comment in comments) {
-              posts.add(Post(comment.id, comment.content, comment.email,
-                  likes: comment.likes, dislikes: comment.dislikes));
+              posts.add(Post(widget.user, widget.area.latLng, comment));
             }
           }
 
