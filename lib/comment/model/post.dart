@@ -1,12 +1,13 @@
 class Post {
-  String content;
-  String email;
+  String id;
   int likes;
   int dislikes;
+  String email;
+  String content;
   bool userLiked = false;
   bool userDisLiked = false;
 
-  Post(this.content, this.email, {this.likes = 0, this.dislikes = 0});
+  Post(this.id, this.content, this.email, {this.likes = 0, this.dislikes = 0});
 
   void likePost() {
     userLiked = !userLiked;

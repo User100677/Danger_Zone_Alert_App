@@ -13,11 +13,10 @@ import '../util/calculate_distance.dart';
 import '../widgets/alert_dialog.dart';
 
 class AddressActivityBox extends StatelessWidget {
+  final Area area;
   final UserModel user;
   final String description;
   final Function boxCallback;
-
-  final Area area;
 
   const AddressActivityBox({
     Key? key,
@@ -29,7 +28,7 @@ class AddressActivityBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool previewRating = area.totalUsers > 10;
+    bool previewRating = area.totalUsers >= 10;
     const primaryColor = Colors.white;
     const locationTextColor = Color(0xff6E7CA8);
     const iconColor = Color(0xffAAB1C9);
@@ -51,7 +50,7 @@ class AddressActivityBox extends StatelessWidget {
                 child: Text(
                     previewRating
                         ? area.rating.toString()
-                        : 'Threshold not Met',
+                        : 'Required threshold not met',
                     style: Theme.of(context).textTheme.bodyText2?.copyWith(
                         fontSize: previewRating ? 50.0 : 30,
                         color: area.color,
@@ -189,9 +188,9 @@ class AddressActivityBox extends StatelessWidget {
     int randomTotalUsers = intInRange(3, 20);
 
     await DatabaseService(uid: user.uid)
-        .updateUserRatedAreasData(area.latLng, randomRating);
+        .updateUserRatingData(area.latLng, randomRating);
 
-    await DatabaseService(uid: user.uid).updateAreasData(
+    await DatabaseService(uid: user.uid).updateAreaData(
         area.latLng,
         randomRating,
         colorAssignment(randomRating, randomTotalUsers),

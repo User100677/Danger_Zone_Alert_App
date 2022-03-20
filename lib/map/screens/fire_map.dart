@@ -226,7 +226,7 @@ class _FireMapScreenController extends State<FireMapScreen> {
     widget.user.ratedAreas.clear();
 
     DocumentSnapshot docSnapshot = await DatabaseService(uid: widget.user.uid)
-        .getUserCurrentRatedAreaData(circle.center);
+        .getUserRatingData(circle.center);
 
     if (docSnapshot.exists) {
       widget.user.ratedAreas.add(RatedArea(
@@ -235,7 +235,6 @@ class _FireMapScreenController extends State<FireMapScreen> {
           rating: docSnapshot.get('rating')));
 
       print("User already rated this rated area!");
-      print(widget.user.ratedAreas.length);
     }
 
     // TODO: Do stuff when current user didn't rate the area before

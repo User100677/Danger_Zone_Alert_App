@@ -15,7 +15,6 @@
 //   final CollectionReference userCollection =
 //       FirebaseFirestore.instance.collection('users');
 //
-//   // TODO: Only all area data needs to be extracted all at once. Comment of each
 //   // only needed when the comment button is clicked
 //   final CollectionReference areaCollection =
 //       FirebaseFirestore.instance.collection('areas');
@@ -60,7 +59,6 @@
 //     }).toList();
 //   }
 //
-//   // TODO: Need include userCollection.doc(uid).snapshots().map(_userRatedAreaListFromSnapshot) ?
 //   // Stream<List<RatedArea>> get userRatedArea {
 //   //   return userCollection.snapshots().map(_userRatedAreaListFromSnapshot);
 //   // }
@@ -148,8 +146,6 @@
 //     });
 //   }
 //
-//   // TODO: How do you know if the user already like that specific comment?
-//   // TODO: If so how to make sure he/she can only affect it once (Add stuff to userModel)
 //   Future updateCommentLikeCount(
 //       LatLng latLng, bool isIncrement, int index) async {
 //     return await areaCollection

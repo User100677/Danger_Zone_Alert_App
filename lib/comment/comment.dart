@@ -1,4 +1,4 @@
-import 'package:danger_zone_alert/comment/post.dart';
+import 'package:danger_zone_alert/comment/model/post.dart';
 import 'package:danger_zone_alert/comment/widgets/post_list.dart';
 import 'package:danger_zone_alert/comment/widgets/text_input.dart';
 import 'package:danger_zone_alert/models/area.dart';
@@ -28,9 +28,7 @@ class _CommentScreenState extends State<CommentScreen> {
 
   handleCommentPressed(String text) async {
     await DatabaseService(uid: widget.user.uid)
-        .postAreasCommentData(widget.area.latLng, text, widget.user.email);
-
-    print('Comment completed!');
+        .updateAreaCommentData(widget.area.latLng, text, widget.user.email);
   }
 
   @override
@@ -47,26 +45,40 @@ class _CommentScreenState extends State<CommentScreen> {
             comments = areaList[widget.areaIndex].comment;
 
             for (Comment comment in comments) {
-              posts.add(Post(comment.content, comment.email,
-                  likes: comment.like, dislikes: comment.dislike));
+              posts.add(Post(comment.id, comment.content, comment.email,
+                  likes: comment.likes, dislikes: comment.dislikes));
             }
           }
 
-          // widget view
-          return Scaffold(
-              appBar: AppBar(
-                  title: const Text('Comments'),
-                  leading: IconButton(
-                      onPressed: () => Navigator.pop(context),
-                      icon: const Icon(
-                        Icons.arrow_back_sharp,
-                        size: 20,
-                        color: Colors.white,
-                      ))),
-              body: Column(children: <Widget>[
-                Expanded(child: PostList(posts)),
-                TextInputWidget(handleCommentPressed),
-              ]));
+          return StreamBuilder<List<CommentedArea>>(
+            stream: DatabaseService(uid: widget.user.uid)
+                .getUserCommentsData(widget.area.latLng),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                widget.user.commentedArea.clear();
+                widget.user.commentedArea.addAll(snapshot.requireData);
+
+                print(widget.user.commentedArea.length);
+              }
+
+              return Scaffold(
+                  appBar: AppBar(
+                      title: const Text('Comments'),
+                      leading: IconButton(
+                          onPressed: () => Navigator.pop(context),
+                          icon: const Icon(
+                            Icons.arrow_back_sharp,
+                            size: 20,
+                            color: Colors.white,
+                          ))),
+                  body: Column(children: <Widget>[
+                    Expanded(
+                        child:
+                            PostList(posts, widget.user, widget.area.latLng)),
+                    TextInputWidget(handleCommentPressed),
+                  ]));
+            },
+          );
         });
   }
 }

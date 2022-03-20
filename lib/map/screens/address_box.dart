@@ -97,30 +97,34 @@ class AddressBox extends StatelessWidget {
                         },
                       ),
                     ),
-                    const SizedBox(width: 12.0),
-                    Expanded(
-                      child: RoundedRectangleButton(
-                        buttonText: 'Comment',
-                        buttonStyle: kBlueButtonStyle,
-                        textColor: textColor,
-                        onPressed: () {
-                          if (user.access == false) {
-                            showAlertDialog(context, kLocationDenied);
-                          } else {
-                            if (calculateDistance(user.latLng, latLng) < 1) {
-                              // TODO
-                              handleInitialCommentPressed();
-                              //
-                              // Navigator.popAndPushNamed(
-                              //     context, CommentScreen.id);
-                              boxCallback();
-                            } else {
-                              showAlertDialog(context, kAlertCommentText);
-                            }
-                          }
-                        },
-                      ),
-                    ),
+                    // const SizedBox(width: 12.0),
+                    // Expanded(
+                    //   child: RoundedRectangleButton(
+                    //     buttonText: 'Comment',
+                    //     buttonStyle: kBlueButtonStyle,
+                    //     textColor: textColor,
+                    //     onPressed: () {
+                    //       if (user.access == false) {
+                    //         showAlertDialog(context, kLocationDenied);
+                    //       } else {
+                    //         if (calculateDistance(user.latLng, latLng) < 1) {
+                    //           Navigator.pop(context);
+                    //           Navigator.push(
+                    //               context,
+                    //               MaterialPageRoute(
+                    //                   builder: (context) => CommentScreen(
+                    //                       user: user,
+                    //                       area: area,
+                    //                       areaIndex: -1)));
+                    //
+                    //           boxCallback();
+                    //         } else {
+                    //           showAlertDialog(context, kAlertCommentText);
+                    //         }
+                    //       }
+                    //     },
+                    //   ),
+                    // ),
                   ],
                 ),
               ),
@@ -136,22 +140,22 @@ class AddressBox extends StatelessWidget {
     int randomTotalUsers = intInRange(5, 20);
 
     await DatabaseService(uid: user.uid)
-        .updateUserRatedAreasData(latLng, randomRating);
+        .updateUserRatingData(latLng, randomRating);
 
-    await DatabaseService(uid: user.uid).updateAreasData(latLng, randomRating,
+    await DatabaseService(uid: user.uid).updateAreaData(latLng, randomRating,
         colorAssignment(randomRating, randomTotalUsers), randomTotalUsers);
 
     print('Rating completed!');
   }
 
   // A method to create a circle if the user first rate the area.
-  handleInitialCommentPressed() async {
-    await DatabaseService(uid: user.uid)
-        .postAreasCommentData(latLng, 'Testing123', user.email);
-
-    await DatabaseService(uid: user.uid)
-        .updateAreasData(latLng, 0, 0xFF000000, 0);
-
-    print('Comment completed!');
-  }
+  // handleInitialCommentPressed() async {
+  //   await DatabaseService(uid: user.uid)
+  //       .postAreasCommentData(latLng, 'Testing123', user.email);
+  //
+  //   await DatabaseService(uid: user.uid)
+  //       .updateAreasData(latLng, 0, 0xFF000000, 0);
+  //
+  //   print('Comment completed!');
+  // }
 }

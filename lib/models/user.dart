@@ -1,4 +1,3 @@
-// Abstract user model
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class UserModel {
@@ -8,6 +7,7 @@ class UserModel {
   LatLng? _latLng;
   bool? _access;
   List<RatedArea> ratedAreas = [];
+  List<CommentedArea> commentedArea = [];
 
   UserModel({required this.uid, required this.email});
 
@@ -20,13 +20,15 @@ class UserModel {
 class RatedArea {
   LatLng latLng;
   double rating;
-  List<CommentedArea> commentedArea = [];
 
   RatedArea({required this.latLng, this.rating = 0});
 }
 
 class CommentedArea {
+  String id;
   bool isLiked;
   bool isDisliked;
-  CommentedArea({required this.isLiked, required this.isDisliked});
+
+  CommentedArea(
+      {required this.id, required this.isLiked, required this.isDisliked});
 }

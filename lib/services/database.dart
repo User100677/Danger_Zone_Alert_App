@@ -18,12 +18,11 @@ class DatabaseService {
 
   DatabaseService({this.uid});
 
-  /* - User - */
-  Future updateUserRatedAreasData(LatLng latLng, double rating) async {
+  /* <------------------ User ------------------> */
+  Future updateUserRatingData(LatLng latLng, double rating) async {
     GeoFirePoint location =
         geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
 
-    // Use geoHash as document id
     return await userCollection
         .doc(uid)
         .collection('ratedAreas')
@@ -33,21 +32,69 @@ class DatabaseService {
 
   // This function should be in area_rating_box
   // Return a single snapshot (The clicked circle's data center or null)
-  Future<DocumentSnapshot> getUserCurrentRatedAreaData(LatLng latLng) {
+  Future<DocumentSnapshot> getUserRatingData(LatLng latLng) {
     GeoFirePoint location =
         geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
 
-    final userRatedAreasCollection = FirebaseFirestore.instance
-        .collection('users')
+    return userCollection
         .doc(uid)
-        .collection('ratedAreas');
-
-    return userRatedAreasCollection.doc(location.hash).get();
+        .collection('ratedAreas')
+        .doc(location.hash)
+        .get();
   }
 
-  /* Areas */
+  /* <------------------ User Comment ------------------> */
+  Future updateUserLikesData(
+      latLng, String commentID, bool isLiked, bool isDisliked) async {
+    GeoFirePoint location =
+        geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
+
+    return await userCollection
+        .doc(uid)
+        .collection('ratedAreas')
+        .doc(location.hash)
+        .collection('comments')
+        .doc(commentID)
+        .set({'liked': !isLiked, 'disliked': false});
+  }
+
+  Future updateUserDislikesData(
+      latLng, String commentID, bool isLiked, bool isDisliked) async {
+    GeoFirePoint location =
+        geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
+
+    return await userCollection
+        .doc(uid)
+        .collection('ratedAreas')
+        .doc(location.hash)
+        .collection('comments')
+        .doc(commentID)
+        .set({'liked': false, 'disliked': !isDisliked});
+  }
+
+  List<CommentedArea> _userCommentListFromSnapshot(QuerySnapshot snapshot) {
+    return snapshot.docs.map((doc) {
+      return CommentedArea(
+          id: doc.id, isLiked: doc['liked'], isDisliked: doc['disliked']);
+    }).toList();
+  }
+
+  Stream<List<CommentedArea>> getUserCommentsData(LatLng latLng) {
+    GeoFirePoint location =
+        geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
+
+    return userCollection
+        .doc(uid)
+        .collection('ratedAreas')
+        .doc(location.hash)
+        .collection('comments')
+        .snapshots()
+        .map(_userCommentListFromSnapshot);
+  }
+
+  /* <------------------ Areas ------------------> */
   // Might need to split into multiple function for individual component's update or even an initialAreasData()
-  Future updateAreasData(
+  Future updateAreaData(
       LatLng latLng, double rating, int color, int totalUsers) async {
     GeoFirePoint location =
         geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
@@ -78,51 +125,14 @@ class DatabaseService {
         .within(center: center, radius: radius, field: field);
   }
 
-  /* Users Comment */
-  Future updateUserCommentedArea(
-      latLng, String commentID, bool isLiked, bool isDisliked) async {
-    GeoFirePoint location =
-        geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
-
-    return await userCollection
-        .doc(uid)
-        .collection('ratedAreas')
-        .doc(location.hash)
-        .collection('comments')
-        .doc(commentID)
-        .set({'liked': isLiked, 'disliked': isDisliked});
-  }
-
-  List<CommentedArea> _userCommentListFromSnapshot(QuerySnapshot snapshot) {
-    return snapshot.docs.map((doc) {
-      return CommentedArea(
-          isLiked: doc['isLiked'], isDisliked: doc['isDislike']);
-    }).toList();
-  }
-
-  Stream<List<CommentedArea>> getUserComments(LatLng latLng) {
-    GeoFirePoint location =
-        geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
-
-    return userCollection
-        .doc(location.hash)
-        .collection('comments')
-        .snapshots()
-        .map(_userCommentListFromSnapshot);
-  }
-
-  /* Areas Comment */
-
-  // TODO: Need to store user's like & dislike (Update) to make sure 1 can't increase the like or dislike count more than once
-  // Solution: Get the unique id of the comment and store it in user/ratedAreas/comments
-  // so we can check when the user re-like. Get it when the user tap on the like or dislike
-  Future postAreasCommentData(latLng, String content, String? email) async {
+  /* <------------------ Areas Comment------------------> */
+  Future updateAreaCommentData(latLng, String content, String? email) async {
     GeoFirePoint location =
         geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
 
     return await areaCollection.doc(location.hash).collection('comments').add({
-      'like': 0,
-      'dislike': 0,
+      'likes': 0,
+      'dislikes': 0,
       'content': content,
       'email': email ?? 'example@email.com',
       // 'time': time,
@@ -132,10 +142,11 @@ class DatabaseService {
   List<Comment> _commentListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
       return Comment(
-        like: doc['like'],
-        dislike: doc['dislike'],
+        likes: doc['likes'],
+        dislikes: doc['dislikes'],
         content: doc['content'],
         email: doc['email'],
+        id: doc.id,
       );
     }).toList();
   }
@@ -151,9 +162,7 @@ class DatabaseService {
         .map(_commentListFromSnapshot);
   }
 
-  // Edge Case: the user can re-tap on the like button to remove it &
-  // pressing dislike remove the like
-  Future updateLikeCommentData(
+  Future updateAreaLikesData(
       LatLng latLng, String documentID, bool isLiked, bool isDisliked) async {
     GeoFirePoint location =
         geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
@@ -163,9 +172,7 @@ class DatabaseService {
           .doc(location.hash)
           .collection('comments')
           .doc(documentID)
-          .set({
-        'like': FieldValue.increment(1),
-      });
+          .update({'likes': FieldValue.increment(1)});
     }
 
     if (isLiked) {
@@ -173,9 +180,7 @@ class DatabaseService {
           .doc(location.hash)
           .collection('comments')
           .doc(documentID)
-          .set({
-        'like': FieldValue.increment(-1),
-      });
+          .update({'likes': FieldValue.increment(-1)});
     }
 
     if (isDisliked) {
@@ -183,14 +188,14 @@ class DatabaseService {
           .doc(location.hash)
           .collection('comments')
           .doc(documentID)
-          .set({
-        'like': FieldValue.increment(1),
-        'dislike': FieldValue.increment(-1),
+          .update({
+        'likes': FieldValue.increment(1),
+        'dislikes': FieldValue.increment(-1),
       });
     }
   }
 
-  Future updateDislikeCommentData(
+  Future updateAreaDislikesData(
       LatLng latLng, String documentID, bool isLiked, bool isDisliked) async {
     GeoFirePoint location =
         geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
@@ -200,9 +205,7 @@ class DatabaseService {
           .doc(location.hash)
           .collection('comments')
           .doc(documentID)
-          .set({
-        'dislike': FieldValue.increment(1),
-      });
+          .update({'dislikes': FieldValue.increment(1)});
     }
 
     if (isLiked) {
@@ -210,9 +213,9 @@ class DatabaseService {
           .doc(location.hash)
           .collection('comments')
           .doc(documentID)
-          .set({
-        'dislike': FieldValue.increment(1),
-        'like': FieldValue.increment(-1),
+          .update({
+        'likes': FieldValue.increment(-1),
+        'dislikes': FieldValue.increment(1),
       });
     }
 
@@ -221,63 +224,7 @@ class DatabaseService {
           .doc(location.hash)
           .collection('comments')
           .doc(documentID)
-          .set({
-        'dislike': FieldValue.increment(-1),
-      });
+          .update({'dislikes': FieldValue.increment(-1)});
     }
   }
-
-  // TODO: Get AreaComment (Stream)
-  // TODO: Get userCommentLike/Dislike (Stream)
-  // TODO: Update/set userCommentLike/Dislike
 }
-
-// Stream<List<DocumentSnapshot>> userRatedAreaDefault(latLng) {
-//   print(latLng);
-//
-//   GeoFirePoint center =
-//       geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
-//
-//   double radius = 1;
-//   String field = 'position';
-//
-//   return geo
-//       .collection(
-//           collectionRef: userCollection.doc(uid).collection('ratedAreas'))
-//       .within(center: center, radius: radius, field: field);
-// }
-
-// Stream<List<DocumentSnapshot>> userRatedArea(controller, context) async* {
-//   var latLng = await controller.getLatLng(cameraMiddleCoordinate(context));
-//
-//   print(latLng);
-//
-//   GeoFirePoint center =
-//       geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
-//
-//   double radius = 2;
-//   String field = 'position';
-//
-//   yield* geo
-//       .collection(
-//           collectionRef: userCollection.doc(uid).collection('ratedAreas'))
-//       .within(center: center, radius: radius, field: field);
-// }
-//
-// void updateCircle(List<DocumentSnapshot> documentList, UserModel user) {
-//   documentList.forEach((DocumentSnapshot document) {
-//     var lat = document.get('position')['geopoint'].latitude;
-//     var lon = document.get('position')['geopoint'].longitude;
-//
-//     areaCircles2.add(Circle(
-//       circleId: CircleId(LatLng(lat, lon).toString()),
-//       center: LatLng(lat, lon),
-//       radius: kAreaRadius,
-//       strokeWidth: 0,
-//       fillColor: const Color.fromRGBO(255, 0, 0, .5),
-//       consumeTapEvents: false,
-//     ));
-//
-//     // user.ratedAreas.add(RatedArea(latLng: LatLng(lat, lon), rating: 4.2));
-//   });
-// }
