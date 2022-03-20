@@ -1,5 +1,4 @@
 import 'package:danger_zone_alert/auth/screens/forgot_password.dart';
-import 'package:danger_zone_alert/comment/comment.dart';
 import 'package:danger_zone_alert/map/widgets/search_bar.dart';
 import 'package:danger_zone_alert/rating/new_rating.dart';
 import 'package:danger_zone_alert/services/auth.dart';
@@ -55,7 +54,6 @@ class MyApp extends StatelessWidget {
         ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
         RegisterScreen.id: (context) => const RegisterScreen(),
         RatingQuestionsList.id: (context) => const RatingQuestionsList(),
-        CommentScreen.id: (context) => const CommentScreen(),
       },
     );
   }

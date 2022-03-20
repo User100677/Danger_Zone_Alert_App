@@ -1,4 +1,3 @@
-import 'package:danger_zone_alert/comment/comment.dart';
 import 'package:danger_zone_alert/constants/app_constants.dart';
 import 'package:danger_zone_alert/map/randomization.dart';
 import 'package:danger_zone_alert/map/util/calculate_distance.dart';
@@ -111,9 +110,9 @@ class AddressBox extends StatelessWidget {
                             if (calculateDistance(user.latLng, latLng) < 1) {
                               // TODO
                               handleInitialCommentPressed();
-
-                              Navigator.popAndPushNamed(
-                                  context, CommentScreen.id);
+                              //
+                              // Navigator.popAndPushNamed(
+                              //     context, CommentScreen.id);
                               boxCallback();
                             } else {
                               showAlertDialog(context, kAlertCommentText);

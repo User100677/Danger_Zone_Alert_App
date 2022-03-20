@@ -41,11 +41,11 @@ class Wrapper extends StatelessWidget {
                 //       //     value: DatabaseService().userRatedArea),
                 //       StreamProvider<List<Comment>>.value(
                 //           catchError: null,
-                //           value: DatabaseService().getComments(null),
+                //           value: DatabaseService().getAreaComments(null),
                 //           initialData: const []),
                 //     ],
-                //     child:
-                //         FireMapScreen(user: user, position: provider.position),
+                //     child: FireMapScreen(
+                //         user: user, userPosition: provider.position),
                 //   ),
                 : FireMapScreen(user: user, userPosition: provider.position),
       );

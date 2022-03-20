@@ -25,11 +25,11 @@ int colorAssignment(double ratingValue, int totalUsers) {
     return colors[0];
   }
 
-  if (ratingValue <= 3.0) {
+  if (ratingValue < 3.0) {
     return colors[1];
-  } else if (ratingValue <= 3.5) {
+  } else if (ratingValue < 3.5) {
     return colors[2];
-  } else if (ratingValue <= 4.0) {
+  } else if (ratingValue < 4.0) {
     return colors[3];
   } else if (ratingValue <= 5.0) {
     return colors[4];

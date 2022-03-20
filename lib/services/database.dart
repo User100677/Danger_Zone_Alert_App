@@ -84,7 +84,6 @@ class DatabaseService {
     GeoFirePoint location =
         geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
 
-    // Use geoHash as document id
     return await userCollection
         .doc(uid)
         .collection('ratedAreas')
@@ -135,13 +134,13 @@ class DatabaseService {
       return Comment(
         like: doc['like'],
         dislike: doc['dislike'],
-        content: doc['email'],
+        content: doc['content'],
         email: doc['email'],
       );
     }).toList();
   }
 
-  Stream<List<Comment>> getComments(LatLng latLng) {
+  Stream<List<Comment>> getAreaComments(LatLng latLng) {
     GeoFirePoint location =
         geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
 

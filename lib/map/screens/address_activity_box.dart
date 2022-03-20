@@ -1,41 +1,35 @@
 import 'package:danger_zone_alert/comment/comment.dart';
 import 'package:danger_zone_alert/constants/app_constants.dart';
 import 'package:danger_zone_alert/map/randomization.dart';
+import 'package:danger_zone_alert/models/area.dart';
 import 'package:danger_zone_alert/models/user.dart';
 import 'package:danger_zone_alert/rating/new_rating.dart';
 import 'package:danger_zone_alert/services/database.dart';
 import 'package:danger_zone_alert/shared/rounded_rectangle_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../util/calculate_distance.dart';
 import '../widgets/alert_dialog.dart';
 
 class AddressActivityBox extends StatelessWidget {
-  final Color color;
-  final bool preview;
-  final double rating;
   final UserModel user;
-  final int totalUsers;
-  final LatLng areaLatLng;
   final String description;
   final Function boxCallback;
+
+  final Area area;
 
   const AddressActivityBox({
     Key? key,
     required this.description,
-    required this.areaLatLng,
     required this.user,
-    required this.totalUsers,
-    required this.rating,
-    required this.color,
     required this.boxCallback,
-    required this.preview,
+    required this.area,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    bool previewRating = area.totalUsers > 10;
     const primaryColor = Colors.white;
     const locationTextColor = Color(0xff6E7CA8);
     const iconColor = Color(0xffAAB1C9);
@@ -51,18 +45,21 @@ class AddressActivityBox extends StatelessWidget {
               borderRadius: BorderRadius.all(Radius.circular(10.0))),
           child: Column(
             children: <Widget>[
-              preview ? Container() : const SizedBox(height: 16),
+              previewRating ? Container() : const SizedBox(height: 16),
               Padding(
                 padding: const EdgeInsets.only(top: 24.0),
-                child: Text(preview ? rating.toString() : 'Threshold not Met',
+                child: Text(
+                    previewRating
+                        ? area.rating.toString()
+                        : 'Threshold not Met',
                     style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                        fontSize: preview ? 50.0 : 30,
-                        color: color,
+                        fontSize: previewRating ? 50.0 : 30,
+                        color: area.color,
                         fontWeight: FontWeight.w800,
                         fontFamily: 'RobotoMono'),
                     textAlign: TextAlign.center),
               ),
-              preview ? Container() : const SizedBox(height: 8),
+              previewRating ? Container() : const SizedBox(height: 8),
               Text('Danger Level',
                   style: Theme.of(context).textTheme.bodyText2?.copyWith(
                       fontSize: 18.0,
@@ -73,7 +70,7 @@ class AddressActivityBox extends StatelessWidget {
               Padding(
                   padding: const EdgeInsets.only(top: 6.0),
                   child: RatingBarIndicator(
-                      rating: preview ? rating : 0.0,
+                      rating: previewRating ? area.rating : 0.0,
                       itemBuilder: (BuildContext context, int index) =>
                           const Icon(Icons.star_border,
                               color: Color(0xffFEBC48)),
@@ -83,7 +80,7 @@ class AddressActivityBox extends StatelessWidget {
               // People Rated
               Padding(
                   padding: const EdgeInsets.only(top: 6.0),
-                  child: Text('$totalUsers People Rated',
+                  child: Text('${area.totalUsers}  People Rated',
                       style: Theme.of(context)
                           .textTheme
                           .bodyText2
@@ -113,7 +110,6 @@ class AddressActivityBox extends StatelessWidget {
                   ],
                 ),
               ),
-              // Container for 'Rate' and 'Comment' button
               Container(
                 padding: const EdgeInsets.symmetric(
                     horizontal: 12.0, vertical: 12.0),
@@ -124,6 +120,7 @@ class AddressActivityBox extends StatelessWidget {
                         bottomRight: Radius.circular(10.0))),
                 child: Row(
                   children: <Widget>[
+                    // Rate Button
                     Expanded(
                       child: RoundedRectangleButton(
                         buttonText: 'Rate',
@@ -133,7 +130,7 @@ class AddressActivityBox extends StatelessWidget {
                           if (user.access == false) {
                             showAlertDialog(context, kLocationDenied);
                           } else {
-                            if (calculateDistance(user.latLng, areaLatLng) <
+                            if (calculateDistance(user.latLng, area.latLng) <
                                 1) {
                               // TODO: Database
                               handleRatePressed();
@@ -149,6 +146,7 @@ class AddressActivityBox extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(width: 12.0),
+                    // Comment Button
                     Expanded(
                       child: RoundedRectangleButton(
                         buttonText: 'Comment',
@@ -158,13 +156,16 @@ class AddressActivityBox extends StatelessWidget {
                           if (user.access == false) {
                             showAlertDialog(context, kLocationDenied);
                           } else {
-                            if (calculateDistance(user.latLng, areaLatLng) <
+                            if (calculateDistance(user.latLng, area.latLng) <
                                 1) {
-                              // TODO: Database
-                              handleCommentPressed();
-
-                              Navigator.popAndPushNamed(
-                                  context, CommentScreen.id);
+                              Navigator.pop(context);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => CommentScreen(
+                                          user: user,
+                                          area: area,
+                                          areaIndex: areaList.indexOf(area))));
                               boxCallback();
                             } else {
                               showAlertDialog(context, kAlertCommentText);
@@ -188,21 +189,14 @@ class AddressActivityBox extends StatelessWidget {
     int randomTotalUsers = intInRange(3, 20);
 
     await DatabaseService(uid: user.uid)
-        .updateUserRatedAreasData(areaLatLng, randomRating);
+        .updateUserRatedAreasData(area.latLng, randomRating);
 
     await DatabaseService(uid: user.uid).updateAreasData(
-        areaLatLng,
+        area.latLng,
         randomRating,
         colorAssignment(randomRating, randomTotalUsers),
         randomTotalUsers);
 
     print('Rating completed!');
-  }
-
-  handleCommentPressed() async {
-    await DatabaseService(uid: user.uid)
-        .postAreasCommentData(areaLatLng, 'Testing123', user.email);
-
-    print('Comment completed!');
   }
 }

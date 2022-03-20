@@ -126,6 +126,8 @@ class _FireMapScreenController extends State<FireMapScreen> {
         .getAreasData(_googleMapController, context)
         .listen((List<DocumentSnapshot> documentList) {
       widget.user.ratedAreas.clear();
+      areaCircles.clear();
+      areaList.clear();
 
       if (mounted) {
         for (DocumentSnapshot document in documentList) {
@@ -193,13 +195,9 @@ class _FireMapScreenController extends State<FireMapScreen> {
               showDialog(
                   context: context,
                   builder: (context) => AddressActivityBox(
-                      areaLatLng: area.latLng,
-                      color: area.color,
-                      rating: area.rating,
-                      totalUsers: area.totalUsers,
+                      area: area,
                       description: address,
                       user: widget.user,
-                      preview: area.totalUsers < 10 ? false : true,
                       boxCallback: boxCallback));
             });
 

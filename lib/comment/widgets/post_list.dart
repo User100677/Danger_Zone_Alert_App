@@ -33,16 +33,15 @@ class _PostListState extends State<PostList> {
           child: Row(children: <Widget>[
             Expanded(
                 child: ListTile(
-              title: Text(post.body),
-              subtitle: Text(post.author),
+              title: Text(post.content),
+              subtitle: Text(post.email),
             )),
             Row(
               children: <Widget>[
                 Container(
-                  child: Text(post.likes.toString(),
-                      style: const TextStyle(fontSize: 20)),
-                  padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-                ),
+                    child: Text(post.likes.toString(),
+                        style: const TextStyle(fontSize: 20)),
+                    padding: const EdgeInsets.fromLTRB(0, 0, 10, 0)),
                 IconButton(
                     icon: const Icon(Icons.thumb_up),
                     onPressed: () => [
@@ -51,16 +50,13 @@ class _PostListState extends State<PostList> {
                         ],
                     color: post.userLiked ? Colors.green : Colors.black),
                 Container(
-                  child: Text(post.dislikes.toString(),
-                      style: const TextStyle(fontSize: 20)),
-                  padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
-                ),
+                    child: Text(post.dislikes.toString(),
+                        style: const TextStyle(fontSize: 20)),
+                    padding: const EdgeInsets.fromLTRB(0, 0, 10, 0)),
                 IconButton(
                     icon: const Icon(Icons.thumb_down),
-                    onPressed: () => [
-                          dislike(post.dislikePost),
-                          dislike(post.clash1),
-                        ],
+                    onPressed: () =>
+                        [dislike(post.dislikePost), dislike(post.clash1)],
                     color: post.userDisLiked ? Colors.red : Colors.black),
               ],
             )
