@@ -7,9 +7,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'auth/screens/register.dart';
 import 'auth/screens/sign_in.dart';
-import 'auth/screens/welcome.dart';
+import 'auth/screens/sign_up.dart';
 import 'blocs/application_bloc.dart';
 import 'models/user.dart';
 
@@ -49,10 +48,10 @@ class MyApp extends StatelessWidget {
         },
       ),
       routes: {
-        WelcomeScreen.id: (context) => const WelcomeScreen(),
-        LoginScreen.id: (context) => const LoginScreen(),
+        // WelcomeScreen.id: (context) => const WelcomeScreen(),
+        SignInScreen.id: (context) => const SignInScreen(),
         ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
-        RegisterScreen.id: (context) => const RegisterScreen(),
+        SignUpScreen.id: (context) => const SignUpScreen(),
         RatingQuestionsList.id: (context) => const RatingQuestionsList(),
       },
     );

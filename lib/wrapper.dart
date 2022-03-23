@@ -1,4 +1,4 @@
-import 'package:danger_zone_alert/auth/screens/welcome.dart';
+import 'package:danger_zone_alert/auth/screens/sign_in.dart';
 import 'package:danger_zone_alert/shared/loading.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +21,7 @@ class Wrapper extends StatelessWidget {
     final user = Provider.of<UserModel?>(context);
 
     if (user == null) {
-      return const WelcomeScreen();
+      return const SignInScreen();
     } else {
       return Consumer<ApplicationBloc>(
         builder: (context, provider, child) => (provider.position == null)

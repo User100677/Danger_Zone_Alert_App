@@ -2,6 +2,7 @@ import 'package:danger_zone_alert/auth/screens/sign_in.dart';
 import 'package:danger_zone_alert/auth/widgets/button_divider.dart';
 import 'package:danger_zone_alert/auth/widgets/email_text_field.dart';
 import 'package:danger_zone_alert/auth/widgets/password_text_field.dart';
+import 'package:danger_zone_alert/auth/widgets/title_text.dart';
 import 'package:danger_zone_alert/constants/app_constants.dart';
 import 'package:danger_zone_alert/services/auth.dart';
 import 'package:danger_zone_alert/shared/rounded_rectangle_button.dart';
@@ -9,16 +10,16 @@ import 'package:danger_zone_alert/widget_view/widget_view.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
-class RegisterScreen extends StatefulWidget {
-  static String id = "register_screen";
-  const RegisterScreen({Key? key}) : super(key: key);
+class SignUpScreen extends StatefulWidget {
+  static String id = "sign_up_screen";
+  const SignUpScreen({Key? key}) : super(key: key);
 
   @override
-  _RegisterScreenController createState() => _RegisterScreenController();
+  _SignUpScreenController createState() => _SignUpScreenController();
 }
 
 // Register Screen's WidgetView with sign up logic
-class _RegisterScreenController extends State<RegisterScreen> {
+class _SignUpScreenController extends State<SignUpScreen> {
   final AuthService _authService = AuthService();
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
@@ -46,7 +47,9 @@ class _RegisterScreenController extends State<RegisterScreen> {
       _isPasswordIncorrect = false;
     });
     if (_formKey.currentState!.validate()) {
-      setState(() => _isLoading = true);
+      setState(() {
+        _isLoading = true;
+      });
 
       if (password == reenterPassword) {
         dynamic result = await _authService.registerWithEmailAndPassword(
@@ -66,7 +69,9 @@ class _RegisterScreenController extends State<RegisterScreen> {
         _isPasswordIncorrect = true;
         _reenterPasswordController.clear();
       }
-      setState(() => _isLoading = false);
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -76,24 +81,14 @@ class _RegisterScreenController extends State<RegisterScreen> {
 
 // Register Screen's View
 class _RegisterScreenView
-    extends WidgetView<RegisterScreen, _RegisterScreenController> {
-  const _RegisterScreenView(_RegisterScreenController state) : super(state);
+    extends WidgetView<SignUpScreen, _SignUpScreenController> {
+  const _RegisterScreenView(_SignUpScreenController state) : super(state);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.lightBlueAccent,
       resizeToAvoidBottomInset: false,
-      // AppBar with arrow back button
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.lightBlueAccent,
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon:
-              const Icon(Icons.arrow_back_sharp, size: 20, color: Colors.white),
-        ),
-      ),
       // Loading Indicator
       body: ModalProgressHUD(
         inAsyncCall: state._isLoading,
@@ -108,23 +103,31 @@ class _RegisterScreenView
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const <Widget>[
-                    Text('Create\nAccount',
-                        style: TextStyle(
-                            fontFamily: 'Agne',
-                            fontSize: 32.0,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.left),
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    const SizedBox(height: 40.0),
+                    // Display the logo on the login screen page
+                    SizedBox(
+                        height: 155.0,
+                        child: Image.asset(
+                          'assets/images/icon.png',
+                          fit: BoxFit.contain,
+                        )),
+                    const SizedBox(height: 10),
+                    const TitleText(
+                        text: 'Danger Zone Alert',
+                        textSize: 40.0,
+                        textColor: Colors.white,
+                        textWeight: FontWeight.bold,
+                        textAlign: TextAlign.center),
                   ],
                 ),
               ),
             ),
-// A container containing the Divider, Email & Password text field as well as SignIn & SignUp buttons
+            // A container containing the Divider, Email & Password text field as well as SignIn & SignUp buttons
             Container(
-              padding: const EdgeInsets.only(
-                  top: 16.0, left: 24.0, right: 24.0, bottom: 16.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
               decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
@@ -136,12 +139,19 @@ class _RegisterScreenView
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    Column(children: <Widget>[
-                      EmailTextField(
-                          emailController: state._emailController,
-                          isEmailIncorrect: state._isEmailIncorrect,
-                          emailIncorrectText: 'Please supply a valid email'),
-                    ]),
+                    const SizedBox(height: 8),
+                    const Text('Create account',
+                        style: TextStyle(
+                            fontFamily: 'Agne',
+                            fontSize: 24.0,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.left),
+                    const SizedBox(height: 12),
+                    EmailTextField(
+                        emailController: state._emailController,
+                        isEmailIncorrect: state._isEmailIncorrect,
+                        emailIncorrectText: 'Please supply a valid email'),
                     PasswordTextField(
                         passwordController: state._passwordController,
                         isPasswordIncorrect: state._isPasswordIncorrect,
@@ -162,8 +172,8 @@ class _RegisterScreenView
                         buttonText: kSignInText,
                         buttonStyle: kWhiteButtonStyle,
                         textColor: Colors.grey,
-                        onPressed: () =>
-                            Navigator.popAndPushNamed(context, LoginScreen.id)),
+                        onPressed: () => Navigator.popAndPushNamed(
+                            context, SignInScreen.id)),
                   ],
                 ),
               ),

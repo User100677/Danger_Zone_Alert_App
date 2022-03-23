@@ -1,7 +1,8 @@
-import 'package:danger_zone_alert/auth/screens/register.dart';
+import 'package:danger_zone_alert/auth/screens/sign_up.dart';
 import 'package:danger_zone_alert/auth/widgets/button_divider.dart';
 import 'package:danger_zone_alert/auth/widgets/email_text_field.dart';
 import 'package:danger_zone_alert/auth/widgets/password_text_field.dart';
+import 'package:danger_zone_alert/auth/widgets/title_text.dart';
 import 'package:danger_zone_alert/constants/app_constants.dart';
 import 'package:danger_zone_alert/services/auth.dart';
 import 'package:danger_zone_alert/shared/rounded_rectangle_button.dart';
@@ -11,16 +12,16 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 import 'forgot_password.dart';
 
-class LoginScreen extends StatefulWidget {
-  static String id = "login_screen";
-  const LoginScreen({Key? key}) : super(key: key);
+class SignInScreen extends StatefulWidget {
+  static String id = "sign_in_screen";
+  const SignInScreen({Key? key}) : super(key: key);
 
   @override
-  _LoginScreenController createState() => _LoginScreenController();
+  _SignInScreenController createState() => _SignInScreenController();
 }
 
 // Sign In Screen's WidgetView with sign in logic
-class _LoginScreenController extends State<LoginScreen> {
+class _SignInScreenController extends State<SignInScreen> {
   final AuthService _authService = AuthService();
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
@@ -39,10 +40,14 @@ class _LoginScreenController extends State<LoginScreen> {
     String email = _emailController.text.trim();
     String password = _passwordController.text.trim();
 
-    setState(() => _isEmailIncorrect = false);
+    setState(() {
+      _isEmailIncorrect = false;
+    });
 
     if (_formKey.currentState!.validate()) {
-      setState(() => _isLoading = true);
+      setState(() {
+        _isLoading = true;
+      });
 
       dynamic result =
           await _authService.signInWithEmailAndPassword(email, password);
@@ -52,11 +57,23 @@ class _LoginScreenController extends State<LoginScreen> {
           _isEmailIncorrect = true;
           _passwordController.clear();
         });
-      } else {
-        Navigator.pop(context);
       }
-      setState(() => _isLoading = false);
+
+      setState(() {
+        _isLoading = false;
+      });
     }
+  }
+
+  handleResetPasswordPressed() {
+    showModalBottomSheet(
+        context: context,
+        isScrollControlled: true,
+        builder: (context) => SingleChildScrollView(
+            child: Container(
+                padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom),
+                child: const ForgotPasswordScreen())));
   }
 
   @override
@@ -64,24 +81,16 @@ class _LoginScreenController extends State<LoginScreen> {
 }
 
 // Sign In Screen's View
-class _LoginScreenView extends WidgetView<LoginScreen, _LoginScreenController> {
-  const _LoginScreenView(_LoginScreenController state) : super(state);
+class _LoginScreenView
+    extends WidgetView<SignInScreen, _SignInScreenController> {
+  const _LoginScreenView(_SignInScreenController state) : super(state);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.lightBlueAccent,
       resizeToAvoidBottomInset: false,
-      // AppBar with arrow back button
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.lightBlueAccent,
-        leading: IconButton(
-          onPressed: () => Navigator.pop(context),
-          icon:
-              const Icon(Icons.arrow_back_sharp, size: 20, color: Colors.white),
-        ),
-      ),
+
       // Loading Indicator
       body: ModalProgressHUD(
         inAsyncCall: state._isLoading,
@@ -96,15 +105,23 @@ class _LoginScreenView extends WidgetView<LoginScreen, _LoginScreenController> {
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: const <Widget>[
-                    Text('Welcome\nBack',
-                        style: TextStyle(
-                            fontFamily: 'Agne',
-                            fontSize: 32.0,
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold),
-                        textAlign: TextAlign.left),
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[
+                    const SizedBox(height: 40.0),
+                    // Display the logo on the login screen page
+                    SizedBox(
+                        height: 155.0,
+                        child: Image.asset(
+                          'assets/images/icon.png',
+                          fit: BoxFit.contain,
+                        )),
+                    const SizedBox(height: 10),
+                    const TitleText(
+                        text: 'Danger Zone Alert',
+                        textSize: 40.0,
+                        textColor: Colors.white,
+                        textWeight: FontWeight.bold,
+                        textAlign: TextAlign.center),
                   ],
                 ),
               ),
@@ -124,6 +141,15 @@ class _LoginScreenView extends WidgetView<LoginScreen, _LoginScreenController> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
+                    const SizedBox(height: 8),
+                    const Text('Login account',
+                        style: TextStyle(
+                            fontFamily: 'Agne',
+                            fontSize: 24.0,
+                            color: Colors.grey,
+                            fontWeight: FontWeight.bold),
+                        textAlign: TextAlign.left),
+                    const SizedBox(height: 12),
                     EmailTextField(
                         emailController: state._emailController,
                         isEmailIncorrect: state._isEmailIncorrect,
@@ -142,18 +168,7 @@ class _LoginScreenView extends WidgetView<LoginScreen, _LoginScreenController> {
                                   color:
                                       Colors.lightBlueAccent.withOpacity(0.8),
                                   fontSize: 12.0)),
-                          onPressed: () {
-                            showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                builder: (context) => SingleChildScrollView(
-                                    child: Container(
-                                        padding: EdgeInsets.only(
-                                            bottom: MediaQuery.of(context)
-                                                .viewInsets
-                                                .bottom),
-                                        child: const ForgotPasswordScreen())));
-                          },
+                          onPressed: () => state.handleResetPasswordPressed(),
                         ),
                       ],
                     ),
@@ -170,7 +185,7 @@ class _LoginScreenView extends WidgetView<LoginScreen, _LoginScreenController> {
                       buttonStyle: kWhiteButtonStyle,
                       textColor: Colors.grey,
                       onPressed: () =>
-                          Navigator.popAndPushNamed(context, RegisterScreen.id),
+                          Navigator.pushNamed(context, SignUpScreen.id),
                     ),
                   ],
                 ),

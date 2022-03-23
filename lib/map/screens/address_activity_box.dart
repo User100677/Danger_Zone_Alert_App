@@ -162,9 +162,7 @@ class AddressActivityBox extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => CommentScreen(
-                                          user: user,
-                                          area: area,
-                                          areaIndex: areaList.indexOf(area))));
+                                          user: user, area: area)));
                               boxCallback();
                             } else {
                               showAlertDialog(context, kAlertCommentText);
