@@ -1,10 +1,12 @@
 import 'package:danger_zone_alert/map/util/animate_location.dart';
 import 'package:danger_zone_alert/models/user.dart';
+import 'package:danger_zone_alert/news/article_list.dart';
 import 'package:danger_zone_alert/services/auth.dart';
 import 'package:danger_zone_alert/shared/error_snackbar.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
+
 
 @override
 Widget buildBottomTabBar(context, googleMapController) {
@@ -47,7 +49,12 @@ Widget buildBottomTabBar(context, googleMapController) {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   // NewsAPI button
-                  IconBar(icon: Icons.web_rounded, onPressed: () {}),
+                  IconBar(icon: Icons.web_rounded, onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => ArticleList()),
+
+                  );}),
                   const SizedBox(width: 56),
                   // Log out button
                   IconBar(
