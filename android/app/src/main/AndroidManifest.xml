@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <application
         android:label="Danger Zone Alert"
-        android:icon="@drawable/ic_launcher">
+        android:icon="@drawable/app_icon">
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"

@@ -47,16 +47,26 @@ class AddressActivityBox extends StatelessWidget {
               previewRating ? Container() : const SizedBox(height: 16),
               Padding(
                 padding: const EdgeInsets.only(top: 24.0),
-                child: Text(
-                    previewRating
+                child: RichText(
+                  text: TextSpan(
+                    text: previewRating
                         ? area.rating.toString()
                         : 'Required threshold not met',
                     style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                        fontSize: previewRating ? 50.0 : 25,
+                        fontSize: previewRating ? 50.0 : 22,
                         color: area.color,
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w700,
                         fontFamily: 'RobotoMono'),
-                    textAlign: TextAlign.center),
+                    children: <TextSpan>[
+                      TextSpan(
+                          text: previewRating ? ' / 5' : '',
+                          style: const TextStyle(
+                              fontSize: 18.5,
+                              fontWeight: FontWeight.w700,
+                              fontFamily: 'RobotoMono')),
+                    ],
+                  ),
+                ),
               ),
               previewRating ? Container() : const SizedBox(height: 8),
               Text('Crime Level',
@@ -83,7 +93,7 @@ class AddressActivityBox extends StatelessWidget {
                       style: Theme.of(context)
                           .textTheme
                           .bodyText2
-                          ?.copyWith(fontSize: 10.0, color: locationTextColor),
+                          ?.copyWith(fontSize: 11.0, color: locationTextColor),
                       textAlign: TextAlign.center)),
               // Container for location icon and description
               Container(
@@ -134,8 +144,12 @@ class AddressActivityBox extends StatelessWidget {
                               // TODO: Database
                               handleRatePressed();
 
-                              Navigator.popAndPushNamed(
-                                  context, RatingQuestionsList.id);
+                              Navigator.pop(context);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const RatingQuestionsList()));
                               boxCallback();
                             } else {
                               showAlertDialog(context, kAlertRateText);

@@ -1,5 +1,5 @@
 import 'package:danger_zone_alert/comment/model/post.dart';
-import 'package:danger_zone_alert/comment/utils/time_converter.dart';
+import 'package:danger_zone_alert/comment/utils/convert_time.dart';
 import 'package:danger_zone_alert/models/area.dart';
 import 'package:danger_zone_alert/models/user.dart';
 import 'package:danger_zone_alert/services/database.dart';
@@ -77,22 +77,16 @@ class _PostListView extends WidgetView<PostList, _PostListController> {
                                 title: Text(
                                   post.content,
                                   style: const TextStyle(
-                                      fontSize: 22.0, color: Color(0xff1a1a1b)),
+                                      fontSize: 21.0, color: Color(0xff1a1a1b)),
                                 ),
-                                // subtitle: Text(
-                                //   post.email,
-                                //   style: const TextStyle(
-                                //       fontSize: 15.0,
-                                //       fontWeight: FontWeight.w600),
-                                // ),
                               )),
                               Row(
                                 children: <Widget>[
                                   Container(
                                       child: Text(post.likes.toString(),
-                                          style: const TextStyle(fontSize: 20)),
+                                          style: const TextStyle(fontSize: 18)),
                                       padding: const EdgeInsets.fromLTRB(
-                                          0, 0, 10, 0)),
+                                          0, 0, 8, 0)),
                                   IconButton(
                                       icon: const Icon(Icons.thumb_up),
                                       onPressed: () => post.likePost(),
@@ -101,9 +95,9 @@ class _PostListView extends WidgetView<PostList, _PostListController> {
                                           : Colors.black),
                                   Container(
                                       child: Text(post.dislikes.toString(),
-                                          style: const TextStyle(fontSize: 20)),
+                                          style: const TextStyle(fontSize: 18)),
                                       padding: const EdgeInsets.fromLTRB(
-                                          0, 0, 10, 0)),
+                                          0, 0, 8, 0)),
                                   IconButton(
                                       icon: const Icon(Icons.thumb_down),
                                       onPressed: () => post.dislikePost(),
@@ -122,7 +116,7 @@ class _PostListView extends WidgetView<PostList, _PostListController> {
                                   Text(
                                     post.email,
                                     style: const TextStyle(
-                                        fontSize: 15.0,
+                                        fontSize: 14.0,
                                         color: Color(0xff7c7c7c),
                                         fontWeight: FontWeight.w600),
                                   ),
