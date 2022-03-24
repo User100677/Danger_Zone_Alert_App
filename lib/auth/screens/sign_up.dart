@@ -1,4 +1,3 @@
-import 'package:danger_zone_alert/auth/screens/sign_in.dart';
 import 'package:danger_zone_alert/auth/widgets/button_divider.dart';
 import 'package:danger_zone_alert/auth/widgets/email_text_field.dart';
 import 'package:danger_zone_alert/auth/widgets/password_text_field.dart';
@@ -11,8 +10,8 @@ import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
 class SignUpScreen extends StatefulWidget {
-  static String id = "sign_up_screen";
-  const SignUpScreen({Key? key}) : super(key: key);
+  final Function() toggleView;
+  const SignUpScreen({Key? key, required this.toggleView}) : super(key: key);
 
   @override
   _SignUpScreenController createState() => _SignUpScreenController();
@@ -63,7 +62,6 @@ class _SignUpScreenController extends State<SignUpScreen> {
           });
         } else {
           await _authService.signInWithEmailAndPassword(email, reenterPassword);
-          Navigator.pop(context);
         }
       } else {
         _isPasswordIncorrect = true;
@@ -172,8 +170,7 @@ class _RegisterScreenView
                         buttonText: kSignInText,
                         buttonStyle: kWhiteButtonStyle,
                         textColor: Colors.grey,
-                        onPressed: () => Navigator.popAndPushNamed(
-                            context, SignInScreen.id)),
+                        onPressed: () => widget.toggleView()),
                   ],
                 ),
               ),

@@ -52,14 +52,14 @@ class AddressActivityBox extends StatelessWidget {
                         ? area.rating.toString()
                         : 'Required threshold not met',
                     style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                        fontSize: previewRating ? 50.0 : 30,
+                        fontSize: previewRating ? 50.0 : 25,
                         color: area.color,
                         fontWeight: FontWeight.w800,
                         fontFamily: 'RobotoMono'),
                     textAlign: TextAlign.center),
               ),
               previewRating ? Container() : const SizedBox(height: 8),
-              Text('Danger Level',
+              Text('Crime Level',
                   style: Theme.of(context).textTheme.bodyText2?.copyWith(
                       fontSize: 18.0,
                       color: const Color(0xFFB71C1C),

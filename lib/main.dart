@@ -1,14 +1,10 @@
-import 'package:danger_zone_alert/auth/screens/forgot_password.dart';
 import 'package:danger_zone_alert/map/widgets/search_bar.dart';
-import 'package:danger_zone_alert/rating/new_rating.dart';
 import 'package:danger_zone_alert/services/auth.dart';
 import 'package:danger_zone_alert/wrapper.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'auth/screens/sign_in.dart';
-import 'auth/screens/sign_up.dart';
 import 'blocs/application_bloc.dart';
 import 'models/user.dart';
 
@@ -42,18 +38,10 @@ class MyApp extends StatelessWidget {
               ChangeNotifierProvider.value(value: ApplicationBloc(context)),
               ChangeNotifierProvider(create: (_) => SearchModel()),
             ], child: const Wrapper());
-            // );
           }
           return const CircularProgressIndicator();
         },
       ),
-      routes: {
-        // WelcomeScreen.id: (context) => const WelcomeScreen(),
-        SignInScreen.id: (context) => const SignInScreen(),
-        ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
-        SignUpScreen.id: (context) => const SignUpScreen(),
-        RatingQuestionsList.id: (context) => const RatingQuestionsList(),
-      },
     );
   }
 }

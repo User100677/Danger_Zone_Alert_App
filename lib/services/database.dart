@@ -10,6 +10,8 @@ class DatabaseService {
 
   final geo = Geoflutterfire();
 
+  DateTime dateTime = DateTime.now();
+
   final CollectionReference userCollection =
       FirebaseFirestore.instance.collection('users');
 
@@ -42,35 +44,6 @@ class DatabaseService {
         .doc(location.hash)
         .get();
   }
-
-  /* <------------------ User Comment ------------------> */
-  // Future updateUserLikedData(
-  //     latLng, String commentID, bool isLiked, bool isDisliked) async {
-  //   GeoFirePoint location =
-  //       geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
-  //
-  //   return await userCollection
-  //       .doc(uid)
-  //       .collection('ratedAreas')
-  //       .doc(location.hash)
-  //       .collection('comments')
-  //       .doc(commentID)
-  //       .set({'liked': !isLiked, 'disliked': false});
-  // }
-  //
-  // Future updateUserDislikedData(
-  //     latLng, String commentID, bool isLiked, bool isDisliked) async {
-  //   GeoFirePoint location =
-  //       geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
-  //
-  //   return await userCollection
-  //       .doc(uid)
-  //       .collection('ratedAreas')
-  //       .doc(location.hash)
-  //       .collection('comments')
-  //       .doc(commentID)
-  //       .set({'liked': false, 'disliked': !isDisliked});
-  // }
 
   List<CommentedArea> _userCommentListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.docs.map((doc) {
@@ -173,22 +146,31 @@ class DatabaseService {
     GeoFirePoint location =
         geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
 
+    Timestamp timestamp = Timestamp.fromDate(dateTime);
+
     return await areaCollection.doc(location.hash).collection('comments').add({
       'likes': 0,
       'dislikes': 0,
       'content': content,
       'email': email ?? 'example@email.com',
-      // 'time': time,
+      'timestamp': timestamp,
     });
   }
 
   List<Comment> _commentListFromSnapshot(QuerySnapshot snapshot) {
+    Timestamp t;
+    DateTime dateTime;
+
     return snapshot.docs.map((doc) {
+      t = doc['timestamp'];
+      dateTime = t.toDate();
+
       return Comment(
         likes: doc['likes'],
         dislikes: doc['dislikes'],
         content: doc['content'],
         email: doc['email'],
+        dateTime: dateTime,
         id: doc.id,
       );
     }).toList();
@@ -204,70 +186,4 @@ class DatabaseService {
         .snapshots()
         .map(_commentListFromSnapshot);
   }
-
-  // Future updateAreaLikesData(
-  //     LatLng latLng, String documentID, bool isLiked, bool isDisliked) async {
-  //   GeoFirePoint location =
-  //       geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
-  //
-  //   if (!isLiked && !isDisliked) {
-  //     return await areaCollection
-  //         .doc(location.hash)
-  //         .collection('comments')
-  //         .doc(documentID)
-  //         .update({'likes': FieldValue.increment(1)});
-  //   }
-  //
-  //   if (isLiked) {
-  //     return await areaCollection
-  //         .doc(location.hash)
-  //         .collection('comments')
-  //         .doc(documentID)
-  //         .update({'likes': FieldValue.increment(-1)});
-  //   }
-  //
-  //   if (isDisliked) {
-  //     return await areaCollection
-  //         .doc(location.hash)
-  //         .collection('comments')
-  //         .doc(documentID)
-  //         .update({
-  //       'likes': FieldValue.increment(1),
-  //       'dislikes': FieldValue.increment(-1),
-  //     });
-  //   }
-  // }
-  //
-  // Future updateAreaDislikesData(
-  //     LatLng latLng, String documentID, bool isLiked, bool isDisliked) async {
-  //   GeoFirePoint location =
-  //       geo.point(latitude: latLng.latitude, longitude: latLng.longitude);
-  //
-  //   if (!isLiked && !isDisliked) {
-  //     return await areaCollection
-  //         .doc(location.hash)
-  //         .collection('comments')
-  //         .doc(documentID)
-  //         .update({'dislikes': FieldValue.increment(1)});
-  //   }
-  //
-  //   if (isLiked) {
-  //     return await areaCollection
-  //         .doc(location.hash)
-  //         .collection('comments')
-  //         .doc(documentID)
-  //         .update({
-  //       'likes': FieldValue.increment(-1),
-  //       'dislikes': FieldValue.increment(1),
-  //     });
-  //   }
-  //
-  //   if (isDisliked) {
-  //     return await areaCollection
-  //         .doc(location.hash)
-  //         .collection('comments')
-  //         .doc(documentID)
-  //         .update({'dislikes': FieldValue.increment(-1)});
-  //   }
-  // }
 }

@@ -111,7 +111,7 @@ class _FireMapScreenController extends State<FireMapScreen> {
         if (isWithinCircle(userDistance) && isUserInCircle == false) {
           isUserInCircle = true;
           showOngoingNotification(notifications,
-              title: 'You entered a Red Zone', body: 'Stay cautious!');
+              title: 'Stay vigilant', body: 'You have entered a red area.');
           break;
         }
 
@@ -125,11 +125,10 @@ class _FireMapScreenController extends State<FireMapScreen> {
     DatabaseService(uid: widget.user.uid)
         .getAreasData(_googleMapController, context)
         .listen((List<DocumentSnapshot> documentList) {
-      widget.user.ratedAreas.clear();
-      areaCircles.clear();
-      areaList.clear();
-
       if (mounted) {
+        widget.user.ratedAreas.clear();
+        areaCircles.clear();
+        areaList.clear();
         for (DocumentSnapshot document in documentList) {
           LatLng latLng = LatLng(document.get('geoData')['geopoint'].latitude,
               document.get('geoData')['geopoint'].longitude);
@@ -171,11 +170,15 @@ class _FireMapScreenController extends State<FireMapScreen> {
     var address = await getAddress(tapLatLng);
 
     // TODO: Database testing
-    // if (widget.user.ratedAreas.isNotEmpty) {
-    //   print(widget.user.ratedAreas.first.latLng);
-    // } else {
-    //   print("The current user didn't rate that area before!");
-    // }
+    // DateTime currentPhoneDate = DateTime.now(); //DateTime
+    //
+    // Timestamp myTimeStamp = Timestamp.fromDate(currentPhoneDate); //To TimeStamp
+    //
+    // DateTime myDateTime = myTimeStamp.toDate(); // TimeStamp to DateTime
+    //
+    // print("current phone data is: $currentPhoneDate");
+    // print("current timestamp:  $myTimeStamp");
+    // print("current phone data is: $myDateTime");
 
     if (address != kInvalidAddress) {
       bool isWithinAnyCircle = false;

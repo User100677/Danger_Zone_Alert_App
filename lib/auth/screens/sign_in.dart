@@ -1,4 +1,3 @@
-import 'package:danger_zone_alert/auth/screens/sign_up.dart';
 import 'package:danger_zone_alert/auth/widgets/button_divider.dart';
 import 'package:danger_zone_alert/auth/widgets/email_text_field.dart';
 import 'package:danger_zone_alert/auth/widgets/password_text_field.dart';
@@ -13,8 +12,9 @@ import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 import 'forgot_password.dart';
 
 class SignInScreen extends StatefulWidget {
-  static String id = "sign_in_screen";
-  const SignInScreen({Key? key}) : super(key: key);
+  final Function() toggleView;
+
+  const SignInScreen({Key? key, required this.toggleView}) : super(key: key);
 
   @override
   _SignInScreenController createState() => _SignInScreenController();
@@ -184,8 +184,7 @@ class _LoginScreenView
                       buttonText: kSignUpText,
                       buttonStyle: kWhiteButtonStyle,
                       textColor: Colors.grey,
-                      onPressed: () =>
-                          Navigator.pushNamed(context, SignUpScreen.id),
+                      onPressed: () => widget.toggleView(),
                     ),
                   ],
                 ),

@@ -1,20 +1,35 @@
 import 'package:danger_zone_alert/comment/model/post.dart';
+import 'package:danger_zone_alert/comment/utils/time_converter.dart';
 import 'package:danger_zone_alert/models/area.dart';
 import 'package:danger_zone_alert/models/user.dart';
 import 'package:danger_zone_alert/services/database.dart';
+import 'package:danger_zone_alert/widget_view/widget_view.dart';
 import 'package:flutter/material.dart';
 
 class PostList extends StatefulWidget {
-  final UserModel user;
   final Area area;
+  final UserModel user;
+  final Function sortView;
 
-  const PostList(this.user, this.area, {Key? key}) : super(key: key);
+  const PostList(
+      {required this.area,
+      required this.user,
+      required this.sortView,
+      Key? key})
+      : super(key: key);
 
   @override
-  _PostListState createState() => _PostListState();
+  _PostListController createState() => _PostListController();
 }
 
-class _PostListState extends State<PostList> {
+class _PostListController extends State<PostList> {
+  @override
+  Widget build(BuildContext context) => _PostListView(this);
+}
+
+class _PostListView extends WidgetView<PostList, _PostListController> {
+  _PostListView(_PostListController state) : super(state);
+
   List<Post> posts = [];
 
   @override
@@ -44,43 +59,85 @@ class _PostListState extends State<PostList> {
                     }
                   }
                 }
+
+                List<Post> sortedPosts = widget.sortView(posts);
+
                 return ListView.builder(
                   itemCount: posts.length,
                   itemBuilder: (context, index) {
-                    var post = posts[index];
+                    Post post = sortedPosts[index];
                     return Card(
-                      child: Row(children: <Widget>[
-                        Expanded(
-                            child: ListTile(
-                                title: Text(post.content),
-                                subtitle: Text(post.email))),
-                        Row(
-                          children: <Widget>[
-                            Container(
-                                child: Text(post.likes.toString(),
-                                    style: const TextStyle(fontSize: 20)),
-                                padding:
-                                    const EdgeInsets.fromLTRB(0, 0, 10, 0)),
-                            IconButton(
-                                icon: const Icon(Icons.thumb_up),
-                                onPressed: () => post.likePost(),
-                                color: post.userLiked
-                                    ? Colors.green
-                                    : Colors.black),
-                            Container(
-                                child: Text(post.dislikes.toString(),
-                                    style: const TextStyle(fontSize: 20)),
-                                padding:
-                                    const EdgeInsets.fromLTRB(0, 0, 10, 0)),
-                            IconButton(
-                                icon: const Icon(Icons.thumb_down),
-                                onPressed: () => post.dislikePost(),
-                                color: post.userDisLiked
-                                    ? Colors.red
-                                    : Colors.black),
-                          ],
-                        )
-                      ]),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: <Widget>[
+                              Expanded(
+                                  child: ListTile(
+                                title: Text(
+                                  post.content,
+                                  style: const TextStyle(
+                                      fontSize: 22.0, color: Color(0xff1a1a1b)),
+                                ),
+                                // subtitle: Text(
+                                //   post.email,
+                                //   style: const TextStyle(
+                                //       fontSize: 15.0,
+                                //       fontWeight: FontWeight.w600),
+                                // ),
+                              )),
+                              Row(
+                                children: <Widget>[
+                                  Container(
+                                      child: Text(post.likes.toString(),
+                                          style: const TextStyle(fontSize: 20)),
+                                      padding: const EdgeInsets.fromLTRB(
+                                          0, 0, 10, 0)),
+                                  IconButton(
+                                      icon: const Icon(Icons.thumb_up),
+                                      onPressed: () => post.likePost(),
+                                      color: post.userLiked
+                                          ? Colors.green
+                                          : Colors.black),
+                                  Container(
+                                      child: Text(post.dislikes.toString(),
+                                          style: const TextStyle(fontSize: 20)),
+                                      padding: const EdgeInsets.fromLTRB(
+                                          0, 0, 10, 0)),
+                                  IconButton(
+                                      icon: const Icon(Icons.thumb_down),
+                                      onPressed: () => post.dislikePost(),
+                                      color: post.userDisLiked
+                                          ? Colors.red
+                                          : Colors.black),
+                                ],
+                              ),
+                            ],
+                          ),
+                          Container(
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    post.email,
+                                    style: const TextStyle(
+                                        fontSize: 15.0,
+                                        color: Color(0xff7c7c7c),
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                  Text(
+                                    convertTime(post.dateTime),
+                                    style: const TextStyle(
+                                        fontSize: 13.0,
+                                        color: Color(0xff7c7c7c)),
+                                  ),
+                                ],
+                              ),
+                              padding:
+                                  const EdgeInsets.fromLTRB(15, 0, 15, 15)),
+                        ],
+                      ),
                     );
                   },
                 );
