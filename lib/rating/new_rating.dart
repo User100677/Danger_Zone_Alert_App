@@ -2,8 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
-void main() => runApp(const RatingQuestionsList());
-
 class RatingQuestionsList extends StatefulWidget {
   static String id = "rating_screen";
   const RatingQuestionsList({Key? key}) : super(key: key);
