@@ -1,5 +1,5 @@
-import 'package:danger_zone_alert/auth/screens/welcome.dart';
-import 'package:danger_zone_alert/shared/loading.dart';
+import 'package:danger_zone_alert/auth/authenticate.dart';
+import 'package:danger_zone_alert/shared/loading_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +21,8 @@ class Wrapper extends StatelessWidget {
     final user = Provider.of<UserModel?>(context);
 
     if (user == null) {
-      return const WelcomeScreen();
+      // return const SignInScreen();
+      return const Authenticate();
     } else {
       return Consumer<ApplicationBloc>(
         builder: (context, provider, child) => (provider.position == null)
@@ -30,20 +31,7 @@ class Wrapper extends StatelessWidget {
                 ? FireMapScreen(user: user)
                 // TODO: Database provider
                 // : MultiProvider(
-                //     providers: [
-                //       // StreamProvider<List<Area>>.value(
-                //       //     catchError: null,
-                //       //     initialData: const [],
-                //       //     value: DatabaseService().areas),
-                //       // StreamProvider<List<RatedArea>>.value(
-                //       //     catchError: null,
-                //       //     initialData: const [],
-                //       //     value: DatabaseService().userRatedArea),
-                //       StreamProvider<List<Comment>>.value(
-                //           catchError: null,
-                //           value: DatabaseService().getAreaComments(null),
-                //           initialData: const []),
-                //     ],
+                //     providers: [],
                 //     child: FireMapScreen(
                 //         user: user, userPosition: provider.position),
                 //   ),

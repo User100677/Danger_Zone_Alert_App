@@ -20,3 +20,26 @@ abstract class WidgetView<T1, T2> extends StatelessWidget {
   @override
   Widget build(BuildContext context);
 }
+
+// Example usage: Stateful widget
+// class ExampleScreen extends StatefulWidget {
+//   const ExampleScreen({Key? key}) : super(key: key);
+//
+//   @override
+//   _ExampleScreenController createState() => _ExampleScreenController();
+// }
+//
+// class _ExampleScreenController extends State<ExampleScreen> {
+//   @override
+//   Widget build(BuildContext context) => _ExampleScreenView(this);
+// }
+//
+// class _ExampleScreenView
+//     extends WidgetView<ExampleScreen, _ExampleScreenController> {
+//   const _ExampleScreenView(_ExampleScreenController state) : super(state);
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container();
+//   }
+// }

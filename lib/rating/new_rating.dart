@@ -1,23 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
-// void main() {
-//   runApp(const MyApp());
-// }
-
-// class Rating extends StatelessWidget {
-//   const Rating({Key? key}) : super(key: key);
-//
-//   // This widget is the root of your application.
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       debugShowCheckedModeBanner: false,
-//       title: 'Danger Zone Alert App',
-//       theme: ThemeData(),
-//       home: RatingQuestionsList(),
-//     );
-//   }
-// }
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class RatingQuestionsList extends StatefulWidget {
   static String id = "rating_screen";
@@ -28,880 +11,376 @@ class RatingQuestionsList extends StatefulWidget {
 }
 
 class _RatingQuestionsListState extends State<RatingQuestionsList> {
-  int rate1 = 0, rate2 = 0, rate3 = 0, rate4 = 0, rate5 = 0;
+  late double _rating;
+  late double _rating2;
+  late double _rating3;
+  late double finalRating;
+  late double finalRating2;
+  late double finalRating3;
 
-  List<bool> valueOption = [
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false,
-    false
-  ];
+  String text1 = 'No';
+  String text2 = 'Five or more spots';
+  String text3 = 'None';
+
+  final double _initialRating = 0.0;
+  final double _initialRating2 = 0.0;
+  final double _initialRating3 = 0.0;
+  final bool _isRTLMode = false;
+  final bool _isVertical = false;
 
   final questionsTitle = [
-    '1. Is the current area well lit by the street lights?',
-    '2. What is the amount of traffic in the current area? (amount of human and vehicle passing through the area)',
-    '3. What is the rate of occurrence of malicious activities in this area? (e.g. robbery, theft, etc.)',
-    '4. What is the rate of occurrence of gang activities in this area?',
-    '5. How often does traffic accidents happen in this area?'
+    '1. Is the area well lit?',
+    '2. Are there any clustered/hidden space in the area that can hide gathering of people?',
+    '3. Are there any crime prevention utilities in the area? (e.g. safety mirror, police booth, etc.)',
   ];
-  final answerOptions = [
+
+  List <double> valueOption = [0.0,1.0,2.0,3.0,4.0,5.0];
+
+  final answerDescription = [
     'No',
     'Very Dim',
     'Dim',
     'Average',
     'Well Lit',
     'Very Well Lit',
+
+    'Five or more spots',
+    'Four spots',
+    'Three spots',
+    'Two spots',
+    'One spot',
     'None',
-    'Very Minimal',
-    'Minimal',
-    'Average',
-    'Heavy Traffic',
-    'Very Heavy Traffic',
+
     'None',
-    'Very Rarely',
-    'Rarely',
-    'Quite Often',
-    'Often',
-    'Very Often',
-    'None',
-    'Very Rarely',
-    'Rarely',
-    'Quite Often',
-    'Often',
-    'Very Often',
-    'None',
-    'Very Rarely',
-    'Rarely',
-    'Quite Often',
-    'Often',
-    'Very Often'
+    'Only one',
+    'Two',
+    'Three',
+    'Four',
+    'Five or more'
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _rating = _initialRating;
+    _rating2 = _initialRating2;
+    _rating3 = _initialRating3;
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Rating'),
-        leading: IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(
-            Icons.arrow_back_sharp,
-            size: 20,
-            color: Colors.white,
-          ),
-        ),
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
       ),
-      body: SingleChildScrollView(
-          child: Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-            ListTile(
-                title: Text(questionsTitle[0],
-                    style: const TextStyle(
-                        fontSize: 24.0, fontWeight: FontWeight.bold)),
-                subtitle: Card(
-                  child: Column(
-                    children: [
-                      CheckboxListTile(
-                        title: Text(answerOptions[0],
-                            style: const TextStyle(
-                                fontSize: 20.0, color: Colors.black)),
-                        value: valueOption[0],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (valueOption[0] == false) {
-                              valueOption[0] = true;
-                              valueOption[1] = false;
-                              valueOption[2] = false;
-                              valueOption[3] = false;
-                              valueOption[4] = false;
-                              valueOption[5] = false;
-                              rate1 = 0;
-                            } else {
-                              valueOption[0] = false;
-                              rate1 = 0;
-                            }
-                          });
-                        },
-                      ),
-                      CheckboxListTile(
-                        title: Text(answerOptions[1],
-                            style: const TextStyle(
-                                fontSize: 20.0, color: Colors.black)),
-                        value: valueOption[1],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (valueOption[1] == false) {
-                              valueOption[0] = false;
-                              valueOption[1] = true;
-                              valueOption[2] = false;
-                              valueOption[3] = false;
-                              valueOption[4] = false;
-                              valueOption[5] = false;
-                              rate1 = 1;
-                            } else {
-                              valueOption[1] = false;
-                              rate1 = 0;
-                            }
-                          });
-                        },
-                      ),
-                      CheckboxListTile(
-                        title: Text(answerOptions[2],
-                            style: const TextStyle(
-                                fontSize: 20.0, color: Colors.black)),
-                        value: valueOption[2],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (valueOption[2] == false) {
-                              valueOption[0] = false;
-                              valueOption[1] = false;
-                              valueOption[2] = true;
-                              valueOption[3] = false;
-                              valueOption[4] = false;
-                              valueOption[5] = false;
-                              rate1 = 2;
-                            } else {
-                              valueOption[2] = false;
-                              rate1 = 0;
-                            }
-                          });
-                        },
-                      ),
-                      CheckboxListTile(
-                        title: Text(answerOptions[3],
-                            style: const TextStyle(
-                                fontSize: 20.0, color: Colors.black)),
-                        value: valueOption[3],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (valueOption[3] == false) {
-                              valueOption[0] = false;
-                              valueOption[1] = false;
-                              valueOption[2] = false;
-                              valueOption[3] = true;
-                              valueOption[4] = false;
-                              valueOption[5] = false;
-                              rate1 = 3;
-                            } else {
-                              valueOption[3] = false;
-                              rate1 = 0;
-                            }
-                          });
-                        },
-                      ),
-                      CheckboxListTile(
-                        title: Text(answerOptions[4],
-                            style: const TextStyle(
-                                fontSize: 20.0, color: Colors.black)),
-                        value: valueOption[4],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (valueOption[4] == false) {
-                              valueOption[0] = false;
-                              valueOption[1] = false;
-                              valueOption[2] = false;
-                              valueOption[3] = false;
-                              valueOption[4] = true;
-                              valueOption[5] = false;
-                              rate1 = 4;
-                            } else {
-                              valueOption[4] = false;
-                              rate1 = 0;
-                            }
-                          });
-                        },
-                      ),
-                      CheckboxListTile(
-                        title: Text(answerOptions[5],
-                            style: const TextStyle(
-                                fontSize: 20.0, color: Colors.black)),
-                        value: valueOption[5],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (valueOption[5] == false) {
-                              valueOption[0] = false;
-                              valueOption[1] = false;
-                              valueOption[2] = false;
-                              valueOption[3] = false;
-                              valueOption[4] = false;
-                              valueOption[5] = true;
-                              rate1 = 5;
-                            } else {
-                              valueOption[5] = false;
-                              rate1 = 0;
-                            }
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                )),
-            ListTile(
-                title: Text(questionsTitle[1],
-                    style: const TextStyle(
-                        fontSize: 24.0, fontWeight: FontWeight.bold)),
-                subtitle: Card(
-                  child: Column(
-                    children: [
-                      CheckboxListTile(
-                        title: Text(answerOptions[6],
-                            style: const TextStyle(
-                                fontSize: 20.0, color: Colors.black)),
-                        value: valueOption[6],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (valueOption[6] == false) {
-                              valueOption[6] = true;
-                              valueOption[7] = false;
-                              valueOption[8] = false;
-                              valueOption[9] = false;
-                              valueOption[10] = false;
-                              valueOption[11] = false;
-                              rate2 = 0;
-                            } else {
-                              valueOption[6] = false;
-                              rate2 = 0;
-                            }
-                          });
-                        },
-                      ),
-                      CheckboxListTile(
-                        title: Text(answerOptions[7],
-                            style: const TextStyle(
-                                fontSize: 20.0, color: Colors.black)),
-                        value: valueOption[7],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (valueOption[7] == false) {
-                              valueOption[6] = false;
-                              valueOption[7] = true;
-                              valueOption[8] = false;
-                              valueOption[9] = false;
-                              valueOption[10] = false;
-                              valueOption[11] = false;
-                              rate2 = 1;
-                            } else {
-                              valueOption[7] = false;
-                              rate2 = 0;
-                            }
-                          });
-                        },
-                      ),
-                      CheckboxListTile(
-                        title: Text(answerOptions[8],
-                            style: const TextStyle(
-                                fontSize: 20.0, color: Colors.black)),
-                        value: valueOption[8],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (valueOption[8] == false) {
-                              valueOption[6] = false;
-                              valueOption[7] = false;
-                              valueOption[8] = true;
-                              valueOption[9] = false;
-                              valueOption[10] = false;
-                              valueOption[11] = false;
-                              rate2 = 2;
-                            } else {
-                              valueOption[8] = false;
-                              rate2 = 0;
-                            }
-                          });
-                        },
-                      ),
-                      CheckboxListTile(
-                        title: Text(answerOptions[9],
-                            style: const TextStyle(
-                                fontSize: 20.0, color: Colors.black)),
-                        value: valueOption[9],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (valueOption[9] == false) {
-                              valueOption[6] = false;
-                              valueOption[7] = false;
-                              valueOption[8] = false;
-                              valueOption[9] = true;
-                              valueOption[10] = false;
-                              valueOption[11] = false;
-                              rate2 = 3;
-                            } else {
-                              valueOption[9] = false;
-                              rate2 = 0;
-                            }
-                          });
-                        },
-                      ),
-                      CheckboxListTile(
-                        title: Text(answerOptions[10],
-                            style: const TextStyle(
-                                fontSize: 20.0, color: Colors.black)),
-                        value: valueOption[10],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (valueOption[10] == false) {
-                              valueOption[6] = false;
-                              valueOption[7] = false;
-                              valueOption[8] = false;
-                              valueOption[9] = false;
-                              valueOption[10] = true;
-                              valueOption[11] = false;
-                              rate2 = 4;
-                            } else {
-                              valueOption[10] = false;
-                              rate2 = 0;
-                            }
-                          });
-                        },
-                      ),
-                      CheckboxListTile(
-                        title: Text(answerOptions[11],
-                            style: const TextStyle(
-                                fontSize: 20.0, color: Colors.black)),
-                        value: valueOption[11],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (valueOption[11] == false) {
-                              valueOption[6] = false;
-                              valueOption[7] = false;
-                              valueOption[8] = false;
-                              valueOption[9] = false;
-                              valueOption[10] = false;
-                              valueOption[11] = true;
-                              rate2 = 5;
-                            } else {
-                              valueOption[11] = false;
-                              rate2 = 0;
-                            }
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                )),
-            ListTile(
-                title: Text(questionsTitle[2],
-                    style: const TextStyle(
-                        fontSize: 24.0, fontWeight: FontWeight.bold)),
-                subtitle: Card(
-                  child: Column(
-                    children: [
-                      CheckboxListTile(
-                        title: Text(answerOptions[12],
-                            style: const TextStyle(
-                                fontSize: 20.0, color: Colors.black)),
-                        value: valueOption[12],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (valueOption[12] == false) {
-                              valueOption[12] = true;
-                              valueOption[13] = false;
-                              valueOption[14] = false;
-                              valueOption[15] = false;
-                              valueOption[16] = false;
-                              valueOption[17] = false;
-                              rate3 = 5;
-                            } else {
-                              valueOption[12] = false;
-                              rate3 = 0;
-                            }
-                          });
-                        },
-                      ),
-                      CheckboxListTile(
-                        title: Text(answerOptions[13],
-                            style: const TextStyle(
-                                fontSize: 20.0, color: Colors.black)),
-                        value: valueOption[13],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (valueOption[13] == false) {
-                              valueOption[12] = false;
-                              valueOption[13] = true;
-                              valueOption[14] = false;
-                              valueOption[15] = false;
-                              valueOption[16] = false;
-                              valueOption[17] = false;
-                              rate3 = 4;
-                            } else {
-                              valueOption[13] = false;
-                              rate3 = 0;
-                            }
-                          });
-                        },
-                      ),
-                      CheckboxListTile(
-                        title: Text(answerOptions[14],
-                            style: const TextStyle(
-                                fontSize: 20.0, color: Colors.black)),
-                        value: valueOption[14],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (valueOption[14] == false) {
-                              valueOption[12] = false;
-                              valueOption[13] = false;
-                              valueOption[14] = true;
-                              valueOption[15] = false;
-                              valueOption[16] = false;
-                              valueOption[17] = false;
-                              rate3 = 3;
-                            } else {
-                              valueOption[14] = false;
-                              rate3 = 0;
-                            }
-                          });
-                        },
-                      ),
-                      CheckboxListTile(
-                        title: Text(answerOptions[15],
-                            style: const TextStyle(
-                                fontSize: 20.0, color: Colors.black)),
-                        value: valueOption[15],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (valueOption[15] == false) {
-                              valueOption[12] = false;
-                              valueOption[13] = false;
-                              valueOption[14] = false;
-                              valueOption[15] = true;
-                              valueOption[16] = false;
-                              valueOption[17] = false;
-                              rate3 = 2;
-                            } else {
-                              valueOption[15] = false;
-                              rate3 = 0;
-                            }
-                          });
-                        },
-                      ),
-                      CheckboxListTile(
-                        title: Text(answerOptions[16],
-                            style: const TextStyle(
-                                fontSize: 20.0, color: Colors.black)),
-                        value: valueOption[16],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (valueOption[16] == false) {
-                              valueOption[12] = false;
-                              valueOption[13] = false;
-                              valueOption[14] = false;
-                              valueOption[15] = false;
-                              valueOption[16] = true;
-                              valueOption[17] = false;
-                              rate3 = 1;
-                            } else {
-                              valueOption[16] = false;
-                              rate3 = 0;
-                            }
-                          });
-                        },
-                      ),
-                      CheckboxListTile(
-                        title: Text(answerOptions[17],
-                            style: const TextStyle(
-                                fontSize: 20.0, color: Colors.black)),
-                        value: valueOption[17],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (valueOption[17] == false) {
-                              valueOption[12] = false;
-                              valueOption[13] = false;
-                              valueOption[14] = false;
-                              valueOption[15] = false;
-                              valueOption[16] = false;
-                              valueOption[17] = true;
-                              rate3 = 0;
-                            } else {
-                              valueOption[17] = false;
-                              rate3 = 0;
-                            }
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                )),
-            ListTile(
-                title: Text(questionsTitle[3],
-                    style: const TextStyle(
-                        fontSize: 24.0, fontWeight: FontWeight.bold)),
-                subtitle: Card(
-                  child: Column(
-                    children: [
-                      CheckboxListTile(
-                        title: Text(answerOptions[18],
-                            style: const TextStyle(
-                                fontSize: 20.0, color: Colors.black)),
-                        value: valueOption[18],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (valueOption[18] == false) {
-                              valueOption[18] = true;
-                              valueOption[19] = false;
-                              valueOption[20] = false;
-                              valueOption[21] = false;
-                              valueOption[22] = false;
-                              valueOption[23] = false;
-                              rate4 = 5;
-                            } else {
-                              valueOption[18] = false;
-                              rate4 = 0;
-                            }
-                          });
-                        },
-                      ),
-                      CheckboxListTile(
-                        title: Text(answerOptions[19],
-                            style: const TextStyle(
-                                fontSize: 20.0, color: Colors.black)),
-                        value: valueOption[19],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (valueOption[19] == false) {
-                              valueOption[18] = false;
-                              valueOption[19] = true;
-                              valueOption[20] = false;
-                              valueOption[21] = false;
-                              valueOption[22] = false;
-                              valueOption[23] = false;
-                              rate4 = 4;
-                            } else {
-                              valueOption[19] = false;
-                              rate4 = 0;
-                            }
-                          });
-                        },
-                      ),
-                      CheckboxListTile(
-                        title: Text(answerOptions[20],
-                            style: const TextStyle(
-                                fontSize: 20.0, color: Colors.black)),
-                        value: valueOption[20],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (valueOption[20] == false) {
-                              valueOption[18] = false;
-                              valueOption[19] = false;
-                              valueOption[20] = true;
-                              valueOption[21] = false;
-                              valueOption[22] = false;
-                              valueOption[23] = false;
-                              rate4 = 3;
-                            } else {
-                              valueOption[20] = false;
-                              rate4 = 0;
-                            }
-                          });
-                        },
-                      ),
-                      CheckboxListTile(
-                        title: Text(answerOptions[21],
-                            style: const TextStyle(
-                                fontSize: 20.0, color: Colors.black)),
-                        value: valueOption[21],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (valueOption[21] == false) {
-                              valueOption[18] = false;
-                              valueOption[19] = false;
-                              valueOption[20] = false;
-                              valueOption[21] = true;
-                              valueOption[22] = false;
-                              valueOption[23] = false;
-                              rate4 = 2;
-                            } else {
-                              valueOption[21] = false;
-                              rate4 = 0;
-                            }
-                          });
-                        },
-                      ),
-                      CheckboxListTile(
-                        title: Text(answerOptions[22],
-                            style: const TextStyle(
-                                fontSize: 20.0, color: Colors.black)),
-                        value: valueOption[22],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (valueOption[22] == false) {
-                              valueOption[18] = false;
-                              valueOption[19] = false;
-                              valueOption[20] = false;
-                              valueOption[21] = false;
-                              valueOption[22] = true;
-                              valueOption[23] = false;
-                              rate4 = 1;
-                            } else {
-                              valueOption[22] = false;
-                              rate4 = 0;
-                            }
-                          });
-                        },
-                      ),
-                      CheckboxListTile(
-                        title: Text(answerOptions[23],
-                            style: const TextStyle(
-                                fontSize: 20.0, color: Colors.black)),
-                        value: valueOption[23],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (valueOption[23] == false) {
-                              valueOption[18] = false;
-                              valueOption[19] = false;
-                              valueOption[20] = false;
-                              valueOption[21] = false;
-                              valueOption[22] = false;
-                              valueOption[23] = true;
-                              rate4 = 0;
-                            } else {
-                              valueOption[23] = false;
-                              rate4 = 0;
-                            }
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                )),
-            ListTile(
-                title: Text(questionsTitle[4],
-                    style: const TextStyle(
-                        fontSize: 24.0, fontWeight: FontWeight.bold)),
-                subtitle: Card(
-                  child: Column(
-                    children: [
-                      CheckboxListTile(
-                        title: Text(answerOptions[24],
-                            style: const TextStyle(
-                                fontSize: 20.0, color: Colors.black)),
-                        value: valueOption[24],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (valueOption[24] == false) {
-                              valueOption[24] = true;
-                              valueOption[25] = false;
-                              valueOption[26] = false;
-                              valueOption[27] = false;
-                              valueOption[28] = false;
-                              valueOption[29] = false;
-                              rate5 = 5;
-                            } else {
-                              valueOption[24] = false;
-                              rate5 = 0;
-                            }
-                          });
-                        },
-                      ),
-                      CheckboxListTile(
-                        title: Text(answerOptions[25],
-                            style: const TextStyle(
-                                fontSize: 20.0, color: Colors.black)),
-                        value: valueOption[25],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (valueOption[25] == false) {
-                              valueOption[24] = false;
-                              valueOption[25] = true;
-                              valueOption[26] = false;
-                              valueOption[27] = false;
-                              valueOption[28] = false;
-                              valueOption[29] = false;
-                              rate5 = 4;
-                            } else {
-                              valueOption[25] = false;
-                              rate5 = 0;
-                            }
-                          });
-                        },
-                      ),
-                      CheckboxListTile(
-                        title: Text(answerOptions[26],
-                            style: const TextStyle(
-                                fontSize: 20.0, color: Colors.black)),
-                        value: valueOption[26],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (valueOption[26] == false) {
-                              valueOption[24] = false;
-                              valueOption[25] = false;
-                              valueOption[26] = true;
-                              valueOption[27] = false;
-                              valueOption[28] = false;
-                              valueOption[29] = false;
-                              rate5 = 3;
-                            } else {
-                              valueOption[26] = false;
-                              rate5 = 0;
-                            }
-                          });
-                        },
-                      ),
-                      CheckboxListTile(
-                        title: Text(answerOptions[27],
-                            style: const TextStyle(
-                                fontSize: 20.0, color: Colors.black)),
-                        value: valueOption[27],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (valueOption[27] == false) {
-                              valueOption[24] = false;
-                              valueOption[25] = false;
-                              valueOption[26] = false;
-                              valueOption[27] = true;
-                              valueOption[28] = false;
-                              valueOption[29] = false;
-                              rate5 = 2;
-                            } else {
-                              valueOption[27] = false;
-                              rate5 = 0;
-                            }
-                          });
-                        },
-                      ),
-                      CheckboxListTile(
-                        title: Text(answerOptions[28],
-                            style: const TextStyle(
-                                fontSize: 20.0, color: Colors.black)),
-                        value: valueOption[28],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (valueOption[28] == false) {
-                              valueOption[24] = false;
-                              valueOption[25] = false;
-                              valueOption[26] = false;
-                              valueOption[27] = false;
-                              valueOption[28] = true;
-                              valueOption[29] = false;
-                              rate5 = 1;
-                            } else {
-                              valueOption[28] = false;
-                              rate5 = 0;
-                            }
-                          });
-                        },
-                      ),
-                      CheckboxListTile(
-                        title: Text(answerOptions[29],
-                            style: const TextStyle(
-                                fontSize: 20.0, color: Colors.black)),
-                        value: valueOption[29],
-                        onChanged: (bool? value) {
-                          setState(() {
-                            if (valueOption[29] == false) {
-                              valueOption[24] = false;
-                              valueOption[25] = false;
-                              valueOption[26] = false;
-                              valueOption[27] = false;
-                              valueOption[28] = false;
-                              valueOption[29] = true;
-                              rate5 = 0;
-                            } else {
-                              valueOption[29] = false;
-                              rate5 = 0;
-                            }
-                          });
-                        },
-                      ),
-                    ],
-                  ),
-                )),
-            Container(
-              color: Colors.lightBlue,
-              child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.center,
+      home: Builder(
+        builder: (context) => Scaffold(
+          appBar: AppBar(
+            title: const Text('Rating Page'),
+            leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(
+                Icons.arrow_back_sharp,
+                size: 25,
+                color: Colors.white,
+              ),
+            ),
+            actions: [
+              IconButton(
+                icon: const Icon(Icons.help, size: 25),
+                color: Colors.white,
+                onPressed: () {
+                  showDialog<IconData>(
+                    context: context,
+                    builder: (context) => const IconAlert(),
+                  );
+                },
+              ),
+            ],
+          ),
+          body: Directionality(
+            textDirection: _isRTLMode ? TextDirection.rtl : TextDirection.ltr,
+            child: SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                  _heading(questionsTitle[0]),
+                  const SizedBox(height: 20.0),
+                  _ratingBar(),
+                  const SizedBox(height: 20.0),
+                  Text(
+                    'Rating Description: $text1',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+
+                  const SizedBox(
+                    height: 30.0,
+                  ),
+                  _heading(questionsTitle[1]),
+                  const SizedBox(height: 20.0),
+                  _ratingBar2(),
+                  const SizedBox(height: 20.0),
+                  Text(
+                    'Rating Description: $text2',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+
+                  const SizedBox(
+                    height: 30.0,
+                  ),
+                  _heading(questionsTitle[2]),
+                  const SizedBox(height: 20.0),
+                  _ratingBar3(),
+                  const SizedBox(height: 20.0),
+                  Text(
+                    'Rating Description: $text3',
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 40.0),
                   ElevatedButton(
-                    onPressed: () {
-                      if (valueOption.contains(true)) {
-                        // replace this print statement with sending data to database
-                        //print((rate1 + rate2 + rate3 + rate4 + rate5) / 5);
-                        double rate =
-                            (rate1 + rate2 + rate3 + rate4 + rate5) / 5;
-                        showDialog(
-                            context: context,
-                            builder: (context) {
-                              return Dialog(
-                                  shape: const BeveledRectangleBorder(
-                                      side: BorderSide(color: Colors.black)),
-                                  child: Text(
-                                    'The rating given to this specific area is $rate',
-                                    style: const TextStyle(
-                                        fontSize: 30,
-                                        fontWeight: FontWeight.bold),
-                                    textAlign: TextAlign.center,
-                                  ));
-                            });
-                      } else {
-                        null;
+                    onPressed: (){
+                      if(_rating == valueOption[0]) {
+                        finalRating = valueOption[5];
+                      } else if (_rating == valueOption[1]){
+                        finalRating = valueOption[4];
+                      } else if (_rating == valueOption[2]){
+                        finalRating = valueOption[3];
+                      } else if (_rating == valueOption[3]){
+                        finalRating = valueOption[2];
+                      } else if (_rating == valueOption[4]){
+                        finalRating = valueOption[1];
+                      } else if (_rating == valueOption[5]){
+                        finalRating = valueOption[0];
                       }
+
+                      if(_rating2 == valueOption[0]) {
+                        finalRating2 = valueOption[5];
+                      } else if (_rating2 == valueOption[1]){
+                        finalRating2 = valueOption[4];
+                      } else if (_rating2 == valueOption[2]){
+                        finalRating2 = valueOption[3];
+                      } else if (_rating2 == valueOption[3]){
+                        finalRating2 = valueOption[2];
+                      } else if (_rating2 == valueOption[4]){
+                        finalRating2 = valueOption[1];
+                      } else if (_rating2 == valueOption[5]){
+                        finalRating2 = valueOption[0];
+                      }
+
+                      if(_rating3 == valueOption[0]) {
+                        finalRating3 = valueOption[5];
+                      } else if (_rating3 == valueOption[1]){
+                        finalRating3 = valueOption[4];
+                      } else if (_rating3 == valueOption[2]){
+                        finalRating3 = valueOption[3];
+                      } else if (_rating3 == valueOption[3]){
+                        finalRating3 = valueOption[2];
+                      } else if (_rating3 == valueOption[4]){
+                        finalRating3 = valueOption[1];
+                      } else if (_rating3 == valueOption[5]){
+                        finalRating3 = valueOption[0];
+                      }
+
+                      double rate = ((3.73*finalRating)+(2.72*finalRating2)+(3.15*finalRating3))/9.6;
+                      print(rate.toStringAsFixed(2));
                     },
-                    child: const Text('Finish',
-                        style: TextStyle(
-                            fontSize: 20, fontWeight: FontWeight.bold)),
+                    child: const Text('Rate', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
                     style: ButtonStyle(
-                      foregroundColor:
-                          MaterialStateProperty.all<Color>(Colors.black),
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Colors.white),
-                      minimumSize:
-                          MaterialStateProperty.all(const Size(200, 40)),
+                      foregroundColor: MaterialStateProperty.all<Color>(Colors.white),
+                      backgroundColor: MaterialStateProperty.all<Color>(Colors.blue),
+                      minimumSize:MaterialStateProperty.all(const Size(200, 40)),
+
                     ),
                   )
                 ],
               ),
             ),
-          ])),
+          ),
+        ),
+      ),
     );
   }
+
+  Widget _ratingBar() {
+    return RatingBar.builder(
+      initialRating: _initialRating,
+      minRating: 0,
+      direction: _isVertical ? Axis.vertical : Axis.horizontal,
+      allowHalfRating: false,
+      unratedColor: Colors.blue.withAlpha(50),
+      itemCount: 5,
+      itemSize: 35.0,
+      itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+      itemBuilder: (context, _) => const Icon(
+        Icons.star,
+        color: Colors.blue,
+      ),
+      onRatingUpdate: (rating) {
+        setState(() {
+          _rating = rating;
+          if(_rating == valueOption[0]) {
+            text1 = answerDescription[0];
+          } else if (_rating == valueOption[1]){
+            text1 = answerDescription[1];
+          } else if (_rating == valueOption[2]){
+            text1 = answerDescription[2];
+          } else if (_rating == valueOption[3]){
+            text1 = answerDescription[3];
+          } else if (_rating == valueOption[4]){
+            text1 = answerDescription[4];
+          } else if (_rating == valueOption[5]){
+            text1 = answerDescription[5];
+          }
+        });
+      },
+      updateOnDrag: true,
+    );
+  }
+
+  Widget _ratingBar2() {
+    return RatingBar.builder(
+      initialRating: _initialRating2,
+      minRating: 0,
+      direction: _isVertical ? Axis.vertical : Axis.horizontal,
+      allowHalfRating: false,
+      unratedColor: Colors.blue.withAlpha(50),
+      itemCount: 5,
+      itemSize: 35.0,
+      itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+      itemBuilder: (context, _) => const Icon(
+        Icons.star,
+        color: Colors.blue,
+      ),
+      onRatingUpdate: (rating) {
+        setState(() {
+          _rating2 = rating;
+          if(_rating2 == valueOption[0]) {
+            text2 = answerDescription[6];
+          } else if (_rating2 == valueOption[1]){
+            text2 = answerDescription[7];
+          } else if (_rating2 == valueOption[2]){
+            text2 = answerDescription[8];
+          } else if (_rating2 == valueOption[3]){
+            text2 = answerDescription[9];
+          } else if (_rating2 == valueOption[4]){
+            text2 = answerDescription[10];
+          } else if (_rating2 == valueOption[5]){
+            text2 = answerDescription[11];
+          }
+        });
+      },
+      updateOnDrag: true,
+    );
+  }
+
+  Widget _ratingBar3() {
+    return RatingBar.builder(
+      initialRating: _initialRating3,
+      minRating: 0,
+      direction: _isVertical ? Axis.vertical : Axis.horizontal,
+      allowHalfRating: false,
+      unratedColor: Colors.blue.withAlpha(50),
+      itemCount: 5,
+      itemSize: 35.0,
+      itemPadding: const EdgeInsets.symmetric(horizontal: 4.0),
+      itemBuilder: (context, _) => const Icon(
+        Icons.star,
+        color: Colors.blue,
+      ),
+      onRatingUpdate: (rating) {
+        setState(() {
+          _rating3 = rating;
+          if(_rating3 == valueOption[0]) {
+            text3 = answerDescription[12];
+          } else if (_rating3 == valueOption[1]){
+            text3 = answerDescription[13];
+          } else if (_rating3 == valueOption[2]){
+            text3 = answerDescription[14];
+          } else if (_rating3 == valueOption[3]){
+            text3 = answerDescription[15];
+          } else if (_rating3 == valueOption[4]){
+            text3 = answerDescription[16];
+          } else if (_rating3 == valueOption[5]){
+            text3 = answerDescription[17];
+          }
+        });
+      },
+      updateOnDrag: true,
+    );
+  }
+
+  Widget _heading(String text) => Column(
+    children: [
+      Padding(
+        padding: const EdgeInsets.fromLTRB(10, 5,10, 5),
+        child: Text(
+          text,
+          style: const TextStyle(
+            fontWeight: FontWeight.w300,
+            fontSize: 18.0,
+          ),
+          textAlign: TextAlign.justify,
+        ),
+      )
+
+    ],
+  );
 }
 
-class ConstantScrollBehavior extends ScrollBehavior {
-  const ConstantScrollBehavior();
+class IconAlert extends StatelessWidget {
+  const IconAlert({Key? key}) : super(key: key);
 
   @override
-  Widget buildScrollbar(
-          BuildContext context, Widget child, ScrollableDetails details) =>
-      child;
-
-  @override
-  Widget buildOverscrollIndicator(
-          BuildContext context, Widget child, ScrollableDetails details) =>
-      child;
-
-  @override
-  TargetPlatform getPlatform(BuildContext context) => TargetPlatform.macOS;
-
-  @override
-  ScrollPhysics getScrollPhysics(BuildContext context) =>
-      const BouncingScrollPhysics(parent: AlwaysScrollableScrollPhysics());
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: const Text(
+        'Welcome to the Rating Page!',
+        style: TextStyle(
+          fontWeight: FontWeight.w800,
+          fontSize: 24.0,
+        ),
+        textAlign: TextAlign.center,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      titlePadding: const EdgeInsets.all(12.0),
+      contentPadding: const EdgeInsets.all(12.0),
+      content: Wrap(
+        children: const [
+          Text('The purpose of this feature is to let the user rate the safety level of an area based on the feature of safe city implemented by the government.',
+            style: TextStyle(
+              fontWeight: FontWeight.w400,
+              fontSize: 17.0,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          Text('\n\n Let\'s Create a Safer Place Together!',
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 19.0,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          Text('\n\n Hint: To clear out the rating of a question, click twice on the first star of the question.',
+            style: TextStyle(
+              fontWeight: FontWeight.w400,
+              fontSize: 17.0,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+      actions: <Widget>[
+        TextButton(onPressed: (){Navigator.of(context).pop();}, child: const Text('Close', textAlign: TextAlign.center))
+      ],
+    );
+  }
 }

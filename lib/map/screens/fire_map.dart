@@ -43,29 +43,18 @@ class FireMapScreen extends StatefulWidget {
 }
 
 class _FireMapScreenController extends State<FireMapScreen> {
-  final notifications = FlutterLocalNotificationsPlugin();
+  // final notifications = FlutterLocalNotificationsPlugin();
   final Completer<GoogleMapController> _googleMapController = Completer();
   bool isUserInCircle = false;
 
   StreamSubscription? locationSubscription;
   final _searchBarController = FloatingSearchBarController();
 
-  @override
-  void initState() {
-    super.initState();
-    _initializeNotificationsSettings();
-  }
-
-  // TODO: The notification isn't popping up in the app but the notification section
-  // Set up android & ios notification
-  _initializeNotificationsSettings() {
-    const settingsAndroid = AndroidInitializationSettings('ic_launcher');
-    final settingsIOS = IOSInitializationSettings(
-        onDidReceiveLocalNotification: (id, title, body, payload) {});
-
-    notifications.initialize(
-        InitializationSettings(android: settingsAndroid, iOS: settingsIOS));
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   // _initializeNotificationsSettings();
+  // }
 
   // Called when the google map is created
   _onMapCreated(GoogleMapController controller) async {
@@ -79,9 +68,25 @@ class _FireMapScreenController extends State<FireMapScreen> {
       widget.user.setAccess = false;
     }
 
+    _initializeNotificationsSettings();
     _initializeUserLocation();
     _initializeAreaList();
     _initializeLocationSubscription();
+  }
+
+  // TODO: The notification isn't popping up in the app but the notification section
+  // Set up android & ios notification
+  _initializeNotificationsSettings() {
+    const settingsAndroid = AndroidInitializationSettings('@drawable/app_icon');
+    final settingsIOS = IOSInitializationSettings(
+        requestSoundPermission: false,
+        requestBadgePermission: false,
+        requestAlertPermission: false,
+        onDidReceiveLocalNotification: (id, title, body, payload) => null);
+
+    // initialize local notifications
+    flutterLocalNotificationsPlugin.initialize(
+        InitializationSettings(android: settingsAndroid, iOS: settingsIOS));
   }
 
   // Navigate and set stream for user location
@@ -110,8 +115,8 @@ class _FireMapScreenController extends State<FireMapScreen> {
 
         if (isWithinCircle(userDistance) && isUserInCircle == false) {
           isUserInCircle = true;
-          showOngoingNotification(notifications,
-              title: 'You entered a Red Zone', body: 'Stay cautious!');
+          showOngoingNotification(flutterLocalNotificationsPlugin,
+              title: 'Stay vigilant', body: 'You have entered a red area.');
           break;
         }
 
@@ -125,11 +130,10 @@ class _FireMapScreenController extends State<FireMapScreen> {
     DatabaseService(uid: widget.user.uid)
         .getAreasData(_googleMapController, context)
         .listen((List<DocumentSnapshot> documentList) {
-      widget.user.ratedAreas.clear();
-      areaCircles.clear();
-      areaList.clear();
-
-      if (mounted) {
+      if (documentList.isNotEmpty && mounted) {
+        widget.user.ratedAreas.clear();
+        areaCircles.clear();
+        areaList.clear();
         for (DocumentSnapshot document in documentList) {
           LatLng latLng = LatLng(document.get('geoData')['geopoint'].latitude,
               document.get('geoData')['geopoint'].longitude);
@@ -171,11 +175,8 @@ class _FireMapScreenController extends State<FireMapScreen> {
     var address = await getAddress(tapLatLng);
 
     // TODO: Database testing
-    // if (widget.user.ratedAreas.isNotEmpty) {
-    //   print(widget.user.ratedAreas.first.latLng);
-    // } else {
-    //   print("The current user didn't rate that area before!");
-    // }
+    showOngoingNotification(flutterLocalNotificationsPlugin,
+        title: 'Stay vigilant', body: 'You have entered a red area.');
 
     if (address != kInvalidAddress) {
       bool isWithinAnyCircle = false;
