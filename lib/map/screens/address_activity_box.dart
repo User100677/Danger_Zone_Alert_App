@@ -1,10 +1,8 @@
 import 'package:danger_zone_alert/comment/comment.dart';
 import 'package:danger_zone_alert/constants/app_constants.dart';
-import 'package:danger_zone_alert/map/randomization.dart';
 import 'package:danger_zone_alert/models/area.dart';
 import 'package:danger_zone_alert/models/user.dart';
-import 'package:danger_zone_alert/rating/new_rating.dart';
-import 'package:danger_zone_alert/services/database.dart';
+import 'package:danger_zone_alert/rating/rating.dart';
 import 'package:danger_zone_alert/shared/rounded_rectangle_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -28,7 +26,7 @@ class AddressActivityBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool previewRating = area.totalUsers >= 10;
+    bool previewRating = area.totalUsers >= kUserThreshold;
     const primaryColor = Colors.white;
     const locationTextColor = Color(0xff6E7CA8);
     const iconColor = Color(0xffAAB1C9);
@@ -50,7 +48,7 @@ class AddressActivityBox extends StatelessWidget {
                 child: RichText(
                   text: TextSpan(
                     text: previewRating
-                        ? area.rating.toString()
+                        ? area.rating.toStringAsFixed(1)
                         : 'Required threshold not met',
                     style: Theme.of(context).textTheme.bodyText2?.copyWith(
                         fontSize: previewRating ? 50.0 : 22,
@@ -141,15 +139,13 @@ class AddressActivityBox extends StatelessWidget {
                           } else {
                             if (calculateDistance(user.latLng, area.latLng) <
                                 1) {
-                              // TODO: Database
-                              handleRatePressed();
-
                               Navigator.pop(context);
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) =>
-                                          const RatingQuestionsList()));
+                                      builder: (context) => RatingScreen(
+                                          area, null,
+                                          user: user)));
                               boxCallback();
                             } else {
                               showAlertDialog(context, kAlertRateText);
@@ -193,21 +189,5 @@ class AddressActivityBox extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  handleRatePressed() async {
-    double randomRating = doubleInRange(2.0, 5.0);
-    int randomTotalUsers = intInRange(3, 20);
-
-    await DatabaseService(uid: user.uid)
-        .updateUserRatingData(area.latLng, randomRating);
-
-    await DatabaseService(uid: user.uid).updateAreaData(
-        area.latLng,
-        randomRating,
-        colorAssignment(randomRating, randomTotalUsers),
-        randomTotalUsers);
-
-    print('Rating completed!');
   }
 }

@@ -6,7 +6,6 @@ import 'package:danger_zone_alert/widget_view/widget_view.dart';
 import 'package:flutter/material.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
-  static String id = "forgot_password_screen";
   const ForgotPasswordScreen({Key? key}) : super(key: key);
 
   @override

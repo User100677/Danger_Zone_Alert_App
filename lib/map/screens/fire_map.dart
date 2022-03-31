@@ -27,7 +27,6 @@ import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:provider/provider.dart';
 
 class FireMapScreen extends StatefulWidget {
-  static String id = "fire_map_screen";
   final UserModel user;
   final Position? userPosition;
 
@@ -43,18 +42,11 @@ class FireMapScreen extends StatefulWidget {
 }
 
 class _FireMapScreenController extends State<FireMapScreen> {
-  // final notifications = FlutterLocalNotificationsPlugin();
   final Completer<GoogleMapController> _googleMapController = Completer();
   bool isUserInCircle = false;
 
   StreamSubscription? locationSubscription;
   final _searchBarController = FloatingSearchBarController();
-
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   // _initializeNotificationsSettings();
-  // }
 
   // Called when the google map is created
   _onMapCreated(GoogleMapController controller) async {
@@ -74,10 +66,9 @@ class _FireMapScreenController extends State<FireMapScreen> {
     _initializeLocationSubscription();
   }
 
-  // TODO: The notification isn't popping up in the app but the notification section
   // Set up android & ios notification
   _initializeNotificationsSettings() {
-    const settingsAndroid = AndroidInitializationSettings('@drawable/app_icon');
+    const settingsAndroid = AndroidInitializationSettings('app_icon');
     final settingsIOS = IOSInitializationSettings(
         requestSoundPermission: false,
         requestBadgePermission: false,
@@ -174,10 +165,6 @@ class _FireMapScreenController extends State<FireMapScreen> {
     // Get the description of the tapped position
     var address = await getAddress(tapLatLng);
 
-    // TODO: Database testing
-    showOngoingNotification(flutterLocalNotificationsPlugin,
-        title: 'Stay vigilant', body: 'You have entered a red area.');
-
     if (address != kInvalidAddress) {
       bool isWithinAnyCircle = false;
 
@@ -234,12 +221,9 @@ class _FireMapScreenController extends State<FireMapScreen> {
           latLng: LatLng(docSnapshot.get('geopoint').latitude,
               docSnapshot.get('geopoint').longitude),
           rating: docSnapshot.get('rating')));
-
-      print("User already rated this rated area!");
     }
 
     // TODO: Do stuff when current user didn't rate the area before
-    // If the document doesn't exist this method will instant terminate for some reason
   }
 
   // Callback method to clear markers

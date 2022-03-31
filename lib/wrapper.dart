@@ -29,12 +29,6 @@ class Wrapper extends StatelessWidget {
             ? const Loading()
             : (provider.position is String)
                 ? FireMapScreen(user: user)
-                // TODO: Database provider
-                // : MultiProvider(
-                //     providers: [],
-                //     child: FireMapScreen(
-                //         user: user, userPosition: provider.position),
-                //   ),
                 : FireMapScreen(user: user, userPosition: provider.position),
       );
     }

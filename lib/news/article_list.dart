@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:news_api_flutter_package/model/article.dart';
 import 'package:news_api_flutter_package/model/error.dart';
 import 'package:news_api_flutter_package/news_api_flutter_package.dart';
-import 'custom_dailog_route.dart';
+
+import 'custom_dialog_route.dart';
 
 class ArticleList extends StatelessWidget {
   final NewsAPI _newsAPI = NewsAPI("434b5638ed034f98a296145d4e2a7462");
@@ -11,28 +12,26 @@ class ArticleList extends StatelessWidget {
   ArticleList({Key? key}) : super(key: key);
 
   @override
-  Widget build( BuildContext context) {
+  Widget build(BuildContext context) {
     return DefaultTabController(
       length: 1,
       child: Scaffold(
-        appBar: _buildAppBar(),
-
+        appBar: _buildAppBar(context),
         body: _buildBody(),
       ),
     );
   }
 
-  AppBar _buildAppBar() {
+  AppBar _buildAppBar(context) {
     return AppBar(
-      title: const Center(
-        child:Text(
-          "News",
-          textAlign: TextAlign.center,
-          style: TextStyle(
-            fontSize: 30,
-            fontWeight: FontWeight.bold,
-
-          ),
+      centerTitle: true,
+      title: const Text("News", style: TextStyle(color: Colors.white)),
+      leading: IconButton(
+        onPressed: () => Navigator.pop(context),
+        icon: const Icon(
+          Icons.arrow_back_sharp,
+          size: 20,
+          color: Colors.white,
         ),
       ),
     );
@@ -46,16 +45,15 @@ class ArticleList extends StatelessWidget {
     );
   }
 
-
-
   Widget _buildEverythingTabView() {
     return FutureBuilder<List<Article>>(
-        future: _newsAPI.getEverything(query:"crime", domains:"thestar.com.my"),
+        future:
+            _newsAPI.getEverything(query: "crime", domains: "thestar.com.my"),
         builder: (BuildContext context, AsyncSnapshot<List<Article>> snapshot) {
           return snapshot.connectionState == ConnectionState.done
               ? snapshot.hasData
-              ? _buildArticleListView(snapshot.data!)
-              : _buildError(snapshot.error as ApiError)
+                  ? _buildArticleListView(snapshot.data!)
+                  : _buildError(snapshot.error as ApiError)
               : _buildProgress();
         });
   }
@@ -67,10 +65,10 @@ class ArticleList extends StatelessWidget {
         Article article = articles[index];
         return InkWell(
           child: GestureDetector(
-            onTap: ()  {
-              Navigator.of(context).push(HeroDialogRoute(builder:(context) => Center(
-                  child: ArticlePage(article: article))
-              ));
+            onTap: () {
+              Navigator.of(context).push(HeroDialogRoute(
+                  builder: (context) =>
+                      Center(child: ArticlePage(article: article))));
             },
             child: Card(
               child: ListTile(
@@ -86,7 +84,6 @@ class ArticleList extends StatelessWidget {
       },
     );
   }
-
 
   Widget _buildProgress() {
     return const Center(child: CircularProgressIndicator());

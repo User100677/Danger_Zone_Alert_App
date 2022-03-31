@@ -1,10 +1,8 @@
 import 'package:danger_zone_alert/constants/app_constants.dart';
-import 'package:danger_zone_alert/map/randomization.dart';
 import 'package:danger_zone_alert/map/util/calculate_distance.dart';
 import 'package:danger_zone_alert/map/widgets/alert_dialog.dart';
 import 'package:danger_zone_alert/models/user.dart';
-import 'package:danger_zone_alert/rating/new_rating.dart';
-import 'package:danger_zone_alert/services/database.dart';
+import 'package:danger_zone_alert/rating/rating.dart';
 import 'package:danger_zone_alert/shared/rounded_rectangle_button.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -84,11 +82,15 @@ class AddressBox extends StatelessWidget {
                             showAlertDialog(context, kLocationDenied);
                           } else {
                             if (calculateDistance(user.latLng, latLng) < 1) {
-                              // TODO
-                              handleRatePressed();
-
-                              Navigator.popAndPushNamed(
-                                  context, RatingQuestionsList.id);
+                              Navigator.pop(context);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => RatingScreen(
+                                            null,
+                                            latLng,
+                                            user: user,
+                                          )));
                               boxCallback();
                             } else {
                               showAlertDialog(context, kAlertRateText);
@@ -97,34 +99,6 @@ class AddressBox extends StatelessWidget {
                         },
                       ),
                     ),
-                    // const SizedBox(width: 12.0),
-                    // Expanded(
-                    //   child: RoundedRectangleButton(
-                    //     buttonText: 'Comment',
-                    //     buttonStyle: kBlueButtonStyle,
-                    //     textColor: textColor,
-                    //     onPressed: () {
-                    //       if (user.access == false) {
-                    //         showAlertDialog(context, kLocationDenied);
-                    //       } else {
-                    //         if (calculateDistance(user.latLng, latLng) < 1) {
-                    //           Navigator.pop(context);
-                    //           Navigator.push(
-                    //               context,
-                    //               MaterialPageRoute(
-                    //                   builder: (context) => CommentScreen(
-                    //                       user: user,
-                    //                       area: area,
-                    //                       areaIndex: -1)));
-                    //
-                    //           boxCallback();
-                    //         } else {
-                    //           showAlertDialog(context, kAlertCommentText);
-                    //         }
-                    //       }
-                    //     },
-                    //   ),
-                    // ),
                   ],
                 ),
               ),
@@ -134,28 +108,4 @@ class AddressBox extends StatelessWidget {
       ],
     );
   }
-
-  handleRatePressed() async {
-    double randomRating = doubleInRange(2.0, 5.0);
-    int randomTotalUsers = intInRange(5, 20);
-
-    await DatabaseService(uid: user.uid)
-        .updateUserRatingData(latLng, randomRating);
-
-    await DatabaseService(uid: user.uid).updateAreaData(latLng, randomRating,
-        colorAssignment(randomRating, randomTotalUsers), randomTotalUsers);
-
-    print('Rating completed!');
-  }
-
-  // A method to create a circle if the user first rate the area.
-  // handleInitialCommentPressed() async {
-  //   await DatabaseService(uid: user.uid)
-  //       .postAreasCommentData(latLng, 'Testing123', user.email);
-  //
-  //   await DatabaseService(uid: user.uid)
-  //       .updateAreasData(latLng, 0, 0xFF000000, 0);
-  //
-  //   print('Comment completed!');
-  // }
 }

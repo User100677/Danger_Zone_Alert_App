@@ -24,8 +24,9 @@ class Area {
       circleId: CircleId((latLng).toString()),
       center: latLng,
       radius: kAreaRadius,
-      strokeWidth: 0,
-      fillColor: color.withOpacity(0.5),
+      strokeWidth: 10,
+      strokeColor: color,
+      fillColor: color.withOpacity(0.7),
       consumeTapEvents: false,
     ));
   }

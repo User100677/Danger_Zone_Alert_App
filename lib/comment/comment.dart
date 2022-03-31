@@ -8,7 +8,6 @@ import 'package:danger_zone_alert/widget_view/widget_view.dart';
 import 'package:flutter/material.dart';
 
 class CommentScreen extends StatefulWidget {
-  static String id = "comment_screen";
   final UserModel user;
   final Area area;
 
@@ -71,10 +70,9 @@ class _CommentScreenView
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-            title: const Text(
-              'Area Comments',
-              style: TextStyle(color: Colors.white),
-            ),
+            centerTitle: true,
+            title: const Text('Area Comments',
+                style: TextStyle(color: Colors.white)),
             leading: IconButton(
                 onPressed: () => Navigator.pop(context),
                 icon: const Icon(

@@ -77,8 +77,18 @@ ButtonStyle kBlueButtonStyle = OutlinedButton.styleFrom(
     width: 1,
   ),
   shape: const RoundedRectangleBorder(
-    borderRadius: BorderRadius.all(
-      Radius.circular(10.0),
-    ),
-  ),
+      borderRadius: BorderRadius.all(Radius.circular(10.0))),
 );
+
+// Database Constants
+const int kUserThreshold = 10;
+
+// totalUsers < 10 is gray, 0 ~ 3 is green, 3 - 3.5 is yellow, 3.5 - 4.0 is orange 4.0 and above is red
+// Grey, green, yellow, orange, red
+const List<int> kAreaColors = [
+  0xFF000000,
+  0xFF1B5E20,
+  0xFFE65100,
+  0xFFF57F17,
+  0xFFB71C1C,
+];
