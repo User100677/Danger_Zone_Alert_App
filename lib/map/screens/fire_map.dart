@@ -47,6 +47,9 @@ class _FireMapScreenController extends State<FireMapScreen> {
   StreamSubscription? locationSubscription;
   final _searchBarController = FloatingSearchBarController();
 
+  // @override
+  // bool get wantKeepAlive => true;
+
   // Called when the google map is created
   _onMapCreated(GoogleMapController controller) async {
     _googleMapController.complete(controller);
@@ -282,7 +285,7 @@ class _FireMapScreenView
         ),
       ),
       floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.lightBlueAccent,
+          backgroundColor: Theme.of(context).primaryColor,
           foregroundColor: Colors.white,
           child: const Icon(Icons.center_focus_strong_rounded),
           onPressed: () => animateToLocation(

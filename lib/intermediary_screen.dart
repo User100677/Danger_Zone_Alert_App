@@ -50,6 +50,7 @@ class _IntermediaryScreenState extends State<IntermediaryScreen> {
     }
 
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: SizedBox.expand(
           child: PageView(
         controller: _pageController,
