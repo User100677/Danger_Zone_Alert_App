@@ -1,3 +1,4 @@
+import 'package:danger_zone_alert/map/screens/fire_map.dart';
 import 'package:danger_zone_alert/map/util/animate_location.dart';
 import 'package:danger_zone_alert/models/user.dart';
 import 'package:danger_zone_alert/news/article_list.dart';
@@ -7,9 +8,8 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:provider/provider.dart';
 
-
 @override
-Widget buildBottomTabBar(context, googleMapController) {
+Widget buildBottomTabBar(context, googleMapController, isHomePage) {
   final user = Provider.of<UserModel?>(context);
   final AuthService _authService = AuthService();
   const double height = 60;
@@ -31,15 +31,24 @@ Widget buildBottomTabBar(context, googleMapController) {
               child: FloatingActionButton(
                 backgroundColor: primaryColor,
                 elevation: 10,
-                child:
-                    const Icon(Icons.my_location_rounded, color: Colors.white),
+                child: isHomePage
+                    ? const Icon(Icons.map_rounded, color: Colors.white)
+                    : const Icon(Icons.my_location_rounded,
+                        color: Colors.white),
                 onPressed: () async {
-                  LatLng? userPosition = user?.latLng;
+                  if (isHomePage) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => FireMapScreen(user: user!)));
+                  } else {
+                    LatLng? userPosition = user?.latLng;
 
-                  // Display error notification if userPosition is null else navigate to user position
-                  (userPosition == null)
-                      ? errorSnackBar(context, 'Navigation failed!')
-                      : animateToLocation(userPosition, googleMapController);
+                    // Display error notification if userPosition is null else navigate to user position
+                    (userPosition == null)
+                        ? errorSnackBar(context, 'Navigation failed!')
+                        : animateToLocation(userPosition, googleMapController);
+                  }
                 },
               ),
             ),
@@ -49,12 +58,15 @@ Widget buildBottomTabBar(context, googleMapController) {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   // NewsAPI button
-                  IconBar(icon: Icons.web_rounded, onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => ArticleList()),
-
-                  );}),
+                  IconBar(
+                      icon: Icons.web_rounded,
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => ArticleList()),
+                        );
+                      }),
                   const SizedBox(width: 56),
                   // Log out button
                   IconBar(

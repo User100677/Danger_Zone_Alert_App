@@ -278,7 +278,7 @@ class _FireMapScreenView
               circles: Set.from(areaCircles),
               onTap: (tapLatLng) => state._handleMapTap(tapLatLng),
             ),
-            buildBottomTabBar(context, state._googleMapController),
+            buildBottomTabBar(context, state._googleMapController, false),
             buildSearchBar(context, state._searchBarController),
           ],
         ),

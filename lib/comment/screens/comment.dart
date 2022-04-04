@@ -72,7 +72,10 @@ class _CommentScreenView
         appBar: AppBar(
             centerTitle: true,
             title: const Text('Area Comments',
-                style: TextStyle(color: Colors.white)),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 25.0,
+                    fontWeight: FontWeight.w800)),
             leading: IconButton(
                 onPressed: () => Navigator.pop(context),
                 icon: const Icon(

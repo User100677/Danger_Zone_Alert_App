@@ -1,0 +1,53 @@
+State,Type of Crime,Total Crime
+Johor,Murder,253
+Johor,Rape,922
+Johor,Robbery,5939
+Johor,Causing injury,2550
+Kedah,Murder,76
+Kedah,Rape,607
+Kedah,Robbery,2351
+Kedah,Causing injury,1501
+Kelantan,Murder,41
+Kelantan,Rape,539
+Kelantan,Robbery,709
+Kelantan,Causing injury,1009
+Melaka,Murder,41
+Melaka,Rape,262
+Melaka,Robbery,2141
+Melaka,Causing injury,759
+Negeri Sembilan,Murder,62
+Negeri Sembilan,Rape,412
+Negeri Sembilan,Robbery,2592
+Negeri Sembilan,Causing injury,1012
+Pahang,Murder,57
+Pahang,Rape,500
+Pahang,Robbery,1153
+Pahang,Causing injury,846
+Perak,Murder,160
+Perak,Rape,387
+Perak,Robbery,2659
+Perak,Causing injury,1522
+Perlis,Murder,4
+Perlis,Rape,122
+Perlis,Robbery,154
+Perlis,Causing injury,229
+Pulau Pinang,Murder,97
+Pulau Pinang,Rape,294
+Pulau Pinang,Robbery,2620
+Pulau Pinang,Causing injury,1206
+Sabah,Murder,163
+Sabah,Rape,772
+Sabah,Robbery,854
+Sabah,Causing injury,881
+Sarawak,Murder,179
+Sarawak,Rape,986
+Sarawak,Robbery,2326
+Sarawak,Causing injury,2642
+Selangor,Murder,416
+Selangor,Rape,1229
+Selangor,Robbery,18099
+Selangor,Causing injury,4578
+Terengganu,Murder,26
+Terengganu,Rape,318
+Terengganu,Robbery,530
+Terengganu,Causing injury,555

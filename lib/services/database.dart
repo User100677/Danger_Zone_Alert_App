@@ -1,7 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:danger_zone_alert/map/util/camera_coordinate.dart';
 import 'package:danger_zone_alert/models/area.dart';
+import 'package:danger_zone_alert/models/state.dart';
 import 'package:danger_zone_alert/models/user.dart';
+import 'package:flutter/material.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -185,5 +187,20 @@ class DatabaseService {
         .collection('comments')
         .snapshots()
         .map(_commentListFromSnapshot);
+  }
+
+  // Get states info
+  List<StateInfo> _stateListFromSnapshot(QuerySnapshot snapshot) {
+    return snapshot.docs.map((doc) {
+      return StateInfo(doc['state'], doc['murder'], doc['rape'], doc['robbery'],
+          doc['causingInjury'], doc['totalCrime'], Color(doc['color']));
+    }).toList();
+  }
+
+  Stream<List<StateInfo>> getStateData() {
+    final CollectionReference stateCollection =
+        FirebaseFirestore.instance.collection('states');
+
+    return stateCollection.snapshots().map(_stateListFromSnapshot);
   }
 }

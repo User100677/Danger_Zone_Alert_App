@@ -1,7 +1,7 @@
 import 'package:danger_zone_alert/models/area.dart';
 import 'package:danger_zone_alert/models/user.dart';
-import 'package:danger_zone_alert/rating/icon_alert.dart';
 import 'package:danger_zone_alert/rating/rating_properties.dart';
+import 'package:danger_zone_alert/rating/widgets/icon_alert.dart';
 import 'package:danger_zone_alert/services/database.dart';
 import 'package:danger_zone_alert/widget_view/widget_view.dart';
 import 'package:flutter/material.dart';
@@ -200,7 +200,6 @@ class RatingScreenController extends State<RatingScreen> {
         // If user Re-rate the area
         if (widget.user.ratedAreas.isNotEmpty &&
             widget.user.ratedAreas.first.latLng == area.latLng) {
-          print('Condition 1');
           totalRating =
               totalRating - widget.user.ratedAreas.first.rating + rate;
 
@@ -214,7 +213,6 @@ class RatingScreenController extends State<RatingScreen> {
               colorAssignment(resultRating, area.totalUsers),
               area.totalUsers);
         } else {
-          print('Condition 2');
           int newTotalUsers = area.totalUsers + 1;
           totalRating = totalRating + rate;
           double resultRating = totalRating / newTotalUsers;

@@ -1,8 +1,8 @@
-import 'package:danger_zone_alert/comment/comment.dart';
+import 'package:danger_zone_alert/comment/screens/comment.dart';
 import 'package:danger_zone_alert/constants/app_constants.dart';
 import 'package:danger_zone_alert/models/area.dart';
 import 'package:danger_zone_alert/models/user.dart';
-import 'package:danger_zone_alert/rating/rating.dart';
+import 'package:danger_zone_alert/rating/screens/rating.dart';
 import 'package:danger_zone_alert/shared/rounded_rectangle_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';

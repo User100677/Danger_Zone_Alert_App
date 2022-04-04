@@ -51,3 +51,14 @@ Firebase Account Credentials:
 Email: DangerZoneAlertGroup5a@gmail.com
 Password: group5asegp
 */
+
+/* TODO Code:
+1. Display the percent in the pie chart along with the crime count
+2. Complete the horizontal scrollable card
+3. Do pop up for the card ( Button to navigate to the map)
+4. Rework navigation bar
+
+- Add instruction page on the map page
+- Pop up confirmation for the rating page
+- Remove back button from news page
+*/
