@@ -6,16 +6,17 @@ import 'package:news_api_flutter_package/news_api_flutter_package.dart';
 
 import 'custom_dialog_route.dart';
 
-class ArticleList extends StatelessWidget {
+class NewsScreen extends StatelessWidget {
   final NewsAPI _newsAPI = NewsAPI("434b5638ed034f98a296145d4e2a7462");
 
-  ArticleList({Key? key}) : super(key: key);
+  NewsScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 1,
       child: Scaffold(
+        backgroundColor: const Color(0xffDAE0E6),
         appBar: _buildAppBar(context),
         body: _buildBody(),
       ),
@@ -25,15 +26,11 @@ class ArticleList extends StatelessWidget {
   AppBar _buildAppBar(context) {
     return AppBar(
       centerTitle: true,
-      title: const Text("News", style: TextStyle(color: Colors.white)),
-      leading: IconButton(
-        onPressed: () => Navigator.pop(context),
-        icon: const Icon(
-          Icons.arrow_back_sharp,
-          size: 20,
-          color: Colors.white,
-        ),
-      ),
+      title: const Text("News",
+          style: TextStyle(
+              color: Colors.white,
+              fontSize: 25.0,
+              fontWeight: FontWeight.w800)),
     );
   }
 

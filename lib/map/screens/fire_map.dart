@@ -11,7 +11,6 @@ import 'package:danger_zone_alert/map/util/calculate_distance.dart';
 import 'package:danger_zone_alert/map/util/location_validation.dart';
 import 'package:danger_zone_alert/map/util/reverse_geocoding.dart';
 import 'package:danger_zone_alert/map/util/update_markers.dart';
-import 'package:danger_zone_alert/map/widgets/bottom_tab_bar.dart';
 import 'package:danger_zone_alert/map/widgets/search_bar.dart';
 import 'package:danger_zone_alert/models/area.dart';
 import 'package:danger_zone_alert/models/user.dart';
@@ -222,8 +221,6 @@ class _FireMapScreenController extends State<FireMapScreen> {
               docSnapshot.get('geopoint').longitude),
           rating: docSnapshot.get('rating')));
     }
-
-    // TODO: Do stuff when current user didn't rate the area before
   }
 
   // Callback method to clear markers
@@ -262,8 +259,9 @@ class _FireMapScreenView
         child: Stack(
           children: <Widget>[
             GoogleMap(
-              onMapCreated: (GoogleMapController controller) =>
-                  state._onMapCreated(controller),
+              onMapCreated: (GoogleMapController controller) {
+                state._onMapCreated(controller);
+              },
               minMaxZoomPreference: const MinMaxZoomPreference(7, 19),
               initialCameraPosition: kInitialCameraPosition,
               cameraTargetBounds: CameraTargetBounds(kMalaysiaBounds),
@@ -278,11 +276,17 @@ class _FireMapScreenView
               circles: Set.from(areaCircles),
               onTap: (tapLatLng) => state._handleMapTap(tapLatLng),
             ),
-            buildBottomTabBar(context, state._googleMapController, false),
+            // buildBottomTabBar(context, state._googleMapController, false),
             buildSearchBar(context, state._searchBarController),
           ],
         ),
       ),
+      floatingActionButton: FloatingActionButton(
+          backgroundColor: Colors.lightBlueAccent,
+          foregroundColor: Colors.white,
+          child: const Icon(Icons.center_focus_strong_rounded),
+          onPressed: () => animateToLocation(
+              widget.user.latLng, state._googleMapController)),
     );
   }
 }

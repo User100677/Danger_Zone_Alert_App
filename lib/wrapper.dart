@@ -1,5 +1,6 @@
 import 'package:danger_zone_alert/auth/authenticate.dart';
-import 'package:danger_zone_alert/home/home.dart';
+import 'package:danger_zone_alert/intermediary_screen.dart';
+import 'package:danger_zone_alert/shared/loading_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -29,8 +30,17 @@ class Wrapper extends StatelessWidget {
       //       : (provider.position is String)
       //           ? FireMapScreen(user: user)
       //           : FireMapScreen(user: user, userPosition: provider.position),
+      // return Consumer<ApplicationBloc>(
+      //     builder: (context, provider, child) => Home(user: user));
+      // return Consumer<ApplicationBloc>(
+      //     builder: (context, provider, child) => MainPage(user: user));
       return Consumer<ApplicationBloc>(
-          builder: (context, provider, child) => Home(user: user));
+          builder: (context, provider, child) => (provider.position == null)
+              ? const Loading()
+              : (provider.position is String)
+                  ? IntermediaryScreen(user: user)
+                  : IntermediaryScreen(
+                      user: user, userPosition: provider.position));
     }
   }
 }

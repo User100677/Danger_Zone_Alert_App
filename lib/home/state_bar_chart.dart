@@ -32,7 +32,6 @@ class StateBarChart extends StatelessWidget {
     );
   }
 
-  // TODO
   Widget getTitles(double value, TitleMeta meta) {
     const style = TextStyle(
         color: Color(0xff7589a2), fontWeight: FontWeight.bold, fontSize: 14);

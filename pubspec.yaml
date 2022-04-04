@@ -14,7 +14,7 @@ dependencies:
 
   cupertino_icons: ^1.0.2
 
-  # Some Dependencies
+  # Dependencies
   animated_text_kit: ^4.2.1
   modal_progress_hud_nsn: ^0.1.0-nullsafety-1
   flutter_rating_bar: ^4.0.0
@@ -27,6 +27,7 @@ dependencies:
   news_api_flutter_package: ^1.1.0
   url_launcher: ^6.0.20
   fl_chart: ^0.50.1
+  bottom_navy_bar: ^6.0.0
 
   # Google Map Dependencies
   google_maps_flutter: ^2.1.0

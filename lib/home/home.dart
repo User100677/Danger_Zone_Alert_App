@@ -1,21 +1,22 @@
 import 'package:danger_zone_alert/home/state_card.dart';
 import 'package:danger_zone_alert/home/state_pie_chart.dart';
-import 'package:danger_zone_alert/map/widgets/bottom_tab_bar.dart';
 import 'package:danger_zone_alert/models/state.dart';
 import 'package:danger_zone_alert/models/user.dart';
+import 'package:danger_zone_alert/services/auth.dart';
 import 'package:danger_zone_alert/services/database.dart';
 import 'package:danger_zone_alert/shared/loading_widget.dart';
 import 'package:flutter/material.dart';
 
-class Home extends StatefulWidget {
+class HomeScreen extends StatefulWidget {
   final UserModel user;
-  const Home({Key? key, required this.user}) : super(key: key);
+  const HomeScreen({Key? key, required this.user}) : super(key: key);
 
   @override
-  State<Home> createState() => _HomeState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeScreenState extends State<HomeScreen> {
+  final AuthService _authService = AuthService();
   List<StateInfo>? sortedStates = [];
 
   void cardCallback(state) {
@@ -24,6 +25,25 @@ class _HomeState extends State<Home> {
         showDialog(
             context: context, builder: (context) => buildCard(context, state));
       },
+    );
+  }
+
+  handleLogOut() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Do you wish to log out?'),
+        actions: <Widget>[
+          TextButton(
+              onPressed: () => Navigator.pop(context), child: const Text('No')),
+          TextButton(
+              onPressed: () async {
+                await _authService.signOut();
+                Navigator.pop(context);
+              },
+              child: const Text('Yes')),
+        ],
+      ),
     );
   }
 
@@ -42,28 +62,30 @@ class _HomeState extends State<Home> {
             }
 
             return Scaffold(
-              appBar: AppBar(
-                  centerTitle: true,
-                  title: const Text(
-                    'Crime Statistics',
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 25.0,
-                        fontWeight: FontWeight.w800),
-                  )),
               backgroundColor: const Color(0xffDAE0E6),
+              appBar: AppBar(
+                title: const Text(
+                  'Crime Statistics',
+                  style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 25.0,
+                      fontWeight: FontWeight.w800),
+                ),
+                actions: [
+                  TextButton.icon(
+                    icon: const Icon(Icons.logout, color: Colors.white),
+                    label: const Text('Logout',
+                        style: TextStyle(color: Colors.white)),
+                    onPressed: () {
+                      handleLogOut();
+                    },
+                  ),
+                ],
+              ),
               body: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  // const Padding(
-                  //     padding: EdgeInsets.symmetric(vertical: 16.0),
-                  //     child: Text(
-                  //       'Crime Statistics',
-                  //       style: TextStyle(
-                  //           fontSize: 25.0, fontWeight: FontWeight.w800),
-                  //       textAlign: TextAlign.center,
-                  //     )),
                   Expanded(
                       flex: 5,
                       child: Stack(
@@ -149,7 +171,7 @@ class _HomeState extends State<Home> {
                             );
                           })),
                   const SizedBox(height: 16.0),
-                  buildBottomTabBar(context, null, true),
+                  // buildBottomTabBar(context, null, true),
                 ],
               ),
             );
