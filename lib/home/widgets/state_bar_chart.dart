@@ -20,7 +20,6 @@ class StateBarChart extends StatelessWidget {
 
     return BarChart(
       BarChartData(
-        // barTouchData: barTouchData,
         titlesData: titlesData,
         borderData: borderData,
         barGroups: chartData(crimeCounts),
@@ -57,24 +56,13 @@ class StateBarChart extends StatelessWidget {
   }
 
   FlTitlesData get titlesData => FlTitlesData(
-        show: true,
-        bottomTitles: AxisTitles(
+      show: true,
+      bottomTitles: AxisTitles(
           sideTitles: SideTitles(
-            showTitles: true,
-            reservedSize: 50,
-            getTitlesWidget: getTitles,
-          ),
-        ),
-        leftTitles: AxisTitles(
-          sideTitles: SideTitles(showTitles: false),
-        ),
-        topTitles: AxisTitles(
-          sideTitles: SideTitles(showTitles: false),
-        ),
-        rightTitles: AxisTitles(
-          sideTitles: SideTitles(showTitles: false),
-        ),
-      );
+              showTitles: true, reservedSize: 50, getTitlesWidget: getTitles)),
+      leftTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+      topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
+      rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)));
 
   FlBorderData get borderData => FlBorderData(show: false);
 

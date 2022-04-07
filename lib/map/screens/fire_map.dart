@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:danger_zone_alert/blocs/application_bloc.dart';
 import 'package:danger_zone_alert/constants/app_constants.dart';
 import 'package:danger_zone_alert/map/screens/address_activity_box.dart';
 import 'package:danger_zone_alert/map/screens/address_box.dart';
 import 'package:danger_zone_alert/map/util/animate_location.dart';
+import 'package:danger_zone_alert/map/util/application_bloc.dart';
 import 'package:danger_zone_alert/map/util/area_notification.dart';
 import 'package:danger_zone_alert/map/util/calculate_distance.dart';
 import 'package:danger_zone_alert/map/util/location_validation.dart';
@@ -16,14 +16,17 @@ import 'package:danger_zone_alert/models/area.dart';
 import 'package:danger_zone_alert/models/user.dart';
 import 'package:danger_zone_alert/services/database.dart';
 import 'package:danger_zone_alert/services/geolocator_service.dart';
+import 'package:danger_zone_alert/shared/alert_dialog_box.dart';
 import 'package:danger_zone_alert/shared/error_snackbar.dart';
 import 'package:danger_zone_alert/widget_view/widget_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:provider/provider.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class FireMapScreen extends StatefulWidget {
   final UserModel user;
@@ -46,9 +49,6 @@ class _FireMapScreenController extends State<FireMapScreen> {
 
   StreamSubscription? locationSubscription;
   final _searchBarController = FloatingSearchBarController();
-
-  // @override
-  // bool get wantKeepAlive => true;
 
   // Called when the google map is created
   _onMapCreated(GoogleMapController controller) async {
@@ -226,6 +226,17 @@ class _FireMapScreenController extends State<FireMapScreen> {
     }
   }
 
+  _handleInfoButtonPressed() {
+    showAlertDialogBox(
+        AlertType.info,
+        'Map Info',
+        '1. User can only rate & comment an area that is 1.0km within the user.\n\n'
+            '2. An area will be highlighted as gray if the People rated threshold does not exceed 9.\n\n '
+            '3. Rating between 0 ~ 3 is green, 3 ~ 3.5 is yellow, 3.5 ~ 4.0 is orange 4.0 ~ 5.0 is red',
+        '',
+        context);
+  }
+
   // Callback method to clear markers
   void boxCallback() {
     setState(() {
@@ -279,8 +290,34 @@ class _FireMapScreenView
               circles: Set.from(areaCircles),
               onTap: (tapLatLng) => state._handleMapTap(tapLatLng),
             ),
-            // buildBottomTabBar(context, state._googleMapController, false),
+            // Search Bar
             buildSearchBar(context, state._searchBarController),
+            // Info button on the top right of the screen
+            Align(
+              alignment: Alignment.topRight,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                    vertical: 72.0, horizontal: 12.0),
+                child: Container(
+                  width: 35.0,
+                  height: 35.0,
+                  decoration: const BoxDecoration(
+                      color: Colors.lightBlueAccent, shape: BoxShape.circle),
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: IconButton(
+                      padding: EdgeInsets.zero,
+                      icon: const Icon(
+                        Icons.help,
+                        size: 25.0,
+                        color: Colors.white,
+                      ),
+                      onPressed: () => state._handleInfoButtonPressed(),
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),

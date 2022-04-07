@@ -21,7 +21,7 @@ abstract class WidgetView<T1, T2> extends StatelessWidget {
   Widget build(BuildContext context);
 }
 
-// Example usage: Stateful widget
+// Example usage: Stateful widgets
 // class ExampleScreen extends StatefulWidget {
 //   const ExampleScreen({Key? key}) : super(key: key);
 //

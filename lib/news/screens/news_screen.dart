@@ -1,10 +1,10 @@
-import 'package:danger_zone_alert/news/article_detail_page.dart';
+import 'package:danger_zone_alert/news/widgets/article_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:news_api_flutter_package/model/article.dart';
 import 'package:news_api_flutter_package/model/error.dart';
 import 'package:news_api_flutter_package/news_api_flutter_package.dart';
 
-import 'custom_dialog_route.dart';
+import '../widgets/custom_dialog_route.dart';
 
 class NewsScreen extends StatelessWidget {
   final NewsAPI _newsAPI = NewsAPI("434b5638ed034f98a296145d4e2a7462");

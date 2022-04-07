@@ -1,15 +1,20 @@
 import 'package:bottom_navy_bar/bottom_navy_bar.dart';
-import 'package:danger_zone_alert/home/home.dart';
+import 'package:danger_zone_alert/home/screens/home.dart';
 import 'package:danger_zone_alert/map/screens/fire_map.dart';
 import 'package:danger_zone_alert/models/user.dart';
-import 'package:danger_zone_alert/news/article_list.dart';
+import 'package:danger_zone_alert/news/screens/news_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+
+/*
+  This screen act as an intermediary screen between Homepage, News page and
+  Map page.
+*/
 
 class IntermediaryScreen extends StatefulWidget {
   final UserModel user;
   final Position? userPosition;
-  IntermediaryScreen({Key? key, required this.user, this.userPosition})
+  const IntermediaryScreen({Key? key, required this.user, this.userPosition})
       : super(key: key);
 
   @override

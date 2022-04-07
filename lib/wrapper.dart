@@ -5,11 +5,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'blocs/application_bloc.dart';
+import 'map/util/application_bloc.dart';
 import 'models/user.dart';
 
-/* This widget decide whether to load WelcomeScreen widget or GoogleMapScreen widget
-   depending on the value of the user depending on the userModel object.
+/*
+   This widget loads WelcomeScreen or IntermediaryScreen
+   depending on the authentication of the user.
 */
 
 class Wrapper extends StatelessWidget {
@@ -21,7 +22,6 @@ class Wrapper extends StatelessWidget {
     final user = Provider.of<UserModel?>(context);
 
     if (user == null) {
-      // return const SignInScreen();
       return const Authenticate();
     } else {
       // return Consumer<ApplicationBloc>(
@@ -30,10 +30,6 @@ class Wrapper extends StatelessWidget {
       //       : (provider.position is String)
       //           ? FireMapScreen(user: user)
       //           : FireMapScreen(user: user, userPosition: provider.position),
-      // return Consumer<ApplicationBloc>(
-      //     builder: (context, provider, child) => Home(user: user));
-      // return Consumer<ApplicationBloc>(
-      //     builder: (context, provider, child) => MainPage(user: user));
       return Consumer<ApplicationBloc>(
           builder: (context, provider, child) => (provider.position == null)
               ? const Loading()

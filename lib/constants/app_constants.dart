@@ -8,14 +8,21 @@ const String kSignUpText = 'Sign up';
 const String kSignInText = 'Log in';
 
 // Text for alert_dialog_box
-const String kLocationDenied =
-    'Rate & Comment functionality are disabled when location condition is not met';
+const String kLocationDeniedTitleText = 'Requirement not met';
 
-const String kAlertCommentText =
-    'Location selected is too far from your current location to comment';
+const String kLocationDeniedDescriptionText =
+    'Rate & Comment functionality are disabled when location condition is not met.';
 
-const String kAlertRateText =
-    'Location selected is too far from your current location to rate';
+const String kLocationDeniedHintText =
+    "Hint: User's GPS service is disabled or not within Malaysia.";
+
+const String kLocationOutOfBoundTitleText = 'Location selected is too far!';
+
+const String kLocationOutOfBoundDescriptionText =
+    'Rate & Comment functionality are disabled when user location is out of bound.';
+
+const String kLocationOutOfBoundHintText =
+    'Hint: User can only rate & comment on area within 1.0km radius.';
 
 const String kInvalidAddress = 'Invalid_Address';
 

@@ -5,7 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'blocs/application_bloc.dart';
+import 'map/util/application_bloc.dart';
 import 'models/user.dart';
 
 void main() {
@@ -23,6 +23,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Danger Zone Alert',
       theme: ThemeData(primarySwatch: Colors.lightBlue),
+      debugShowCheckedModeBanner: false,
       home: FutureBuilder(
         future: _initialization,
         builder: (context, snapshot) {

@@ -10,7 +10,5 @@ class StateInfo {
   Color color;
 
   StateInfo(this.state, this.murder, this.rape, this.robbery,
-      this.causingInjury, this.totalCrime, this.color) {
-    // color = Color((math.Random().nextDouble() * 0xFFFFFF).toInt());
-  }
+      this.causingInjury, this.totalCrime, this.color);
 }

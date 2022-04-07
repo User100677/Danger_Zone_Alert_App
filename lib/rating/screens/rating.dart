@@ -7,6 +7,7 @@ import 'package:danger_zone_alert/widget_view/widget_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class RatingScreen extends StatefulWidget {
   final UserModel user;
@@ -185,9 +186,31 @@ class RatingScreenController extends State<RatingScreen> {
 
     databaseRatingCalculation(double.parse(rate.toStringAsFixed(2)));
 
-    Navigator.pop(context);
     print("The rating given by the user is: " + rate.toString());
     print('Rating completed!');
+
+    // showAlertDialogBox(AlertType.success, 'Rating Completed', '', '', context);
+    Alert(
+      context: context,
+      type: AlertType.success,
+      title: 'Rating Completed!',
+      buttons: [
+        DialogButton(
+          child: const Text(
+            "Got it",
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 20,
+            ),
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          color: Colors.lightBlueAccent,
+          width: 120,
+        ),
+      ],
+    ).show().whenComplete(() => Navigator.pop(context));
   }
 
   databaseRatingCalculation(rate) async {

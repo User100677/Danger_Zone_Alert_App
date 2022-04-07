@@ -1,10 +1,11 @@
-import 'package:danger_zone_alert/home/state_card.dart';
-import 'package:danger_zone_alert/home/state_pie_chart.dart';
+import 'package:danger_zone_alert/home/widgets/state_card.dart';
+import 'package:danger_zone_alert/home/widgets/state_pie_chart.dart';
 import 'package:danger_zone_alert/models/state.dart';
 import 'package:danger_zone_alert/models/user.dart';
 import 'package:danger_zone_alert/services/auth.dart';
 import 'package:danger_zone_alert/services/database.dart';
 import 'package:danger_zone_alert/shared/loading_widget.dart';
+import 'package:danger_zone_alert/widget_view/widget_view.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -12,40 +13,57 @@ class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key, required this.user}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  _HomeScreenController createState() => _HomeScreenController();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _HomeScreenController extends State<HomeScreen> {
   final AuthService _authService = AuthService();
+  List<StateInfo>? states = [];
   List<StateInfo>? sortedStates = [];
+  int totalCrimeCount = 0;
 
   void cardCallback(state) {
-    setState(
-      () {
-        showDialog(
-            context: context, builder: (context) => buildCard(context, state));
-      },
-    );
+    setState(() {
+      showDialog(
+          context: context, builder: (context) => buildCard(context, state));
+    });
   }
 
   handleLogOut() {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: const Text('Do you wish to log out?'),
+        title: const Text('Sign Out'),
         actions: <Widget>[
           TextButton(
-              onPressed: () => Navigator.pop(context), child: const Text('No')),
+              onPressed: () => Navigator.pop(context),
+              child: const Text('CANCEL')),
           TextButton(
               onPressed: () async {
                 await _authService.signOut();
                 Navigator.pop(context);
               },
-              child: const Text('Yes')),
+              child: const Text('SIGN OUT')),
         ],
       ),
     );
   }
+
+  handleSnapshotHasData(snapshot) {
+    states = snapshot.data;
+
+    // Calculate the total crime across Malaysia
+    for (StateInfo state in states!) {
+      totalCrimeCount += state.totalCrime;
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) => _HomeScreenView(this);
+}
+
+class _HomeScreenView extends WidgetView<HomeScreen, _HomeScreenController> {
+  const _HomeScreenView(_HomeScreenController state) : super(state);
 
   @override
   Widget build(BuildContext context) {
@@ -53,32 +71,22 @@ class _HomeScreenState extends State<HomeScreen> {
         stream: DatabaseService(uid: widget.user.uid).getStateData(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            List<StateInfo>? states = snapshot.data;
-            int totalCrimeCount = 0;
-
-            // Calculate the total crime across Malaysia
-            for (StateInfo state in states!) {
-              totalCrimeCount += state.totalCrime;
-            }
+            state.handleSnapshotHasData(snapshot);
 
             return Scaffold(
               backgroundColor: const Color(0xffDAE0E6),
               appBar: AppBar(
-                title: const Text(
-                  'Crime Statistics',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 25.0,
-                      fontWeight: FontWeight.w800),
-                ),
+                title: const Text('Crime Statistics',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 25.0,
+                        fontWeight: FontWeight.w800)),
                 actions: [
                   TextButton.icon(
                     icon: const Icon(Icons.logout, color: Colors.white),
-                    label: const Text('Logout',
+                    label: const Text('Sign Out',
                         style: TextStyle(color: Colors.white)),
-                    onPressed: () {
-                      handleLogOut();
-                    },
+                    onPressed: () => state.handleLogOut(),
                   ),
                 ],
               ),
@@ -101,13 +109,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                     color: Colors.white)),
                           ),
                           StatePieChart(
-                              states: states,
-                              totalCrimeCount: totalCrimeCount,
+                              states: state.states!,
+                              totalCrimeCount: state.totalCrimeCount,
                               isBackground: false),
                           // Background effect pie chart
                           StatePieChart(
-                              states: states,
-                              totalCrimeCount: totalCrimeCount,
+                              states: state.states!,
+                              totalCrimeCount: state.totalCrimeCount,
                               isBackground: true),
                           Center(
                             child: SizedBox(
@@ -122,12 +130,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                       fontSize: 18.0),
                                   children: [
                                     TextSpan(
-                                      text: totalCrimeCount.toString(),
-                                      style: const TextStyle(
-                                          color: Colors.black87,
-                                          fontWeight: FontWeight.w500,
-                                          fontSize: 17.0),
-                                    ),
+                                        text: state.totalCrimeCount.toString(),
+                                        style: const TextStyle(
+                                            color: Colors.black87,
+                                            fontWeight: FontWeight.w500,
+                                            fontSize: 17.0)),
                                   ],
                                 ),
                               ),
@@ -140,11 +147,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       Padding(
                         // padding: EdgeInsets.symmetric(horizontal: 24.0),
                         padding: EdgeInsets.only(left: 24.0, top: 8.0),
-                        child: Text(
-                          'Crime cases:',
-                          style: TextStyle(
-                              fontSize: 20.0, fontWeight: FontWeight.bold),
-                        ),
+                        child: Text('Crime cases',
+                            style: TextStyle(
+                                fontSize: 20.0, fontWeight: FontWeight.bold)),
                       ),
                     ],
                   ),
@@ -155,23 +160,22 @@ class _HomeScreenState extends State<HomeScreen> {
                               horizontal: 16.0, vertical: 16.0),
                           itemCount: 13,
                           itemBuilder: (context, index) {
-                            sortedStates = states;
-                            sortedStates?.sort(
+                            state.sortedStates = state.states!;
+                            state.sortedStates?.sort(
                                 (a, b) => b.totalCrime.compareTo(a.totalCrime));
                             return Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 buildStateCard(
                                     context,
-                                    totalCrimeCount,
-                                    sortedStates![index],
+                                    state.totalCrimeCount,
+                                    state.sortedStates![index],
                                     index + 1,
-                                    cardCallback),
+                                    state.cardCallback),
                               ],
                             );
                           })),
                   const SizedBox(height: 16.0),
-                  // buildBottomTabBar(context, null, true),
                 ],
               ),
             );

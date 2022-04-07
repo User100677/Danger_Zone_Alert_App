@@ -1,10 +1,9 @@
-import 'package:danger_zone_alert/home/state_bar_chart.dart';
+import 'package:danger_zone_alert/home/widgets/state_bar_chart.dart';
 import 'package:danger_zone_alert/models/state.dart';
 import 'package:flutter/material.dart';
 
 Widget buildCard(BuildContext context, StateInfo state) {
   return Container(
-    // margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 76.0),
     margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 80.0),
     decoration: const BoxDecoration(
         color: Colors.white,
@@ -18,10 +17,9 @@ Widget buildCard(BuildContext context, StateInfo state) {
             child: const Align(
               alignment: Alignment.topRight,
               child: CircleAvatar(
-                radius: 16.0,
-                backgroundColor: Colors.white,
-                child: Icon(Icons.close, color: Color(0xff838383)),
-              ),
+                  radius: 16.0,
+                  backgroundColor: Colors.white,
+                  child: Icon(Icons.close, color: Color(0xff838383))),
             ),
           ),
         ),
@@ -41,15 +39,12 @@ Widget buildCard(BuildContext context, StateInfo state) {
                   Padding(
                       padding: const EdgeInsets.only(left: 16.0),
                       child: DefaultTextStyle(
-                        style: const TextStyle(
-                            fontFamily: 'Agne',
-                            fontSize: 30.0,
-                            color: Colors.black,
-                            fontWeight: FontWeight.bold),
-                        child: Text(
-                          state.state,
-                        ),
-                      )),
+                          style: const TextStyle(
+                              fontFamily: 'Agne',
+                              fontSize: 30.0,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold),
+                          child: Text(state.state))),
                 ],
               ),
             )),
@@ -61,24 +56,21 @@ Widget buildCard(BuildContext context, StateInfo state) {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                decoration: const BoxDecoration(
-                    borderRadius: BorderRadius.all(Radius.circular(30.0)),
-                    gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [Color(0xFF5758FA), Colors.blueAccent])),
-                child: const DefaultTextStyle(
-                  style: TextStyle(
-                      fontFamily: 'Agne',
-                      fontSize: 16.0,
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold),
-                  child: Text('Total of 2015-2018'),
-                ),
-                // child: Text('xx'),
-              ),
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0, vertical: 8.0),
+                  decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(30.0)),
+                      gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [Color(0xFF5758FA), Colors.blueAccent])),
+                  child: const DefaultTextStyle(
+                      style: TextStyle(
+                          fontFamily: 'Agne',
+                          fontSize: 16.0,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold),
+                      child: Text('Total cases from 2015-2018'))),
             ],
           ),
         ),
@@ -149,13 +141,11 @@ Widget buildStateCard(context, totalCrimeCount, state, index, callback) {
                         ),
                       ),
                       Center(
-                          child: Text(
-                        index.toString(),
-                        style: TextStyle(
-                            color: state.color,
-                            fontSize: 15.0,
-                            fontWeight: FontWeight.w600),
-                      )),
+                          child: Text(index.toString(),
+                              style: TextStyle(
+                                  color: state.color,
+                                  fontSize: 15.0,
+                                  fontWeight: FontWeight.w600))),
                     ],
                   ),
                 ),
@@ -163,27 +153,24 @@ Widget buildStateCard(context, totalCrimeCount, state, index, callback) {
                     child: Column(
                   children: [
                     ListTile(
-                      title: Text(state.state,
-                          style: const TextStyle(
-                              fontSize: 21.0,
-                              color: Colors.black,
-                              fontWeight: FontWeight.w600)),
-                      subtitle: Text(
-                        (state.totalCrime / totalCrimeCount * 100)
-                                .toStringAsFixed(0) +
-                            '%',
-                        style: const TextStyle(color: Color(0xff6E7CA8)),
-                      ),
-                    ),
+                        title: Text(state.state,
+                            style: const TextStyle(
+                                fontSize: 21.0,
+                                color: Colors.black,
+                                fontWeight: FontWeight.w600)),
+                        subtitle: Text(
+                            (state.totalCrime / totalCrimeCount * 100)
+                                    .round()
+                                    .toString() +
+                                '%',
+                            style: const TextStyle(color: Color(0xff6E7CA8)))),
                   ],
                 )),
                 Row(
                   children: [
-                    Text(
-                      state.totalCrime.toString() + ' case',
-                      style: const TextStyle(
-                          fontSize: 16.0, color: Color(0xff6E7CA8)),
-                    )
+                    Text(state.totalCrime.toString() + ' case',
+                        style: const TextStyle(
+                            fontSize: 16.0, color: Color(0xff6E7CA8))),
                   ],
                 )
               ],

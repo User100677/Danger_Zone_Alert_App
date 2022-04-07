@@ -18,9 +18,7 @@ class StatePieChart extends StatelessWidget {
   Widget build(BuildContext context) {
     return PieChart(
       PieChartData(
-          pieTouchData: PieTouchData(
-            enabled: false,
-          ),
+          pieTouchData: PieTouchData(enabled: false),
           borderData: FlBorderData(show: false),
           sectionsSpace: 0,
           centerSpaceRadius: isBackground ? 60 : 70,
@@ -37,7 +35,7 @@ class StatePieChart extends StatelessWidget {
 
       // Calculate the percentage of the total crime of the state
       String percentage =
-          (state.totalCrime / totalCrimeCount * 100).toStringAsFixed(0);
+          (state.totalCrime / totalCrimeCount * 100).round().toString();
 
       pieChartData.add(PieChartSectionData(
         titlePositionPercentageOffset: 0.6,

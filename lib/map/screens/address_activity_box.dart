@@ -3,12 +3,13 @@ import 'package:danger_zone_alert/constants/app_constants.dart';
 import 'package:danger_zone_alert/models/area.dart';
 import 'package:danger_zone_alert/models/user.dart';
 import 'package:danger_zone_alert/rating/screens/rating.dart';
+import 'package:danger_zone_alert/shared/alert_dialog_box.dart';
 import 'package:danger_zone_alert/shared/rounded_rectangle_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 import '../util/calculate_distance.dart';
-import '../widgets/alert_dialog.dart';
 
 class AddressActivityBox extends StatelessWidget {
   final Area area;
@@ -135,7 +136,12 @@ class AddressActivityBox extends StatelessWidget {
                         textColor: textColor,
                         onPressed: () {
                           if (user.access == false) {
-                            showAlertDialog(context, kLocationDenied);
+                            showAlertDialogBox(
+                                AlertType.error,
+                                kLocationDeniedTitleText,
+                                kLocationDeniedDescriptionText,
+                                kLocationDeniedHintText,
+                                context);
                           } else {
                             if (calculateDistance(user.latLng, area.latLng) <
                                 1) {
@@ -148,7 +154,12 @@ class AddressActivityBox extends StatelessWidget {
                                           user: user)));
                               boxCallback();
                             } else {
-                              showAlertDialog(context, kAlertRateText);
+                              showAlertDialogBox(
+                                  AlertType.warning,
+                                  kLocationOutOfBoundTitleText,
+                                  kLocationOutOfBoundDescriptionText,
+                                  kLocationOutOfBoundHintText,
+                                  context);
                             }
                           }
                         },
@@ -163,7 +174,12 @@ class AddressActivityBox extends StatelessWidget {
                         textColor: textColor,
                         onPressed: () {
                           if (user.access == false) {
-                            showAlertDialog(context, kLocationDenied);
+                            showAlertDialogBox(
+                                AlertType.error,
+                                kLocationDeniedTitleText,
+                                kLocationDeniedDescriptionText,
+                                kLocationDeniedHintText,
+                                context);
                           } else {
                             if (calculateDistance(user.latLng, area.latLng) <
                                 1) {
@@ -175,7 +191,12 @@ class AddressActivityBox extends StatelessWidget {
                                           user: user, area: area)));
                               boxCallback();
                             } else {
-                              showAlertDialog(context, kAlertCommentText);
+                              showAlertDialogBox(
+                                  AlertType.warning,
+                                  kLocationOutOfBoundTitleText,
+                                  kLocationOutOfBoundDescriptionText,
+                                  kLocationOutOfBoundHintText,
+                                  context);
                             }
                           }
                         },
