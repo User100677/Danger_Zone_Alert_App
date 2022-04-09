@@ -325,8 +325,13 @@ class _FireMapScreenView
           backgroundColor: Theme.of(context).primaryColor,
           foregroundColor: Colors.white,
           child: const Icon(Icons.center_focus_strong_rounded),
-          onPressed: () => animateToLocation(
-              widget.user.latLng, state._googleMapController)),
+          onPressed: () {
+            LatLng? userPosition = widget.user.latLng;
+            // Display error notification if userPosition is null else navigate to user position
+            (userPosition == null)
+                ? errorSnackBar(context, 'Navigation failed!')
+                : animateToLocation(userPosition, state._googleMapController);
+          }),
     );
   }
 }

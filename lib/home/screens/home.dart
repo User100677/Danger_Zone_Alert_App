@@ -20,7 +20,6 @@ class _HomeScreenController extends State<HomeScreen> {
   final AuthService _authService = AuthService();
   List<StateInfo>? states = [];
   List<StateInfo>? sortedStates = [];
-  int totalCrimeCount = 0;
 
   void cardCallback(state) {
     setState(() {
@@ -49,13 +48,11 @@ class _HomeScreenController extends State<HomeScreen> {
     );
   }
 
-  handleSnapshotHasData(snapshot) {
-    states = snapshot.data;
-
-    // Calculate the total crime across Malaysia
-    for (StateInfo state in states!) {
-      totalCrimeCount += state.totalCrime;
-    }
+  @override
+  void dispose() {
+    super.dispose();
+    states!.clear();
+    sortedStates!.clear();
   }
 
   @override
@@ -70,8 +67,14 @@ class _HomeScreenView extends WidgetView<HomeScreen, _HomeScreenController> {
     return StreamBuilder<List<StateInfo>>(
         stream: DatabaseService(uid: widget.user.uid).getStateData(),
         builder: (context, snapshot) {
+          int totalCrimeCount = 0;
           if (snapshot.hasData) {
-            state.handleSnapshotHasData(snapshot);
+            state.states = snapshot.data;
+
+            // Calculate the total crime across Malaysia
+            for (StateInfo state in state.states!) {
+              totalCrimeCount += state.totalCrime;
+            }
 
             return Scaffold(
               backgroundColor: const Color(0xffDAE0E6),
@@ -110,12 +113,12 @@ class _HomeScreenView extends WidgetView<HomeScreen, _HomeScreenController> {
                           ),
                           StatePieChart(
                               states: state.states!,
-                              totalCrimeCount: state.totalCrimeCount,
+                              totalCrimeCount: totalCrimeCount,
                               isBackground: false),
                           // Background effect pie chart
                           StatePieChart(
                               states: state.states!,
-                              totalCrimeCount: state.totalCrimeCount,
+                              totalCrimeCount: totalCrimeCount,
                               isBackground: true),
                           Center(
                             child: SizedBox(
@@ -130,7 +133,7 @@ class _HomeScreenView extends WidgetView<HomeScreen, _HomeScreenController> {
                                       fontSize: 18.0),
                                   children: [
                                     TextSpan(
-                                        text: state.totalCrimeCount.toString(),
+                                        text: totalCrimeCount.toString(),
                                         style: const TextStyle(
                                             color: Colors.black87,
                                             fontWeight: FontWeight.w500,
@@ -158,17 +161,18 @@ class _HomeScreenView extends WidgetView<HomeScreen, _HomeScreenController> {
                       child: ListView.builder(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 16.0, vertical: 16.0),
-                          itemCount: 13,
+                          itemCount: state.states!.length,
                           itemBuilder: (context, index) {
                             state.sortedStates = state.states!;
                             state.sortedStates?.sort(
                                 (a, b) => b.totalCrime.compareTo(a.totalCrime));
+
                             return Column(
                               mainAxisSize: MainAxisSize.min,
                               children: [
                                 buildStateCard(
                                     context,
-                                    state.totalCrimeCount,
+                                    totalCrimeCount,
                                     state.sortedStates![index],
                                     index + 1,
                                     state.cardCallback),
