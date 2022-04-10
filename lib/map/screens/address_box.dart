@@ -5,8 +5,11 @@ import 'package:danger_zone_alert/rating/screens/rating.dart';
 import 'package:danger_zone_alert/shared/alert_dialog_box.dart';
 import 'package:danger_zone_alert/shared/rounded_rectangle_button.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
+
+import 'info_box.dart';
 
 class AddressBox extends StatelessWidget {
   final LatLng latLng;
@@ -110,6 +113,34 @@ class AddressBox extends StatelessWidget {
                         },
                       ),
                     ),
+                     Expanded(
+                        child: RoundedRectangleButton(
+
+                      buttonText: 'Info',
+                      buttonStyle: kBlueButtonStyle,
+                      textColor: textColor,
+                      onPressed: () async {
+                        Navigator.pop(context);
+                        List<Placemark> placemarks =
+                            await placemarkFromCoordinates(
+                                latLng.latitude, latLng.longitude);
+                        Placemark place = placemarks[0];
+                        String state = place.administrativeArea!;
+
+                        showDialog(
+                      
+                            context: context,
+                            builder: (BuildContext context) {
+                                 
+                            
+                              return CustomDialogBox(
+                                    
+                                  state : state , 
+                                 
+                                  text: "OK");
+                            });  // showdialog box 
+                      },
+                    )),
                   ],
                 ),
               ),
