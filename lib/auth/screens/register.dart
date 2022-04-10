@@ -1,4 +1,4 @@
-import 'package:danger_zone_alert/auth/screens/register.dart';
+import 'package:danger_zone_alert/auth/screens/sign_in.dart';
 import 'package:danger_zone_alert/auth/widgets/button_divider.dart';
 import 'package:danger_zone_alert/auth/widgets/email_text_field.dart';
 import 'package:danger_zone_alert/auth/widgets/password_text_field.dart';
@@ -9,63 +9,75 @@ import 'package:danger_zone_alert/widget_view/widget_view.dart';
 import 'package:flutter/material.dart';
 import 'package:modal_progress_hud_nsn/modal_progress_hud_nsn.dart';
 
-import 'forgot_password.dart';
-
-class LoginScreen extends StatefulWidget {
-  static String id = "login_screen";
-  const LoginScreen({Key? key}) : super(key: key);
+class RegisterScreen extends StatefulWidget {
+  static String id = "register_screen";
+  const RegisterScreen({Key? key}) : super(key: key);
 
   @override
-  _LoginScreenController createState() => _LoginScreenController();
+  _RegisterScreenController createState() => _RegisterScreenController();
 }
 
-// Sign In Screen's WidgetView with sign in logic
-class _LoginScreenController extends State<LoginScreen> {
+// Register Screen's WidgetView with sign up logic
+class _RegisterScreenController extends State<RegisterScreen> {
   final AuthService _authService = AuthService();
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+  final _reenterPasswordController = TextEditingController();
   bool _isLoading = false;
   bool _isEmailIncorrect = false;
+  bool _isPasswordIncorrect = false;
 
   @override
   void dispose() {
     super.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    _reenterPasswordController.dispose();
   }
 
-  Future handleLoginPressed() async {
+  Future handleSignupPressed() async {
     String email = _emailController.text.trim();
     String password = _passwordController.text.trim();
+    String reenterPassword = _reenterPasswordController.text.trim();
 
-    setState(() => _isEmailIncorrect = false);
-
+    setState(() {
+      _isEmailIncorrect = false;
+      _isPasswordIncorrect = false;
+    });
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
 
-      dynamic result =
-          await _authService.signInWithEmailAndPassword(email, password);
+      if (password == reenterPassword) {
+        dynamic result = await _authService.registerWithEmailAndPassword(
+            email, reenterPassword);
 
-      if (result == null) {
-        setState(() {
-          _isEmailIncorrect = true;
-          _passwordController.clear();
-        });
+        if (result == null) {
+          setState(() {
+            _isEmailIncorrect = true;
+            _passwordController.clear();
+            _reenterPasswordController.clear();
+          });
+        } else {
+          await _authService.signInWithEmailAndPassword(email, reenterPassword);
+          Navigator.pop(context);
+        }
       } else {
-        Navigator.pop(context);
+        _isPasswordIncorrect = true;
+        _reenterPasswordController.clear();
       }
       setState(() => _isLoading = false);
     }
   }
 
   @override
-  Widget build(BuildContext context) => _LoginScreenView(this);
+  Widget build(BuildContext context) => _RegisterScreenView(this);
 }
 
-// Sign In Screen's View
-class _LoginScreenView extends WidgetView<LoginScreen, _LoginScreenController> {
-  const _LoginScreenView(_LoginScreenController state) : super(state);
+// Register Screen's View
+class _RegisterScreenView
+    extends WidgetView<RegisterScreen, _RegisterScreenController> {
+  const _RegisterScreenView(_RegisterScreenController state) : super(state);
 
   @override
   Widget build(BuildContext context) {
@@ -98,7 +110,7 @@ class _LoginScreenView extends WidgetView<LoginScreen, _LoginScreenController> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const <Widget>[
-                    Text('Welcome\nBack',
+                    Text('Create\nAccount',
                         style: TextStyle(
                             fontFamily: 'Agne',
                             fontSize: 32.0,
@@ -109,10 +121,10 @@ class _LoginScreenView extends WidgetView<LoginScreen, _LoginScreenController> {
                 ),
               ),
             ),
-            // A container containing the Divider, Email & Password text field as well as SignUp & SignIn buttons
+// A container containing the Divider, Email & Password text field as well as SignIn & SignUp buttons
             Container(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+              padding: const EdgeInsets.only(
+                  top: 16.0, left: 24.0, right: 24.0, bottom: 16.0),
               decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
@@ -124,54 +136,34 @@ class _LoginScreenView extends WidgetView<LoginScreen, _LoginScreenController> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: <Widget>[
-                    EmailTextField(
-                        emailController: state._emailController,
-                        isEmailIncorrect: state._isEmailIncorrect,
-                        emailIncorrectText: "Incorrect email or password"),
+                    Column(children: <Widget>[
+                      EmailTextField(
+                          emailController: state._emailController,
+                          isEmailIncorrect: state._isEmailIncorrect,
+                          emailIncorrectText: 'Please supply a valid email'),
+                    ]),
                     PasswordTextField(
-                        passwordController: state._passwordController),
-                    // Forgot password button
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        TextButton(
-                          style: ElevatedButton.styleFrom(
-                              splashFactory: NoSplash.splashFactory),
-                          child: Text('Forgot password?',
-                              style: TextStyle(
-                                  color:
-                                      Colors.lightBlueAccent.withOpacity(0.8),
-                                  fontSize: 12.0)),
-                          onPressed: () {
-                            showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                builder: (context) => SingleChildScrollView(
-                                    child: Container(
-                                        padding: EdgeInsets.only(
-                                            bottom: MediaQuery.of(context)
-                                                .viewInsets
-                                                .bottom),
-                                        child: const ForgotPasswordScreen())));
-                          },
-                        ),
-                      ],
-                    ),
+                        passwordController: state._passwordController,
+                        isPasswordIncorrect: state._isPasswordIncorrect,
+                        passwordIncorrectText: "Password doesn't match"),
+                    PasswordTextField(
+                        passwordController: state._reenterPasswordController,
+                        isPasswordIncorrect: state._isPasswordIncorrect,
+                        passwordHintText: "Re-enter password"),
+                    // Signup button
+                    RoundedRectangleButton(
+                        buttonText: kSignUpText,
+                        buttonStyle: kLightBlueButtonStyle,
+                        textColor: Colors.white,
+                        onPressed: () => state.handleSignupPressed()),
+                    buildButtonDivider(),
                     // Login button
                     RoundedRectangleButton(
                         buttonText: kSignInText,
-                        buttonStyle: kLightBlueButtonStyle,
-                        textColor: Colors.white,
-                        onPressed: () => state.handleLoginPressed()),
-                    buildButtonDivider(),
-                    // Sign up button
-                    RoundedRectangleButton(
-                      buttonText: kSignUpText,
-                      buttonStyle: kWhiteButtonStyle,
-                      textColor: Colors.grey,
-                      onPressed: () =>
-                          Navigator.popAndPushNamed(context, RegisterScreen.id),
-                    ),
+                        buttonStyle: kWhiteButtonStyle,
+                        textColor: Colors.grey,
+                        onPressed: () =>
+                            Navigator.popAndPushNamed(context, LoginScreen.id)),
                   ],
                 ),
               ),

@@ -1,25 +1,34 @@
-import 'package:danger_zone_alert/comment/screens/comment.dart';
+import 'package:danger_zone_alert/comment/comment.dart';
 import 'package:danger_zone_alert/constants/app_constants.dart';
+import 'package:danger_zone_alert/map/randomization.dart';
+import 'package:danger_zone_alert/map/screens/info_box.dart';
+import 'package:danger_zone_alert/map/screens/piechart.dart';
 import 'package:danger_zone_alert/models/area.dart';
+import 'package:danger_zone_alert/models/info.dart';
 import 'package:danger_zone_alert/models/user.dart';
-import 'package:danger_zone_alert/rating/screens/rating.dart';
-import 'package:danger_zone_alert/shared/alert_dialog_box.dart';
+import 'package:danger_zone_alert/rating/new_rating.dart';
+import 'package:danger_zone_alert/services/database.dart';
 import 'package:danger_zone_alert/shared/rounded_rectangle_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'package:geocoding/geocoding.dart';
 
 import '../util/calculate_distance.dart';
+import '../widgets/alert_dialog.dart';
 
 class AddressActivityBox extends StatelessWidget {
   final Area area;
   final UserModel user;
+ //final InfoModel info;
   final String description;
   final Function boxCallback;
 
   const AddressActivityBox({
     Key? key,
     required this.description,
+    //required this.info,
     required this.user,
     required this.boxCallback,
     required this.area,
@@ -27,13 +36,14 @@ class AddressActivityBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool previewRating = area.totalUsers >= kUserThreshold;
+    bool previewRating = area.totalUsers >= 10;
     const primaryColor = Colors.white;
     const locationTextColor = Color(0xff6E7CA8);
     const iconColor = Color(0xffAAB1C9);
     const containerButtonColor = Color(0xffF2F4F5);
     const textColor = Colors.white;
-
+   // int index = 0;
+    
     return Column(
       children: <Widget>[
         Container(
@@ -46,29 +56,19 @@ class AddressActivityBox extends StatelessWidget {
               previewRating ? Container() : const SizedBox(height: 16),
               Padding(
                 padding: const EdgeInsets.only(top: 24.0),
-                child: RichText(
-                  text: TextSpan(
-                    text: previewRating
-                        ? area.rating.toStringAsFixed(1)
+                child: Text(
+                    previewRating
+                        ? area.rating.toString()
                         : 'Required threshold not met',
                     style: Theme.of(context).textTheme.bodyText2?.copyWith(
-                        fontSize: previewRating ? 50.0 : 22,
+                        fontSize: previewRating ? 50.0 : 30,
                         color: area.color,
-                        fontWeight: FontWeight.w700,
+                        fontWeight: FontWeight.w800,
                         fontFamily: 'RobotoMono'),
-                    children: <TextSpan>[
-                      TextSpan(
-                          text: previewRating ? ' / 5' : '',
-                          style: const TextStyle(
-                              fontSize: 18.5,
-                              fontWeight: FontWeight.w700,
-                              fontFamily: 'RobotoMono')),
-                    ],
-                  ),
-                ),
+                    textAlign: TextAlign.center),
               ),
               previewRating ? Container() : const SizedBox(height: 8),
-              Text('Crime Level',
+              Text('Danger Level',
                   style: Theme.of(context).textTheme.bodyText2?.copyWith(
                       fontSize: 18.0,
                       color: const Color(0xFFB71C1C),
@@ -92,7 +92,7 @@ class AddressActivityBox extends StatelessWidget {
                       style: Theme.of(context)
                           .textTheme
                           .bodyText2
-                          ?.copyWith(fontSize: 11.0, color: locationTextColor),
+                          ?.copyWith(fontSize: 10.0, color: locationTextColor),
                       textAlign: TextAlign.center)),
               // Container for location icon and description
               Container(
@@ -136,36 +136,24 @@ class AddressActivityBox extends StatelessWidget {
                         textColor: textColor,
                         onPressed: () {
                           if (user.access == false) {
-                            showAlertDialogBox(
-                                AlertType.error,
-                                kLocationDeniedTitleText,
-                                kLocationDeniedDescriptionText,
-                                kLocationDeniedHintText,
-                                context);
+                            showAlertDialog(context, kLocationDenied);
                           } else {
                             if (calculateDistance(user.latLng, area.latLng) <
                                 1) {
-                              Navigator.pop(context);
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => RatingScreen(
-                                          area, null,
-                                          user: user)));
+                              // TODO: Database
+                              handleRatePressed();
+
+                              Navigator.popAndPushNamed(
+                                  context, RatingQuestionsList.id);
                               boxCallback();
                             } else {
-                              showAlertDialogBox(
-                                  AlertType.warning,
-                                  kLocationOutOfBoundTitleText,
-                                  kLocationOutOfBoundDescriptionText,
-                                  kLocationOutOfBoundHintText,
-                                  context);
+                              showAlertDialog(context, kAlertRateText);
                             }
                           }
                         },
                       ),
                     ),
-                    const SizedBox(width: 12.0),
+                    const SizedBox(width: 8.0),
                     // Comment Button
                     Expanded(
                       child: RoundedRectangleButton(
@@ -174,12 +162,7 @@ class AddressActivityBox extends StatelessWidget {
                         textColor: textColor,
                         onPressed: () {
                           if (user.access == false) {
-                            showAlertDialogBox(
-                                AlertType.error,
-                                kLocationDeniedTitleText,
-                                kLocationDeniedDescriptionText,
-                                kLocationDeniedHintText,
-                                context);
+                            showAlertDialog(context, kLocationDenied);
                           } else {
                             if (calculateDistance(user.latLng, area.latLng) <
                                 1) {
@@ -188,20 +171,48 @@ class AddressActivityBox extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                       builder: (context) => CommentScreen(
-                                          user: user, area: area)));
+                                          user: user,
+                                          area: area,
+                                          areaIndex: areaList.indexOf(area))));
                               boxCallback();
                             } else {
-                              showAlertDialogBox(
-                                  AlertType.warning,
-                                  kLocationOutOfBoundTitleText,
-                                  kLocationOutOfBoundDescriptionText,
-                                  kLocationOutOfBoundHintText,
-                                  context);
+                              showAlertDialog(context, kAlertCommentText);
                             }
                           }
                         },
                       ),
                     ),
+                    const SizedBox(width: 7.0),
+                    Expanded(
+                        child: RoundedRectangleButton(
+
+                      buttonText: 'Info',
+                      buttonStyle: kBlueButtonStyle,
+                      textColor: textColor,
+                      onPressed: () async {
+                        Navigator.pop(context);
+                        List<Placemark> placemarks =
+                            await placemarkFromCoordinates(
+                                area.latLng.latitude, area.latLng.longitude);
+                        Placemark place = placemarks[0];
+                        String state = place.administrativeArea!;
+
+                        showDialog(
+                      
+                            context: context,
+                            builder: (BuildContext context) {
+                                 
+                            
+                              return CustomDialogBox(
+                                  
+                                  state : state , 
+                                 
+                                  text: "OK");
+                            });  // showdialog box 
+                      },
+                    )),
+
+                    const SizedBox(width: 3.0),
                   ],
                 ),
               ),
@@ -210,5 +221,21 @@ class AddressActivityBox extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  handleRatePressed() async {
+    double randomRating = doubleInRange(2.0, 5.0);
+    int randomTotalUsers = intInRange(3, 20);
+
+    await DatabaseService(uid: user.uid)
+        .updateUserRatingData(area.latLng, randomRating);
+
+    await DatabaseService(uid: user.uid).updateAreaData(
+        area.latLng,
+        randomRating,
+        colorAssignment(randomRating, randomTotalUsers),
+        randomTotalUsers);
+
+    print('Rating completed!');
   }
 }

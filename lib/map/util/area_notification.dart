@@ -15,8 +15,8 @@ Future showOngoingNotification(
 NotificationDetails get _ongoing {
   const androidChannelSpecifics = AndroidNotificationDetails(
       'channel id', 'channel name',
-      importance: Importance.max,
-      priority: Priority.max,
+      importance: Importance.defaultImportance,
+      priority: Priority.high,
       ongoing: true,
       autoCancel: true,
       playSound: false);

@@ -24,28 +24,25 @@ class Area {
       circleId: CircleId((latLng).toString()),
       center: latLng,
       radius: kAreaRadius,
-      strokeWidth: 10,
-      strokeColor: color,
-      fillColor: color.withOpacity(0.7),
+      strokeWidth: 0,
+      fillColor: color.withOpacity(0.5),
       consumeTapEvents: false,
     ));
   }
 }
 
 class Comment {
-  String id;
   int likes;
   int dislikes;
   String content;
   String email;
-  DateTime dateTime;
+  String id;
 
   Comment({
-    required this.id,
     required this.likes,
     required this.dislikes,
     required this.content,
     required this.email,
-    required this.dateTime,
+    required this.id,
   });
 }

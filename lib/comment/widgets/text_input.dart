@@ -30,11 +30,11 @@ class _TextInputWidgetState extends State<TextInputWidget> {
         controller: controller,
         decoration: InputDecoration(
             prefixIcon: const Icon(Icons.message),
-            labelText: "Add a comment",
+            labelText: "Type a message:",
             suffixIcon: IconButton(
               icon: const Icon(Icons.send),
               splashColor: Colors.blueAccent,
-              tooltip: "Post comment",
+              tooltip: "Post message",
               onPressed: click,
             )));
   }

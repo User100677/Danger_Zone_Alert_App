@@ -15,7 +15,6 @@ class Post {
   late int dislikes;
   late String email;
   late String content;
-  late DateTime dateTime;
 
   Post(this.user, this.latLng, this.comment) {
     id = comment.id;
@@ -23,7 +22,6 @@ class Post {
     dislikes = comment.dislikes;
     email = comment.email;
     content = comment.content;
-    dateTime = comment.dateTime;
   }
 
   void likePost() {
@@ -61,4 +59,33 @@ class Post {
       DatabaseService(uid: user.uid).updateAreaLikesData(latLng, id, false);
     }
   }
+
+  // void clash1() {
+  //   if (likes == 1) {
+  //     //if (likes > 0) {
+  //     if (userDisLiked) {
+  //       userLiked = !userLiked;
+  //       // userLikeUpdate(userLiked)
+  //       likes -= 1;
+  //       // databaseLikeUpdate(-1)
+  //       return;
+  //     } else {
+  //       return;
+  //     }
+  //   }
+  // }
+  //
+  // void clash2() {
+  //   if (dislikes == 1) {
+  //     if (userLiked) {
+  //       userDisLiked = !userDisLiked;
+  //       // userDislikeUpdate(userDisliked)
+  //       dislikes -= 1;
+  //       // databaseDislikeUpdate(-1)
+  //       return;
+  //     } else {
+  //       return;
+  //     }
+  //   }
+  // }
 }

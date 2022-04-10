@@ -1,4 +1,4 @@
-import 'package:danger_zone_alert/map/util/application_bloc.dart';
+import 'package:danger_zone_alert/blocs/application_bloc.dart';
 import 'package:danger_zone_alert/models/place_search.dart';
 import 'package:flutter/material.dart';
 import 'package:implicitly_animated_reorderable_list/implicitly_animated_reorderable_list.dart';
