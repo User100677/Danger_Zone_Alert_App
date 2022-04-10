@@ -1,38 +1,42 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:danger_zone_alert/blocs/application_bloc.dart';
 import 'package:danger_zone_alert/constants/app_constants.dart';
 import 'package:danger_zone_alert/map/screens/address_activity_box.dart';
 import 'package:danger_zone_alert/map/screens/address_box.dart';
 import 'package:danger_zone_alert/map/util/animate_location.dart';
-import 'package:danger_zone_alert/map/util/application_bloc.dart';
 import 'package:danger_zone_alert/map/util/area_notification.dart';
 import 'package:danger_zone_alert/map/util/calculate_distance.dart';
 import 'package:danger_zone_alert/map/util/location_validation.dart';
 import 'package:danger_zone_alert/map/util/reverse_geocoding.dart';
 import 'package:danger_zone_alert/map/util/update_markers.dart';
+import 'package:danger_zone_alert/map/widgets/bottom_tab_bar.dart';
 import 'package:danger_zone_alert/map/widgets/search_bar.dart';
 import 'package:danger_zone_alert/models/area.dart';
+import 'package:danger_zone_alert/models/info.dart';
 import 'package:danger_zone_alert/models/user.dart';
 import 'package:danger_zone_alert/services/database.dart';
 import 'package:danger_zone_alert/services/geolocator_service.dart';
-import 'package:danger_zone_alert/shared/alert_dialog_box.dart';
 import 'package:danger_zone_alert/shared/error_snackbar.dart';
 import 'package:danger_zone_alert/widget_view/widget_view.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:provider/provider.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
 
 class FireMapScreen extends StatefulWidget {
+  static String id = "fire_map_screen";
   final UserModel user;
+  //final InfoModel info;
   final Position? userPosition;
+  final int robbery = 0, rape = 0, murder = 0, injury = 0;
+  final String name = ' ';
 
-  const FireMapScreen({Key? key, required this.user, this.userPosition})
+  const FireMapScreen(
+      {Key? key, required this.user, this.userPosition})
       : super(key: key);
 
   @override
@@ -44,11 +48,18 @@ class FireMapScreen extends StatefulWidget {
 }
 
 class _FireMapScreenController extends State<FireMapScreen> {
+  // final notifications = FlutterLocalNotificationsPlugin();
   final Completer<GoogleMapController> _googleMapController = Completer();
   bool isUserInCircle = false;
 
   StreamSubscription? locationSubscription;
   final _searchBarController = FloatingSearchBarController();
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   // _initializeNotificationsSettings();
+  // }
 
   // Called when the google map is created
   _onMapCreated(GoogleMapController controller) async {
@@ -62,15 +73,17 @@ class _FireMapScreenController extends State<FireMapScreen> {
       widget.user.setAccess = false;
     }
 
+    //_initializeInfoList(widget.user.latLng); // dk idk idk
     _initializeNotificationsSettings();
     _initializeUserLocation();
     _initializeAreaList();
     _initializeLocationSubscription();
   }
 
+  // TODO: The notification isn't popping up in the app but the notification section
   // Set up android & ios notification
   _initializeNotificationsSettings() {
-    const settingsAndroid = AndroidInitializationSettings('app_icon');
+    const settingsAndroid = AndroidInitializationSettings('@drawable/app_icon');
     final settingsIOS = IOSInitializationSettings(
         requestSoundPermission: false,
         requestBadgePermission: false,
@@ -167,6 +180,10 @@ class _FireMapScreenController extends State<FireMapScreen> {
     // Get the description of the tapped position
     var address = await getAddress(tapLatLng);
 
+    // TODO: Database testing
+    showOngoingNotification(flutterLocalNotificationsPlugin,
+        title: 'Stay vigilant', body: 'You have entered a red area.');
+
     if (address != kInvalidAddress) {
       bool isWithinAnyCircle = false;
 
@@ -181,6 +198,7 @@ class _FireMapScreenController extends State<FireMapScreen> {
           if (isWithinCircle(distance)) {
             isWithinAnyCircle = true;
             Area area = areaList[areaCircles.indexOf(circle)];
+
             setState(() {
               showDialog(
                   context: context,
@@ -212,6 +230,28 @@ class _FireMapScreenController extends State<FireMapScreen> {
     }
   }
 
+  // _initializeInfoList(Circle circle) async {
+  //   DocumentSnapshot docSnapshot = (await DatabaseService(uid: widget.user.uid)
+  //       .getInfo(circle.center)) as DocumentSnapshot<Object?>;
+
+  //   if (docSnapshot.exists) {
+  //     String name = docSnapshot.get('name');
+  //     int murder = docSnapshot.get('murder');
+  //     int rape = docSnapshot.get('rape');
+  //     int injury = docSnapshot.get('injury');
+  //     int robbery = docSnapshot.get('robbery');
+
+  //     setState(() {
+  //       widget.info.states.add(States(
+  //           name: name,
+  //           murder: murder,
+  //           robbery: robbery,
+  //           rape: rape,
+  //           injury: injury));
+  //     });
+  //   }
+  // }
+
   _handleUserRatedArea(circle) async {
     widget.user.ratedAreas.clear();
 
@@ -223,18 +263,12 @@ class _FireMapScreenController extends State<FireMapScreen> {
           latLng: LatLng(docSnapshot.get('geopoint').latitude,
               docSnapshot.get('geopoint').longitude),
           rating: docSnapshot.get('rating')));
-    }
-  }
 
-  _handleInfoButtonPressed() {
-    showAlertDialogBox(
-        AlertType.info,
-        'Map Info',
-        '1. User can only rate & comment an area that is 1.0km within the user.\n\n'
-            '2. An area will be highlighted as gray if the People rated threshold does not exceed 9.\n\n '
-            '3. Rating between 0 ~ 3 is green, 3 ~ 3.5 is yellow, 3.5 ~ 4.0 is orange 4.0 ~ 5.0 is red',
-        '',
-        context);
+      print("User already rated this rated area!");
+    }
+
+    // TODO: Do stuff when current user didn't rate the area before
+    // If the document doesn't exist this method will instant terminate for some reason
   }
 
   // Callback method to clear markers
@@ -273,9 +307,8 @@ class _FireMapScreenView
         child: Stack(
           children: <Widget>[
             GoogleMap(
-              onMapCreated: (GoogleMapController controller) {
-                state._onMapCreated(controller);
-              },
+              onMapCreated: (GoogleMapController controller) =>
+                  state._onMapCreated(controller),
               minMaxZoomPreference: const MinMaxZoomPreference(7, 19),
               initialCameraPosition: kInitialCameraPosition,
               cameraTargetBounds: CameraTargetBounds(kMalaysiaBounds),
@@ -290,48 +323,11 @@ class _FireMapScreenView
               circles: Set.from(areaCircles),
               onTap: (tapLatLng) => state._handleMapTap(tapLatLng),
             ),
-            // Search Bar
+            buildBottomTabBar(context, state._googleMapController),
             buildSearchBar(context, state._searchBarController),
-            // Info button on the top right of the screen
-            Align(
-              alignment: Alignment.topRight,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 72.0, horizontal: 12.0),
-                child: Container(
-                  width: 35.0,
-                  height: 35.0,
-                  decoration: const BoxDecoration(
-                      color: Colors.lightBlueAccent, shape: BoxShape.circle),
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: IconButton(
-                      padding: EdgeInsets.zero,
-                      icon: const Icon(
-                        Icons.help,
-                        size: 25.0,
-                        color: Colors.white,
-                      ),
-                      onPressed: () => state._handleInfoButtonPressed(),
-                    ),
-                  ),
-                ),
-              ),
-            ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-          backgroundColor: Theme.of(context).primaryColor,
-          foregroundColor: Colors.white,
-          child: const Icon(Icons.center_focus_strong_rounded),
-          onPressed: () {
-            LatLng? userPosition = widget.user.latLng;
-            // Display error notification if userPosition is null else navigate to user position
-            (userPosition == null)
-                ? errorSnackBar(context, 'Navigation failed!')
-                : animateToLocation(userPosition, state._googleMapController);
-          }),
     );
   }
 }

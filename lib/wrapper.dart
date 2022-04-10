@@ -1,16 +1,16 @@
-import 'package:danger_zone_alert/auth/authenticate.dart';
-import 'package:danger_zone_alert/intermediary_screen.dart';
-import 'package:danger_zone_alert/shared/loading_widget.dart';
+import 'package:danger_zone_alert/auth/screens/welcome.dart';
+import 'package:danger_zone_alert/shared/loading.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'map/util/application_bloc.dart';
+import 'blocs/application_bloc.dart';
+import 'map/screens/fire_map.dart';
+
 import 'models/user.dart';
 
-/*
-   This widget loads WelcomeScreen or IntermediaryScreen
-   depending on the authentication of the user.
+/* This widget decide whether to load WelcomeScreen widget or GoogleMapScreen widget
+   depending on the value of the user depending on the userModel object.
 */
 
 class Wrapper extends StatelessWidget {
@@ -21,22 +21,36 @@ class Wrapper extends StatelessWidget {
     // Assign userModel after log in
     final user = Provider.of<UserModel?>(context);
 
+
     if (user == null) {
-      return const Authenticate();
+      return const WelcomeScreen();
     } else {
-      // return Consumer<ApplicationBloc>(
-      //   builder: (context, provider, child) => (provider.position == null)
-      //       ? const Loading()
-      //       : (provider.position is String)
-      //           ? FireMapScreen(user: user)
-      //           : FireMapScreen(user: user, userPosition: provider.position),
       return Consumer<ApplicationBloc>(
-          builder: (context, provider, child) => (provider.position == null)
-              ? const Loading()
-              : (provider.position is String)
-                  ? IntermediaryScreen(user: user)
-                  : IntermediaryScreen(
-                      user: user, userPosition: provider.position));
+        builder: (context, provider, child) => (provider.position == null)
+            ? const Loading()
+            : (provider.position is String)
+                ? FireMapScreen(user: user)
+                // TODO: Database provider
+                // : MultiProvider(
+                //     providers: [
+                //       // StreamProvider<List<Area>>.value(
+                //       //     catchError: null,
+                //       //     initialData: const [],
+                //       //     value: DatabaseService().areas),
+                //       // StreamProvider<List<RatedArea>>.value(
+                //       //     catchError: null,
+                //       //     initialData: const [],
+                //       //     value: DatabaseService().userRatedArea),
+                //       StreamProvider<List<Comment>>.value(
+                //           catchError: null,
+                //           value: DatabaseService().getAreaComments(null),
+                //           initialData: const []),
+                //     ],
+                //     child: FireMapScreen(
+                //         user: user, userPosition: provider.position),
+                //   ),
+                : FireMapScreen(user: user, userPosition: provider.position),
+      );
     }
   }
 }

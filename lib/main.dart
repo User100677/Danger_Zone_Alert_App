@@ -1,11 +1,16 @@
+import 'package:danger_zone_alert/auth/screens/forgot_password.dart';
 import 'package:danger_zone_alert/map/widgets/search_bar.dart';
+import 'package:danger_zone_alert/rating/new_rating.dart';
 import 'package:danger_zone_alert/services/auth.dart';
 import 'package:danger_zone_alert/wrapper.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'map/util/application_bloc.dart';
+import 'auth/screens/register.dart';
+import 'auth/screens/sign_in.dart';
+import 'auth/screens/welcome.dart';
+import 'blocs/application_bloc.dart';
 import 'models/user.dart';
 
 void main() {
@@ -23,7 +28,6 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Danger Zone Alert',
       theme: ThemeData(primarySwatch: Colors.lightBlue),
-      debugShowCheckedModeBanner: false,
       home: FutureBuilder(
         future: _initialization,
         builder: (context, snapshot) {
@@ -39,10 +43,18 @@ class MyApp extends StatelessWidget {
               ChangeNotifierProvider.value(value: ApplicationBloc(context)),
               ChangeNotifierProvider(create: (_) => SearchModel()),
             ], child: const Wrapper());
+            // );
           }
           return const CircularProgressIndicator();
         },
       ),
+      routes: {
+        WelcomeScreen.id: (context) => const WelcomeScreen(),
+        LoginScreen.id: (context) => const LoginScreen(),
+        ForgotPasswordScreen.id: (context) => const ForgotPasswordScreen(),
+        RegisterScreen.id: (context) => const RegisterScreen(),
+        RatingQuestionsList.id: (context) => const RatingQuestionsList(),
+      },
     );
   }
 }
