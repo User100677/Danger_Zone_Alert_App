@@ -31,11 +31,23 @@ Widget buildCard(BuildContext context, StateInfo state) {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  CircleAvatar(
-                      minRadius: 35.0,
-                      backgroundImage: AssetImage("assets/images/" +
-                          state.state.toLowerCase() +
-                          '.png')),
+                  Container(
+                    width: 80.0,
+                    height: 80.0,
+                    decoration: BoxDecoration(
+                      color: const Color(0xff7c94b6),
+                      image: DecorationImage(
+                          image: AssetImage("assets/images/" +
+                              state.state.toLowerCase() +
+                              '.png')),
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(50.0)),
+                      border: Border.all(
+                        color: const Color(0xffDAE0E6),
+                        width: 4.0,
+                      ),
+                    ),
+                  ),
                   Padding(
                       padding: const EdgeInsets.only(left: 16.0),
                       child: DefaultTextStyle(
@@ -83,26 +95,6 @@ Widget buildCard(BuildContext context, StateInfo state) {
                 margin: const EdgeInsets.only(
                     left: 16.0, right: 16.0, bottom: 24.0),
                 child: StateBarChart(state: state))),
-        // Container(
-        //   padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 12.0),
-        //   decoration: const BoxDecoration(
-        //       color: Color(0xffDAE0E6),
-        //       borderRadius: BorderRadius.only(
-        //           bottomLeft: Radius.circular(10.0),
-        //           bottomRight: Radius.circular(10.0))),
-        //   child: Row(
-        //     children: [
-        //       Expanded(
-        //         child: RoundedRectangleButton(
-        //             buttonText: 'Navigate to ' + state.state,
-        //             textColor: Colors.white,
-        //             buttonStyle: kLightBlueButtonStyle,
-        //             // TODO
-        //             onPressed: () {}),
-        //       ),
-        //     ],
-        //   ),
-        // ),
       ],
     ),
   );

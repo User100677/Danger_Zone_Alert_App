@@ -1,35 +1,18 @@
-// ignore_for_file: deprecated_member_use
-
-import 'dart:ui';
-import 'package:danger_zone_alert/map/screens/const.dart';
-import 'package:flutter/cupertino.dart';
-
+import 'package:danger_zone_alert/constants/app_constants.dart';
+import 'package:danger_zone_alert/map/widgets/getinfo.dart';
 import 'package:flutter/material.dart';
 
-import 'getinfo.dart';
+class StateInfoBox extends StatelessWidget {
+  final String state, text;
 
-class CustomDialogBox extends StatefulWidget {
-  // final String robbery, murder, rape, injury;
-  // final String text,title,state ;
-  final String state, text; 
-
-  const CustomDialogBox(
-      {Key? key,
-      required this.state,
-      required this.text})
+  const StateInfoBox({Key? key, required this.state, required this.text})
       : super(key: key);
 
   @override
-  _CustomDialogBoxState createState() => _CustomDialogBoxState();
-}
-
-class _CustomDialogBoxState extends State<CustomDialogBox> {
-  @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(Constants.padding),
-      ),
+      shape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(kPadding)),
       elevation: 0,
       backgroundColor: Colors.transparent,
       child: contentBox(context),
@@ -40,32 +23,32 @@ class _CustomDialogBoxState extends State<CustomDialogBox> {
     return Stack(
       children: <Widget>[
         Container(
-          padding: EdgeInsets.only(
-              left: Constants.padding,
-              top: Constants.avatarRadius + Constants.padding,
-              right: Constants.padding,
-              bottom: Constants.padding),
-          margin: EdgeInsets.only(top: Constants.avatarRadius),
-          decoration: BoxDecoration(
-              shape: BoxShape.rectangle,
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(Constants.padding),
-              boxShadow: [
-                BoxShadow(
-                    color: Colors.black, offset: Offset(0, 10), blurRadius: 10),
-              ]),
-              child: getinfo(widget.state)
-       
-        ),
+            padding: const EdgeInsets.only(
+                left: kPadding,
+                top: kAvatarRadius + kPadding,
+                right: kPadding,
+                bottom: kPadding),
+            margin: const EdgeInsets.only(top: kAvatarRadius),
+            decoration: BoxDecoration(
+                shape: BoxShape.rectangle,
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(kPadding),
+                boxShadow: const [
+                  BoxShadow(
+                      color: Colors.black,
+                      offset: Offset(0, 10),
+                      blurRadius: 10),
+                ]),
+            child: GetInfo(state)),
         Positioned(
-          left: Constants.padding,
-          right: Constants.padding,
+          left: kPadding,
+          right: kPadding,
           child: CircleAvatar(
             backgroundColor: Colors.transparent,
-            radius: Constants.avatarRadius,
+            radius: kAvatarRadius,
             child: ClipRRect(
                 borderRadius:
-                    BorderRadius.all(Radius.circular(Constants.avatarRadius)),
+                    const BorderRadius.all(Radius.circular(kAvatarRadius)),
                 child: Image.asset("assets/images/exclamation_icon.jpg")),
           ),
         ),

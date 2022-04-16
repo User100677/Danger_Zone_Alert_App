@@ -1,6 +1,6 @@
 import 'package:danger_zone_alert/models/area.dart';
 import 'package:danger_zone_alert/models/user.dart';
-import 'package:danger_zone_alert/rating/rating_properties.dart';
+import 'package:danger_zone_alert/rating/utilities/rating_properties.dart';
 import 'package:danger_zone_alert/rating/widgets/icon_alert.dart';
 import 'package:danger_zone_alert/services/database.dart';
 import 'package:danger_zone_alert/widget_view/widget_view.dart';

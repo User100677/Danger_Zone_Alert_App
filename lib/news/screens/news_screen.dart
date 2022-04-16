@@ -70,7 +70,10 @@ class NewsScreen extends StatelessWidget {
             child: Card(
               child: ListTile(
                 title: Text(article.title!, maxLines: 2),
-                subtitle: Text(article.description ?? "", maxLines: 2),
+                subtitle: Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 12, 0, 0),
+                    child: Text(article.description ?? "", maxLines: 2)),
+                minVerticalPadding: 12.0,
                 trailing: article.urlToImage == null
                     ? null
                     : Image.network(article.urlToImage!),

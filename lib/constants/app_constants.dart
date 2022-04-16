@@ -81,3 +81,6 @@ const List<int> kAreaColors = [
   0xFFF57F17, // orange
   0xFFB71C1C, // red
 ];
+
+const double kPadding = 10;
+const double kAvatarRadius = 45;

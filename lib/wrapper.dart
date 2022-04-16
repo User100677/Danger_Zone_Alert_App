@@ -1,4 +1,4 @@
-import 'package:danger_zone_alert/auth/authenticate.dart';
+import 'package:danger_zone_alert/auth/screens/authenticate.dart';
 import 'package:danger_zone_alert/intermediary_screen.dart';
 import 'package:danger_zone_alert/shared/loading_widget.dart';
 import 'package:flutter/cupertino.dart';

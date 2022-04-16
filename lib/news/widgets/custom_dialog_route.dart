@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 class HeroDialogRoute<T> extends PageRoute<T> {
-  /// {@macro hero_dialog_route}
   HeroDialogRoute({
     required WidgetBuilder builder,
     RouteSettings? settings,

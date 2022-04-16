@@ -204,9 +204,9 @@ class AddressActivityBox extends StatelessWidget {
                         },
                       ),
                     ),
+                    const SizedBox(width: 12.0),
                     Expanded(
                         child: RoundedRectangleButton(
-
                       buttonText: 'Info',
                       buttonStyle: kBlueButtonStyle,
                       textColor: textColor,
@@ -219,17 +219,10 @@ class AddressActivityBox extends StatelessWidget {
                         String state = place.administrativeArea!;
 
                         showDialog(
-                      
                             context: context,
                             builder: (BuildContext context) {
-                                 
-                            
-                              return CustomDialogBox(
-                                  
-                                  state : state , 
-                                 
-                                  text: "OK");
-                            });  // showdialog box 
+                              return StateInfoBox(state: state, text: "OK");
+                            }); // showdialog box
                       },
                     )),
                   ],
