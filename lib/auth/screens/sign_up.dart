@@ -125,7 +125,7 @@ class _RegisterScreenView
             // A container containing the Divider, Email & Password text field as well as SignIn & SignUp buttons
             Container(
               padding:
-                  const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+                  const EdgeInsets.symmetric(horizontal: 24.0, vertical: 10.0),
               decoration: const BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.only(
@@ -145,7 +145,7 @@ class _RegisterScreenView
                             color: Colors.grey,
                             fontWeight: FontWeight.bold),
                         textAlign: TextAlign.left),
-                    const SizedBox(height: 12),
+                    const SizedBox(height: 8),
                     EmailTextField(
                         emailController: state._emailController,
                         isEmailIncorrect: state._isEmailIncorrect,
