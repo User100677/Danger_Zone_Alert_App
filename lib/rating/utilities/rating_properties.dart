@@ -1,4 +1,4 @@
-import 'package:danger_zone_alert/constants/app_constants.dart';
+import 'package:danger_zone_alert/shared/constants/app_constants.dart';
 
 int colorAssignment(double ratingValue, int totalUsers) {
   if (totalUsers < kUserThreshold) {

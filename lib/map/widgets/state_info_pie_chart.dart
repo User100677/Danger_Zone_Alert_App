@@ -1,4 +1,4 @@
-import 'package:danger_zone_alert/widget_view/widget_view.dart';
+import 'package:danger_zone_alert/widget_view.dart';
 import 'package:flutter/material.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 

@@ -1,16 +1,16 @@
 import 'package:danger_zone_alert/comment/screens/comment.dart';
-import 'package:danger_zone_alert/constants/app_constants.dart';
+import 'package:danger_zone_alert/map/utilities/calculate_distance.dart';
 import 'package:danger_zone_alert/models/area.dart';
 import 'package:danger_zone_alert/models/user.dart';
 import 'package:danger_zone_alert/rating/screens/rating.dart';
-import 'package:danger_zone_alert/shared/alert_dialog_box.dart';
-import 'package:danger_zone_alert/shared/rounded_rectangle_button.dart';
+import 'package:danger_zone_alert/shared/constants/app_constants.dart';
+import 'package:danger_zone_alert/shared/widgets/alert_dialog_box.dart';
+import 'package:danger_zone_alert/shared/widgets/rounded_rectangle_button.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
-import '../util/calculate_distance.dart';
 import 'info_box.dart';
 
 class AddressActivityBox extends StatelessWidget {

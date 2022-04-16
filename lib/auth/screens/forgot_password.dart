@@ -1,8 +1,8 @@
 import 'package:danger_zone_alert/auth/widgets/email_text_field.dart';
-import 'package:danger_zone_alert/constants/app_constants.dart';
 import 'package:danger_zone_alert/services/auth.dart';
-import 'package:danger_zone_alert/shared/rounded_rectangle_button.dart';
-import 'package:danger_zone_alert/widget_view/widget_view.dart';
+import 'package:danger_zone_alert/shared/constants/app_constants.dart';
+import 'package:danger_zone_alert/shared/widgets/rounded_rectangle_button.dart';
+import 'package:danger_zone_alert/widget_view.dart';
 import 'package:flutter/material.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {

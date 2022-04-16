@@ -1,9 +1,9 @@
-import 'package:danger_zone_alert/constants/app_constants.dart';
-import 'package:danger_zone_alert/map/util/calculate_distance.dart';
+import 'package:danger_zone_alert/map/utilities/calculate_distance.dart';
 import 'package:danger_zone_alert/models/user.dart';
 import 'package:danger_zone_alert/rating/screens/rating.dart';
-import 'package:danger_zone_alert/shared/alert_dialog_box.dart';
-import 'package:danger_zone_alert/shared/rounded_rectangle_button.dart';
+import 'package:danger_zone_alert/shared/constants/app_constants.dart';
+import 'package:danger_zone_alert/shared/widgets/alert_dialog_box.dart';
+import 'package:danger_zone_alert/shared/widgets/rounded_rectangle_button.dart';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';

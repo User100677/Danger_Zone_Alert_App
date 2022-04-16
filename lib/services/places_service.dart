@@ -1,8 +1,8 @@
 import 'dart:convert' as convert;
 
-import 'package:danger_zone_alert/constants/app_constants.dart';
 import 'package:danger_zone_alert/models/place_detail.dart';
 import 'package:danger_zone_alert/models/place_search.dart';
+import 'package:danger_zone_alert/shared/constants/app_constants.dart';
 import 'package:http/http.dart' as http;
 
 class PlacesService {

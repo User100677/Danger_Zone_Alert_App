@@ -1,12 +1,11 @@
-import 'package:danger_zone_alert/map/util/application_bloc.dart';
+import 'package:danger_zone_alert/map/utilities/application_bloc.dart';
+import 'package:danger_zone_alert/map/utilities/update_markers.dart';
 import 'package:danger_zone_alert/models/place_search.dart';
 import 'package:flutter/material.dart';
 import 'package:implicitly_animated_reorderable_list/implicitly_animated_reorderable_list.dart';
 import 'package:implicitly_animated_reorderable_list/transitions.dart';
 import 'package:material_floating_search_bar/material_floating_search_bar.dart';
 import 'package:provider/provider.dart';
-
-import '../util/update_markers.dart';
 
 Widget buildSearchBar(context, searchBarController) {
   final applicationBloc = Provider.of<ApplicationBloc>(context);

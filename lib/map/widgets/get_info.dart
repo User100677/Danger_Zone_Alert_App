@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:danger_zone_alert/map/widgets/state_info_pie_chart.dart';
-import 'package:danger_zone_alert/shared/loading_widget.dart';
+import 'package:danger_zone_alert/shared/widgets/loading_widget.dart';
 import 'package:flutter/material.dart';
 
 class GetInfo extends StatelessWidget {

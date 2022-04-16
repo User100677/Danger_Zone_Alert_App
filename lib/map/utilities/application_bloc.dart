@@ -4,7 +4,7 @@ import 'package:danger_zone_alert/models/place_detail.dart';
 import 'package:danger_zone_alert/models/place_search.dart';
 import 'package:danger_zone_alert/services/geolocator_service.dart';
 import 'package:danger_zone_alert/services/places_service.dart';
-import 'package:danger_zone_alert/shared/error_snackbar.dart';
+import 'package:danger_zone_alert/shared/widgets/error_snackbar.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

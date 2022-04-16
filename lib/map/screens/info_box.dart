@@ -1,5 +1,5 @@
-import 'package:danger_zone_alert/constants/app_constants.dart';
-import 'package:danger_zone_alert/map/widgets/getinfo.dart';
+import 'package:danger_zone_alert/map/widgets/get_info.dart';
+import 'package:danger_zone_alert/shared/constants/app_constants.dart';
 import 'package:flutter/material.dart';
 
 class StateInfoBox extends StatelessWidget {

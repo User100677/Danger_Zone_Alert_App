@@ -3,7 +3,7 @@ import 'package:danger_zone_alert/models/user.dart';
 import 'package:danger_zone_alert/rating/utilities/rating_properties.dart';
 import 'package:danger_zone_alert/rating/widgets/icon_alert.dart';
 import 'package:danger_zone_alert/services/database.dart';
-import 'package:danger_zone_alert/widget_view/widget_view.dart';
+import 'package:danger_zone_alert/widget_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';

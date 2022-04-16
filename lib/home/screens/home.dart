@@ -4,8 +4,8 @@ import 'package:danger_zone_alert/models/state.dart';
 import 'package:danger_zone_alert/models/user.dart';
 import 'package:danger_zone_alert/services/auth.dart';
 import 'package:danger_zone_alert/services/database.dart';
-import 'package:danger_zone_alert/shared/loading_widget.dart';
-import 'package:danger_zone_alert/widget_view/widget_view.dart';
+import 'package:danger_zone_alert/shared/widgets/loading_widget.dart';
+import 'package:danger_zone_alert/widget_view.dart';
 import 'package:flutter/material.dart';
 
 class HomeScreen extends StatefulWidget {

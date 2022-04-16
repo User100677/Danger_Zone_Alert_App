@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:danger_zone_alert/map/util/camera_coordinate.dart';
+import 'package:danger_zone_alert/map/utilities/camera_coordinate.dart';
 import 'package:danger_zone_alert/models/area.dart';
 import 'package:danger_zone_alert/models/state.dart';
 import 'package:danger_zone_alert/models/user.dart';

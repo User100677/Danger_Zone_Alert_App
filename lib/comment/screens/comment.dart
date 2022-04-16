@@ -4,7 +4,7 @@ import 'package:danger_zone_alert/comment/widgets/text_input.dart';
 import 'package:danger_zone_alert/models/area.dart';
 import 'package:danger_zone_alert/models/user.dart';
 import 'package:danger_zone_alert/services/database.dart';
-import 'package:danger_zone_alert/widget_view/widget_view.dart';
+import 'package:danger_zone_alert/widget_view.dart';
 import 'package:flutter/material.dart';
 
 class CommentScreen extends StatefulWidget {
