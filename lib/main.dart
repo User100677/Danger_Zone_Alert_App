@@ -46,9 +46,3 @@ class MyApp extends StatelessWidget {
     );
   }
 }
-
-/*
-Firebase Account Credentials:
-Email: DangerZoneAlertGroup5a@gmail.com
-Password: group5asegp
-*/

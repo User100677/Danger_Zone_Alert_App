@@ -32,13 +32,12 @@ class GetInfo extends StatelessWidget {
           return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
             Container(
               height: 400,
-              child: Expanded(
-                  child: StateInfoPieChart(
-                      title: 'Statistic',
-                      robbery: data['robbery'],
-                      injury: data['causingInjury'],
-                      rape: data['rape'],
-                      murder: data['murder'])),
+              child: StateInfoPieChart(
+                  title: 'Statistic',
+                  robbery: data['robbery'],
+                  injury: data['causingInjury'],
+                  rape: data['rape'],
+                  murder: data['murder']),
             ),
             const SizedBox(height: 22),
             Align(

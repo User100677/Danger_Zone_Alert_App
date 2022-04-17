@@ -45,7 +45,6 @@ class FireMapScreen extends StatefulWidget {
 
 class _FireMapScreenController extends State<FireMapScreen> {
   final Completer<GoogleMapController> _googleMapController = Completer();
-  bool isUserInCircle = false;
 
   StreamSubscription? locationSubscription;
   final _searchBarController = FloatingSearchBarController();
@@ -101,12 +100,16 @@ class _FireMapScreenController extends State<FireMapScreen> {
 
   // local_notification logic
   _initializeNotificationLogic() {
+    bool isUserInCircle = false;
+
     if (areaCircles.isNotEmpty) {
       for (Circle circle in areaCircles) {
         double userDistance =
             calculateDistance(circle.center, widget.user.latLng);
 
-        if (isWithinCircle(userDistance) && isUserInCircle == false) {
+        if (isWithinCircle(userDistance) &&
+            isUserInCircle == false &&
+            circle.strokeColor == const Color(0xccb71c1c)) {
           isUserInCircle = true;
           showOngoingNotification(flutterLocalNotificationsPlugin,
               title: 'Stay vigilant', body: 'You have entered a red area.');

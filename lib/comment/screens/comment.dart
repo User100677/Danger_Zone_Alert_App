@@ -4,15 +4,20 @@ import 'package:danger_zone_alert/comment/widgets/text_input.dart';
 import 'package:danger_zone_alert/models/area.dart';
 import 'package:danger_zone_alert/models/user.dart';
 import 'package:danger_zone_alert/services/database.dart';
+import 'package:danger_zone_alert/shared/constants/app_constants.dart';
+import 'package:danger_zone_alert/shared/widgets/alert_dialog_box.dart';
 import 'package:danger_zone_alert/widget_view.dart';
 import 'package:flutter/material.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class CommentScreen extends StatefulWidget {
+  final bool permission;
   final UserModel user;
   final Area area;
 
   const CommentScreen({
     Key? key,
+    required this.permission,
     required this.user,
     required this.area,
   }) : super(key: key);
@@ -31,9 +36,18 @@ class _CommentScreenController extends State<CommentScreen> {
       });
 
   handlePostPressed(String text) async {
-    if (text.isEmpty) {
+    if (widget.permission == false) {
+      showAlertDialogBox(
+          AlertType.warning,
+          kLocationOutOfBoundTitleText,
+          kLocationOutOfBoundDescriptionText,
+          kLocationOutOfBoundHintText,
+          context);
+
       return;
     }
+
+    if (text.isEmpty) return;
 
     await DatabaseService(uid: widget.user.uid)
         .postAreaCommentData(widget.area.latLng, text, widget.user.email);
@@ -56,6 +70,11 @@ class _CommentScreenController extends State<CommentScreen> {
         isAscending = false;
       }
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
   }
 
   @override
@@ -121,6 +140,7 @@ class _CommentScreenView
                 child: PostList(
                     user: widget.user,
                     area: widget.area,
+                    permission: widget.permission,
                     sortView: state.sortView),
               )),
               TextInputWidget(state.handlePostPressed),

@@ -3,17 +3,22 @@ import 'package:danger_zone_alert/comment/utilities/convert_time.dart';
 import 'package:danger_zone_alert/models/area.dart';
 import 'package:danger_zone_alert/models/user.dart';
 import 'package:danger_zone_alert/services/database.dart';
+import 'package:danger_zone_alert/shared/constants/app_constants.dart';
+import 'package:danger_zone_alert/shared/widgets/alert_dialog_box.dart';
 import 'package:danger_zone_alert/widget_view.dart';
 import 'package:flutter/material.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 
 class PostList extends StatefulWidget {
   final Area area;
   final UserModel user;
+  final bool permission;
   final Function sortView;
 
   const PostList(
       {required this.area,
       required this.user,
+      required this.permission,
       required this.sortView,
       Key? key})
       : super(key: key);
@@ -23,6 +28,34 @@ class PostList extends StatefulWidget {
 }
 
 class _PostListController extends State<PostList> {
+  handleLikePressed(post) {
+    if (widget.permission == false) {
+      showAlertDialogBox(
+          AlertType.warning,
+          kLocationOutOfBoundTitleText,
+          kLocationOutOfBoundDescriptionText,
+          kLocationOutOfBoundHintText,
+          context);
+
+      return;
+    }
+    post.likePost();
+  }
+
+  handleDislikePressed(post) {
+    if (widget.permission == false) {
+      showAlertDialogBox(
+          AlertType.warning,
+          kLocationOutOfBoundTitleText,
+          kLocationOutOfBoundDescriptionText,
+          kLocationOutOfBoundHintText,
+          context);
+
+      return;
+    }
+    post.dislikePost();
+  }
+
   @override
   Widget build(BuildContext context) => _PostListView(this);
 }
@@ -89,7 +122,9 @@ class _PostListView extends WidgetView<PostList, _PostListController> {
                                           0, 0, 8, 0)),
                                   IconButton(
                                       icon: const Icon(Icons.thumb_up),
-                                      onPressed: () => post.likePost(),
+                                      // onPressed: () => post.likePost(),
+                                      onPressed: () =>
+                                          state.handleLikePressed(post),
                                       color: post.userLiked
                                           ? Colors.green
                                           : Colors.black),
@@ -100,7 +135,9 @@ class _PostListView extends WidgetView<PostList, _PostListController> {
                                           0, 0, 8, 0)),
                                   IconButton(
                                       icon: const Icon(Icons.thumb_down),
-                                      onPressed: () => post.dislikePost(),
+                                      // onPressed: () => post.dislikePost(),
+                                      onPressed: () =>
+                                          state.handleDislikePressed(post),
                                       color: post.userDisLiked
                                           ? Colors.red
                                           : Colors.black),

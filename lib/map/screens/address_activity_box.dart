@@ -183,23 +183,21 @@ class AddressActivityBox extends StatelessWidget {
                                 kLocationDeniedHintText,
                                 context);
                           } else {
-                            if (calculateDistance(user.latLng, area.latLng) <
-                                1) {
-                              Navigator.pop(context);
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => CommentScreen(
-                                          user: user, area: area)));
-                              boxCallback();
-                            } else {
-                              showAlertDialogBox(
-                                  AlertType.warning,
-                                  kLocationOutOfBoundTitleText,
-                                  kLocationOutOfBoundDescriptionText,
-                                  kLocationOutOfBoundHintText,
-                                  context);
-                            }
+                            bool permission =
+                                calculateDistance(user.latLng, area.latLng) < 1
+                                    ? true
+                                    : false;
+
+                            Navigator.pop(context);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => CommentScreen(
+                                          user: user,
+                                          area: area,
+                                          permission: permission,
+                                        )));
+                            boxCallback();
                           }
                         },
                       ),
