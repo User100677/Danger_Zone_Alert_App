@@ -37,16 +37,16 @@ class StateBarChart extends StatelessWidget {
     String text;
     switch (value.toInt()) {
       case 0:
-        text = 'murder';
+        text = 'Murder';
         break;
       case 1:
-        text = 'robbery';
+        text = 'Robbery';
         break;
       case 2:
-        text = 'causing injury';
+        text = 'Causing Injury';
         break;
       case 3:
-        text = 'rape';
+        text = 'Rape';
         break;
       default:
         text = '';
@@ -66,14 +66,12 @@ class StateBarChart extends StatelessWidget {
 
   FlBorderData get borderData => FlBorderData(show: false);
 
-  final _barsGradient = const LinearGradient(
-    colors: [
-      Colors.lightBlueAccent,
-      Colors.greenAccent,
-    ],
-    begin: Alignment.bottomCenter,
-    end: Alignment.topCenter,
-  );
+  final _barsColor = [
+    const Color(0xffc06c84),
+    const Color(0xfff67280),
+    const Color(0xff4b87b9),
+    const Color(0xfff8b195)
+  ];
 
   List<BarChartGroupData> chartData(crimeCounts) {
     List<BarChartGroupData> barChartData = [];
@@ -86,7 +84,7 @@ class StateBarChart extends StatelessWidget {
           BarChartRodData(
             width: 30.0,
             toY: crimeCount.toDouble(),
-            gradient: _barsGradient,
+            color: _barsColor[index],
             borderRadius: const BorderRadius.only(
                 topLeft: Radius.circular(6.0), topRight: Radius.circular(6.0)),
           ),

@@ -127,6 +127,8 @@ class AddressBox extends StatelessWidget {
                         Placemark place = placemarks[0];
                         String state = place.administrativeArea!;
 
+                        print(state);
+
                         showDialog(
                             context: context,
                             builder: (BuildContext context) {

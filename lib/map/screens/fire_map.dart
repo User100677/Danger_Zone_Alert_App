@@ -279,7 +279,7 @@ class _FireMapScreenView
               onMapCreated: (GoogleMapController controller) {
                 state._onMapCreated(controller);
               },
-              minMaxZoomPreference: const MinMaxZoomPreference(7, 19),
+              minMaxZoomPreference: const MinMaxZoomPreference(7, 20),
               initialCameraPosition: kInitialCameraPosition,
               cameraTargetBounds: CameraTargetBounds(kMalaysiaBounds),
               mapType: MapType.hybrid,

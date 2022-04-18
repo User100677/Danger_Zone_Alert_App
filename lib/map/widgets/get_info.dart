@@ -30,14 +30,19 @@ class GetInfo extends StatelessWidget {
               snapshot.data!.data() as Map<String, dynamic>;
 
           return Column(mainAxisSize: MainAxisSize.min, children: <Widget>[
-            Container(
-              height: 400,
+            SizedBox(
+              height: 450,
               child: StateInfoPieChart(
-                  title: 'Statistic',
+                  title: state,
                   robbery: data['robbery'],
                   injury: data['causingInjury'],
                   rape: data['rape'],
-                  murder: data['murder']),
+                  murder: data['murder'],
+                  totalCrime: data['totalCrime']),
+            ),
+            Text(
+              'Total crime count: ' + data['totalCrime'].toString(),
+              style: TextStyle(fontSize: 16.0, color: Colors.grey.shade700),
             ),
             const SizedBox(height: 22),
             Align(

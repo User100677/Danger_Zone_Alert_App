@@ -91,7 +91,7 @@ Widget buildCard(BuildContext context, StateInfo state) {
         Expanded(
             flex: 4,
             child: Card(
-                elevation: 5.0,
+                elevation: 0.0,
                 margin: const EdgeInsets.only(
                     left: 16.0, right: 16.0, bottom: 24.0),
                 child: StateBarChart(state: state))),
@@ -151,11 +151,12 @@ Widget buildStateCard(context, totalCrimeCount, state, index, callback) {
                                 color: Colors.black,
                                 fontWeight: FontWeight.w600)),
                         subtitle: Text(
-                            (state.totalCrime / totalCrimeCount * 100)
-                                    .round()
-                                    .toString() +
-                                '%',
-                            style: const TextStyle(color: Color(0xff6E7CA8)))),
+                          (state.totalCrime / totalCrimeCount * 100)
+                                  .round()
+                                  .toString() +
+                              '%',
+                          style: const TextStyle(color: Color(0xff6E7CA8)),
+                        )),
                   ],
                 )),
                 Row(
