@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:news_api_flutter_package/model/article.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -57,7 +58,7 @@ class ArticlePage extends StatelessWidget {
                         ),
                   const SizedBox(height: 8.0),
                   Text(
-                    article.publishedAt ?? "",
+                   DateFormat("yyyy-MM-dd").format(DateTime.parse(article.publishedAt ?? "")),
                     style: const TextStyle(
                       color: Colors.black,
                       decoration: TextDecoration.underline,

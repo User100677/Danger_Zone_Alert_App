@@ -65,6 +65,7 @@ dependencies:
   cloud_firestore: ^3.1.6
   # Simply the store and query process of geographic location
   geoflutterfire: ^3.0.3 # geoPoint & geoHash
+  intl: ^0.17.0
 
 dev_dependencies:
   flutter_test:
