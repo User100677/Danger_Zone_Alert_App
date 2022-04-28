@@ -1,7 +1,6 @@
 # Ways to Run the Danger Zone Alert Code
 
-Due to the limitation size of moodle submission, please go to the GitHub link provide below to download the full code:
-https://github.com/User100677/SWE-Project
+GitHub online repository link for the project code: https://github.com/User100677/SWE-Project
 
 Before running, you need to download the Flutter SDK and specific IDE.
 
