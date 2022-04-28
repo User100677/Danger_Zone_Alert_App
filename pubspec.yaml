@@ -63,7 +63,7 @@ dependencies:
   firebase_auth: ^3.3.5
   # Allows the usage of Cloud Firestore API
   cloud_firestore: ^3.1.6
-  # Simply the store and query process of geographic location
+  # Simplified the store and query process of geographic location
   geoflutterfire: ^3.0.3 # geoPoint & geoHash
   intl: ^0.17.0
 

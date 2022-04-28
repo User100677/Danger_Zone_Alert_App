@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-// TODO: Remove the API key before submission as the account associate with it contain billing information
 const String kApiKey = "AIzaSyD6eM4LXUhjcLH8aqa-uTyd8AJ9OE_9c0c";
 
 const String kSignUpText = 'Sign up';

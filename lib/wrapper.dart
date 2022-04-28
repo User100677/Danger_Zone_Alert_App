@@ -9,7 +9,7 @@ import 'map/utilities/application_bloc.dart';
 import 'models/user.dart';
 
 /*
-   This widget loads WelcomeScreen or IntermediaryScreen
+   This widget loads HomeScreen or IntermediaryScreen
    depending on the authentication of the user.
 */
 
