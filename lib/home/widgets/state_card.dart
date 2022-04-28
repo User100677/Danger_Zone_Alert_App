@@ -2,6 +2,7 @@ import 'package:danger_zone_alert/home/widgets/state_bar_chart.dart';
 import 'package:danger_zone_alert/models/state.dart';
 import 'package:flutter/material.dart';
 
+// This is used to display a list card about crime cases in each state
 Widget buildCard(BuildContext context, StateInfo state) {
   return Container(
     margin: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 80.0),

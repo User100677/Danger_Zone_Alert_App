@@ -10,6 +10,7 @@ import 'package:danger_zone_alert/widget_view.dart';
 import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
+// This is the comment page of the app
 class CommentScreen extends StatefulWidget {
   final bool permission;
   final UserModel user;

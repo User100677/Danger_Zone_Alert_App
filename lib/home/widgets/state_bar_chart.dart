@@ -4,6 +4,8 @@ import 'package:danger_zone_alert/models/state.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
+
+// This is used to display the detail of crime cases in each state after users tap on of the list of cards
 class StateBarChart extends StatelessWidget {
   StateInfo state;
 

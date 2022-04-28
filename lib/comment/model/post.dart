@@ -3,6 +3,7 @@ import 'package:danger_zone_alert/models/user.dart';
 import 'package:danger_zone_alert/services/database.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+// This class store the like and dislike of users onto the database and the total amount of like and dislike
 class Post {
   LatLng latLng;
   UserModel user;

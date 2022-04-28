@@ -8,6 +8,7 @@ import 'package:danger_zone_alert/shared/widgets/loading_widget.dart';
 import 'package:danger_zone_alert/widget_view.dart';
 import 'package:flutter/material.dart';
 
+
 class HomeScreen extends StatefulWidget {
   final UserModel user;
   const HomeScreen({Key? key, required this.user}) : super(key: key);
@@ -59,6 +60,8 @@ class _HomeScreenController extends State<HomeScreen> {
   Widget build(BuildContext context) => _HomeScreenView(this);
 }
 
+
+// This is the homepage of the app which will display the crime statistic and crime cases of each state in Malaysia
 class _HomeScreenView extends WidgetView<HomeScreen, _HomeScreenController> {
   const _HomeScreenView(_HomeScreenController state) : super(state);
 

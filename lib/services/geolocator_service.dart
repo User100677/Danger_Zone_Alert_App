@@ -1,5 +1,6 @@
 import 'package:geolocator/geolocator.dart';
 
+
 class GeolocatorService {
   static const LocationSettings _locationSettings =
       LocationSettings(accuracy: LocationAccuracy.high, distanceFilter: 10);

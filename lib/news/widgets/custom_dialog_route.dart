@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+
+// This class is used to determined the action of the dialog box
 class HeroDialogRoute<T> extends PageRoute<T> {
   HeroDialogRoute({
     required WidgetBuilder builder,
