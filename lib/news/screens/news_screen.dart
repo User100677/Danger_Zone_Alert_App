@@ -1,4 +1,4 @@
-import 'package:danger_zone_alert/news/widgets/article_detail_page.dart';
+import 'package:danger_zone_alert/news/screens/article_detail_page.dart';
 import 'package:flutter/material.dart';
 import 'package:news_api_flutter_package/model/article.dart';
 import 'package:news_api_flutter_package/model/error.dart';
@@ -6,6 +6,7 @@ import 'package:news_api_flutter_package/news_api_flutter_package.dart';
 
 import '../widgets/custom_dialog_route.dart';
 
+// This class is used to display latest list of news using the News API
 class NewsScreen extends StatelessWidget {
   final NewsAPI _newsAPI = NewsAPI("434b5638ed034f98a296145d4e2a7462");
 
@@ -61,6 +62,7 @@ class NewsScreen extends StatelessWidget {
       itemBuilder: (context, index) {
         Article article = articles[index];
         return InkWell(
+          // Display the details of the article in a dialog box form after users tap on one of the news
           child: GestureDetector(
             onTap: () {
               Navigator.of(context).push(HeroDialogRoute(
@@ -89,6 +91,7 @@ class NewsScreen extends StatelessWidget {
     return const Center(child: CircularProgressIndicator());
   }
 
+  // Show error if the News API can't get any news
   Widget _buildError(ApiError error) {
     return Center(
       child: Padding(

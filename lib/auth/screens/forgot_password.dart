@@ -5,6 +5,7 @@ import 'package:danger_zone_alert/shared/widgets/rounded_rectangle_button.dart';
 import 'package:danger_zone_alert/widget_view.dart';
 import 'package:flutter/material.dart';
 
+// This class is used to build reset users password
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({Key? key}) : super(key: key);
 

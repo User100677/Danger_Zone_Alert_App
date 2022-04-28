@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+
+// This class is used to display an icon in the top right of the rating page which will tells the usage of the rating page after clicking it
 class IconAlert extends StatelessWidget {
   const IconAlert({Key? key}) : super(key: key);
 

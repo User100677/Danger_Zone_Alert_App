@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
+// This is the database of the app
 class DatabaseService {
   final String? uid;
 

@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'map/utilities/application_bloc.dart';
 import 'models/user.dart';
 
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());

@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/widgets.dart';
 
+// This class is used to custom design the dialog box
 class CustomRectTween extends RectTween {
   CustomRectTween({
     required Rect begin,

@@ -9,6 +9,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 
+// This class is used to display the rating page
 class RatingScreen extends StatefulWidget {
   final UserModel user;
   final Area? area;
@@ -74,6 +75,7 @@ class RatingScreenController extends State<RatingScreen> {
         context: context, builder: (context) => const IconAlert());
   }
 
+  // Rating for question 1
   handleRatingBar1(rating) {
     setState(() {
       _rating = rating;
@@ -93,6 +95,7 @@ class RatingScreenController extends State<RatingScreen> {
     });
   }
 
+  // Rating for question 2
   handleRatingBar2(rating) {
     setState(() {
       _rating2 = rating;
@@ -112,6 +115,7 @@ class RatingScreenController extends State<RatingScreen> {
     });
   }
 
+  // Rating for question 3
   handleRatingBar3(rating) {
     setState(() {
       _rating3 = rating;
@@ -131,6 +135,7 @@ class RatingScreenController extends State<RatingScreen> {
     });
   }
 
+  // Calculation of final rating for that area
   handleSubmitPressed() async {
     if (_rating == valueOption[0]) {
       finalRating = valueOption[5];

@@ -2,6 +2,7 @@ import 'package:danger_zone_alert/models/state.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
+// This is  used to display pie chart of total crimes cases in each state of Malaysia
 class StatePieChart extends StatelessWidget {
   List<StateInfo> states;
   int totalCrimeCount;

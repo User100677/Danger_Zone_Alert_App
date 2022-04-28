@@ -3,14 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:news_api_flutter_package/model/article.dart';
 import 'package:url_launcher/url_launcher.dart';
+import '../widgets/custom_rect_tween.dart';
 
-import 'custom_rect_tween.dart';
 
-const String _heroAddTodo = 'add-todo-hero';
-
+// This class is used display the details of the article in a dialog box form
 class ArticlePage extends StatelessWidget {
   final Article article;
   const ArticlePage({Key? key, required this.article}) : super(key: key);
+  static const String _heroAddTodo = 'add-todo-hero';
 
   @override
   Widget build(BuildContext context) {
@@ -85,6 +85,7 @@ class ArticlePage extends StatelessWidget {
                             style: const TextStyle(
                               color: Colors.blueAccent,
                             ),
+                            // Link to the news webpage
                             recognizer: TapGestureRecognizer()
                               ..onTap = () {
                                 launch(article.url ?? "");
